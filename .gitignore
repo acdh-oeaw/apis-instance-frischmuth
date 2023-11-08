@@ -1,0 +1,8 @@
+# ----- OS, IDEs, tooling
+.DS_Store
+.idea/
+.python-version
+
+# ---- Python-specific
+.*.pyc
+__pycache__/
