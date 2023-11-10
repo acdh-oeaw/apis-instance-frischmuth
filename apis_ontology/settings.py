@@ -142,6 +142,7 @@ DATABASES = {"default": dj_database_url.config(conn_max_age=600)}
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
+    "frischmuth-dev.acdh-dev.oeaw.ac.at",
 ]
 
 if "ALLOWED_HOSTS" in os.environ:
