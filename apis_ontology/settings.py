@@ -10,11 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import re
+import dj_database_url
+import os
+
 from pathlib import Path
+from apis_acdhch_default_settings.settings import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
+# BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -29,43 +33,45 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+#
+# INSTALLED_APPS = [
+#     "django.contrib.admin",
+#     "django.contrib.auth",
+#     "django.contrib.contenttypes",
+#     "django.contrib.sessions",
+#     "django.contrib.messages",
+#     "django.contrib.staticfiles",
+# ]
 
-INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-]
+# INSTALLED_APPS += ["webpage"]
 
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
+# MIDDLEWARE = [
+#     "django.middleware.security.SecurityMiddleware",
+#     "django.contrib.sessions.middleware.SessionMiddleware",
+#     "django.middleware.common.CommonMiddleware",
+#     "django.middleware.csrf.CsrfViewMiddleware",
+#     "django.contrib.auth.middleware.AuthenticationMiddleware",
+#     "django.contrib.messages.middleware.MessageMiddleware",
+#     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+# ]
 
 ROOT_URLCONF = "apis_ontology.urls"
 
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
+# TEMPLATES = [
+#     {
+#         "BACKEND": "django.template.backends.django.DjangoTemplates",
+#         "DIRS": [],
+#         "APP_DIRS": True,
+#         "OPTIONS": {
+#             "context_processors": [
+#                 "django.template.context_processors.debug",
+#                 "django.template.context_processors.request",
+#                 "django.contrib.auth.context_processors.auth",
+#                 "django.contrib.messages.context_processors.messages",
+#             ],
+#         },
+#     },
+# ]
 
 WSGI_APPLICATION = "apis_ontology.wsgi.application"
 
@@ -73,12 +79,12 @@ WSGI_APPLICATION = "apis_ontology.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 
 # Password validation
@@ -121,3 +127,427 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# General Django settings
+
+# DEBUG, DEV_VERSION should not be set True for production. Leave as-is.
+# Use env variables or local settings file to override for local development.
+DEBUG = True
+DEV_VERSION = False
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+DATABASES = {"default": dj_database_url.config(conn_max_age=600)}
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "apis-frischmuth.acdh-dev.oeaw.ac.at",
+]
+
+if "ALLOWED_HOSTS" in os.environ:
+    try:
+        ALLOWED_HOSTS = re.sub(r"https?://", "", os.environ.get("ALLOWED_HOSTS")).split(
+            ","
+        )
+    except Exception as e:
+        print(e)
+        print(
+            "Invalid environment variable value for ALLOWED_HOSTS.\n"
+            "Falling back to default ALLOWED_HOSTS defined in settings."
+        )
+
+# STATICFILES_DIRS = [BASE_DIR + "/member_images"]
+
+
+# Django third-party apps, plugins
+
+# Django Allow CIDR
+# see https://github.com/mozmeao/django-allow-cidr
+# address '10.0.0.0/8' needs to be allowed for service health checks
+ALLOWED_CIDR_NETS = ["10.0.0.0/8", "127.0.0.0/8"]
+
+# Django REST framework permissions
+# see https://www.django-rest-framework.org/api-guide/permissions/
+REST_FRAMEWORK.update(
+    {
+        "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    }
+)
+
+# drf-spectacular
+# see https://drf-spectacular.readthedocs.io/en/latest/settings.html
+SPECTACULAR_SETTINGS.update(
+    {"COMPONENT_SPLIT_REQUEST": True, "COMPONENT_NO_READ_ONLY_REQUIRED": True}
+)
+
+
+# Project-specific settings
+
+# APIS_BASE_URI is used to construct URIs to resources (allows access to
+# individual objects via the API). Should be set to full web address
+# where app is hosted, needs to end with a trailing slash. Example:
+# APIS_BASE_URI = "https://my-project.subdomain.oeaw.ac.at/"
+APIS_BASE_URI = "https://apis-frischmuth.acdh-dev.oeaw.ac.at/"
+REDMINE_ID = ""
+MAIN_TEXT_NAME = ""
+
+LANGUAGE_CODE = "de"
+TIME_ZONE = "CET"
+
+# APIS_AUTOCOMPLETE_SETTINGS = "apis_ontology.settings.autocomplete_settings"
+
+APIS_RELATIONS_FILTER_EXCLUDE.append("annotation")
+
+APIS_DEFAULT_COLLECTION = "manual"
+
+APIS_LIST_VIEWS_ALLOWED = False  # toggle for making list views public
+APIS_DETAIL_VIEWS_ALLOWED = False  # toggle for making detail views public
+
+# Use APIS_ENTITIES to configure display settings and functionality for
+# individual fields of any entity class in models.py.
+APIS_ENTITIES = {
+    "E1_Crm_Entity": {
+        "search": ["id", "name"],
+        "form_order": ["name", "description"],
+        "table_fields": ["id", "name", "source"],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "source": {},
+            "collection": {},
+        },
+    },
+    "Work": {
+        "search": [
+            "name",
+            "subtitle",
+            "siglum",
+            "progress_status",
+            "language",
+            "summary",
+            "context",
+            "historical_events",
+            "text_analysis",
+        ],
+        "form_order": [
+            "name",
+            "subtitle",
+            "progress_status",
+            "siglum",
+            "language",
+            "summary",
+            "context",
+            "historical_events",
+            "text_analysis",
+            "temporal_order",
+            "temporal_duration",
+            "temporal_frequency",
+            "figure_speech",
+            "representation_of_thought",
+            "focalization",
+            "narrative_situation",
+            "narrative_chronology",
+            "narrative_level",
+            "narrative_voice",
+        ],
+        "table_fields": ["name", "siglum", "progress_status"],
+        "additional_cols": [
+            "subtitle",
+            "language",
+            "summary",
+            "context",
+            "historical_events",
+            "text_analysis",
+            "temporal_order",
+            "temporal_duration",
+            "temporal_frequency",
+            "figure_speech",
+            "representation_of_thought",
+            "focalization",
+            "narrative_situation",
+            "narrative_chronology",
+            "narrative_level",
+            "narrative_voice",
+        ],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "subtitle": {"method": "name_label_filter"},
+            "siglum": {"method": "name_label_filter"},
+            "progress_status": {},
+            "language": {},
+            "summary": {"method": "name_label_filter"},
+            "context": {},
+            "historical_events": {},
+            "text_analysis": {"method": "name_label_filter"},
+            "text_analysis": {},
+            "temporal_order": {},
+            "temporal_duration": {},
+            "temporal_frequency": {},
+            "figure_speech": {},
+            "representation_of_thought": {},
+            "focalization": {},
+            "narrative_situation": {},
+            "narrative_chronology": {},
+            "narrative_level": {},
+            "narrative_voice": {},
+        },
+    },
+    "Expression": {
+        "search": [
+            "name",
+            "progress_status",
+            "description",
+            "manifestation_type",
+            "language",
+        ],
+        "form_order": [
+            "name",
+            "progress_status",
+            "description",
+            "manifestation_type",
+            "year_of_publication",
+            "page_count",
+            "relevant_page_range_start",
+            "relevant_page_range_end",
+            "language",
+        ],
+        "table_fields": [
+            "name",
+            "progress_status",
+            "manifestation_type",
+            "year_of_publication",
+        ],
+        "additional_cols": [
+            "description",
+            "page_count",
+            "language",
+        ],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "progress_status": {},
+            "manifestation_type": {},
+            "year_of_publication": {"method": "name_label_filter"},
+            "description": {"method": "name_label_filter"},
+            "language": {},
+        },
+    },
+    "PhysicalObject": {
+        "search": ["name", "description"],
+        "form_order": ["name", "description"],
+        "table_fields": ["name"],
+        "additional_cols": ["description"],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "description": {"method": "name_label_filter"},
+        },
+    },
+    "Type": {
+        "search": ["name", "name_plural"],
+        "form_order": ["name", "name_plural"],
+        "table_fields": ["name"],
+        "additional_cols": ["name_plural"],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "name_plural": {"method": "name_label_filter"},
+        },
+    },
+    "Person": {
+        "search": [
+            "name",
+            "first_name",
+            "last_name",
+            "progress_status",
+            "alternative_name",
+            "description",
+        ],
+        "form_order": [
+            "name",
+            "first_name",
+            "last_name",
+            "progress_status",
+            "alternative_name",
+            "description",
+        ],
+        "table_fields": [
+            "name",
+            "last_name",
+            "first_name",
+            "alternative_name",
+            "progress_status",
+        ],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "last_name": {"method": "name_label_filter"},
+            "first_name": {"method": "name_label_filter"},
+            "alternative_name": {"method": "name_label_filter"},
+            "progress_status": {},
+            "description": {"method": "name_label_filter"},
+        },
+    },
+    "Organisation": {
+        "search": [
+            "name",
+            "alternative_name",
+            "progress_status",
+            "description",
+            "website",
+        ],
+        "form_order": [
+            "name",
+            "alternative_name",
+            "progress_status",
+            "description",
+            "website",
+        ],
+        "table_fields": [
+            "name",
+            "alternative_name",
+            "progress_status",
+        ],
+        "additional_cols": ["description", "website"],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "alternative_name": {"method": "name_label_filter"},
+            "progress_status": {},
+            "description": {"method": "name_label_filter"},
+            "website": {},
+        },
+    },
+    "Character": {
+        "search": [
+            "name",
+            "relevancy",
+            "fictionality",
+            "progress_status",
+            "description",
+        ],
+        "form_order": [
+            "name",
+            "relevancy",
+            "fictionality",
+            "progress_status",
+            "description",
+        ],
+        "table_fields": ["name", "relevancy", "fictionality", "progress_status"],
+        "additional_cols": ["id", "description"],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "relevancy": {},
+            "fictionality": {},
+            "progress_status": {},
+            "description": {"method": "name_label_filter"},
+        },
+    },
+    "MetaCharacter": {
+        "search": ["name", "progress_status", "description"],
+        "form_order": ["name", "progress_status", "description"],
+        "table_fields": ["name", "progress_status"],
+        "additional_cols": ["description"],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "progress_status": {},
+            "description": {"method": "name_label_filter"},
+        },
+    },
+    "Concept": {
+        "search": [
+            "name",
+            "alternative_names",
+            "progress_status",
+            "description",
+        ],
+        "form_order": [
+            "name",
+            "alternative_names",
+            "progress_status",
+            "description",
+        ],
+        "table_fields": [
+            "name",
+            "alternative_names",
+            "progress_status",
+        ],
+        "additional_cols": ["description"],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "alternative_names": {"method": "name_label_filter"},
+            "progress_status": {},
+            "description": {"method": "name_label_filter"},
+        },
+    },
+    "Place": {
+        "search": [
+            "name",
+            "progress_status",
+            "description",
+            "lat",
+            "lng",
+        ],
+        "form_order": [
+            "name",
+            "progress_status",
+            "description",
+            "lat",
+            "lng",
+        ],
+        "table_fields": ["name", "progress_status"],
+        "additional_cols": ["description", "lat", "lng"],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "progress_status": {},
+            "description": {"method": "name_label_filter"},
+            "lat": {},
+            "lng": {},
+        },
+    },
+    "Interpretatem": {
+        "search": ["name", "progress_status", "description"],
+        "form_order": ["name", "progress_status", "description"],
+        "table_fields": ["name", "progress_status"],
+        "additional_cols": ["description"],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "progress_status": {},
+            "description": {"method": "name_label_filter"},
+        },
+    },
+    "Archive": {
+        "search": ["name", "description", "website", "location"],
+        "form_order": ["name", "description", "website", "location"],
+        "table_fields": ["name", "website"],
+        "additional_cols": ["description", "location"],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "description": {"method": "name_label_filter"},
+            "website": {},
+            "location": {},
+        },
+    },
+}
+
+# To add new template files or to override existing shared templates, point
+# CUSTOM_TEMPLATES_DIR to a custom templates directory within your app. E.g.
+# CUSTOM_TEMPLATES_DIR = "templates"
+# Otherwise, leave set to None.
+CUSTOM_TEMPLATES_DIR = None
+
+# if CUSTOM_TEMPLATES_DIR:
+#     ONTOLOGY_DIR = os.path.dirname(os.path.dirname(__file__))
+#     for item in TEMPLATES:
+#         item["DIRS"].append(os.path.join(ONTOLOGY_DIR, CUSTOM_TEMPLATES_DIR))
+#
+
+print(BASE_DIR)
+# BASE_TEMPLATE = "webpage/base.html"
+
+# for template in TEMPLATES:
+#   # template["DIRS"].append(os.path.join(ONTOLOGY_DIR, "templates"))
+#   template["OPTIONS"]["context_processors"].extend(
+#           ["webpage.webpage_content_processors.installed_apps",
+#           "webpage.webpage_content_processors.is_dev_version",
+#           "webpage.webpage_content_processors.get_db_name",
+#           "webpage.webpage_content_processors.title_img",
+#           "webpage.webpage_content_processors.logo_img",
+#           "webpage.webpage_content_processors.custom_css",
+#           "webpage.webpage_content_processors.shared_url",
+#           "webpage.webpage_content_processors.apis_app_name"])
