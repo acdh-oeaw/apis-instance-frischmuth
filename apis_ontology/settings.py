@@ -10,7 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import re
+import dj_database_url
+import os
+
 from pathlib import Path
+from apis_acdhch_default_settings.settings import *
+
+# General Django settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,65 +27,55 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-n9!r&p_ui5tm#p@tmdru=1deet!1z$h5e(_ypc@^=ky#cu58f-"
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+DEV_VERSION = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "frischmuth-dev.acdh-dev.oeaw.ac.at",
+]
 
+ALLOWED_HOSTS = re.sub(
+    r"https?://",
+    "",
+    os.environ.get("ALLOWED_HOSTS", ",".join(ALLOWED_HOSTS)),
+).split(",")
 
 # Application definition
 
-INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-]
-
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
-
 ROOT_URLCONF = "apis_ontology.urls"
 
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
-
 WSGI_APPLICATION = "apis_ontology.wsgi.application"
+
+# Django Allow CIDR
+# see https://github.com/mozmeao/django-allow-cidr
+# address '10.0.0.0/8' needs to be allowed for service health checks
+
+ALLOWED_CIDR_NETS = ["10.0.0.0/8", "127.0.0.0/8"]
+
+# Django REST framework permissions
+# see https://www.django-rest-framework.org/api-guide/permissions/
+
+
+REST_FRAMEWORK[
+    "DEFAULT_PERMISSION_CLASSES"
+] = "rest_framework.permissions.IsAuthenticated"
+
+# drf-spectacular
+# see https://drf-spectacular.readthedocs.io/en/latest/settings.html
+
+SPECTACULAR_SETTINGS["COMPONENT_SPLIT_REQUEST"] = True
+SPECTACULAR_SETTINGS["COMPONENT_NO_READ_ONLY_REQUIRED"] = True
 
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+DATABASES = {"default": dj_database_url.config(conn_max_age=600)}
 
 
 # Password validation
@@ -103,9 +100,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "de"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "CET"
 
 USE_I18N = True
 
@@ -121,3 +118,30 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# APIS app-specific settings
+
+# APIS_BASE_URI is used to construct URIs to resources (allows access to
+# individual objects via the API). Should be set to full web address
+# where app is hosted, needs to end with a trailing slash. Example:
+# APIS_BASE_URI = "https://my-project.subdomain.oeaw.ac.at/"
+
+APIS_BASE_URI = "https://frischmuth-dev.acdh-dev.oeaw.ac.at/"
+
+REDMINE_ID = ""
+
+MAIN_TEXT_NAME = ""
+
+APIS_RELATIONS_FILTER_EXCLUDE.append("annotation")
+
+APIS_DEFAULT_COLLECTION = "manual"
+
+APIS_LIST_VIEWS_ALLOWED = False  # toggle for making list views public
+
+APIS_DETAIL_VIEWS_ALLOWED = False  # toggle for making detail views public
+
+# Use APIS_ENTITIES to configure display settings and functionality for
+# individual fields of any entity class in models.py.
+
+APIS_ENTITIES = {}
