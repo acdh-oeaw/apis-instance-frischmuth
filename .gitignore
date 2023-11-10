@@ -3,6 +3,9 @@
 .idea/
 .python-version
 
+# ----- setttings
+.env*
+
 # ---- Python-specific
 .*.pyc
 __pycache__/
