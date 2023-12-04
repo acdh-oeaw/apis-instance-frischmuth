@@ -3,8 +3,9 @@
 .idea/
 .python-version
 
-# ----- setttings
+# ----- settings
 .env*
+**local**
 
 # ---- Python-specific
 .*.pyc
