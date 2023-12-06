@@ -10,3 +10,6 @@
 # ---- Python-specific
 .*.pyc
 __pycache__/
+
+# ----- for local development purposes
+apis_core
