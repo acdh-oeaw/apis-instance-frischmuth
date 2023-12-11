@@ -388,3 +388,46 @@ class Work(WorkMixin, StatusMixin, AbstractEntity):
         verbose_name = _("werk")
         verbose_name_plural = _("werke")
         ordering = ["title", "subtitle", "-siglum"]
+
+
+@reversion.register(follow=["rootobject_ptr"])
+class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+    """
+    A concrete representation of a given Work,
+    captured in signs, images, audio signals,...
+    """
+
+    year_of_publication = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name=_("Erscheinungsjahr"),
+        help_text=_("Eingabe muss im Format YYYY-MM-DD erfolgen"),
+    )
+
+    page_count = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        verbose_name=_("Seitenanzahl"),
+        help_text=_("Seitenanzahl einer relevanten Manifestation"),
+    )
+
+    relevant_pages = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name=_("Forschungsrelevante Seiten"),
+    )
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="expressions",
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name=_("Datenquelle"),
+    )
+
+    class Meta:
+        verbose_name = _("werksexpression")
+        verbose_name_plural = _("werksexpressionen")
+        ordering = ["title", "subtitle"]
