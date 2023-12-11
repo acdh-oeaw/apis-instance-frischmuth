@@ -227,6 +227,42 @@ APIS_ENTITIES = {
             "data_source": {},
         },
     },
+    "WorkType": {
+        "search": [
+            "name",
+            "name_plural",
+            "alternative_name",
+            "description",
+            "progress_status",
+            "data_source",
+        ],
+        "form_order": [
+            "name",
+            "name_plural",
+            "alternative_name",
+            "description",
+            "progress_status",
+            "data_source",
+        ],
+        "table_fields": [
+            "name",
+            "name_plural",
+            "alternative_name",
+        ],
+        "additional_cols": [
+            "description",
+            "progress_status",
+            "data_source",
+        ],
+        "list_filters": {
+            "name": {"method": "name_label_filter"},
+            "name_plural": {"method": "name_label_filter"},
+            "alternative_name": {"method": "name_label_filter"},
+            "description": {"method": "name_label_filter"},
+            "progress_status": {},
+            "data_source": {},
+        },
+    },
     "Expression": {
         "search": [
             "name",
