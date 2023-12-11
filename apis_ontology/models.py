@@ -29,6 +29,78 @@ class StatusMixin(models.Model):
 
 
 @reversion.register
+class AlternativeNameMixin(models.Model):
+    """
+    Mixin for "alternative_name" field shared between entities.
+    """
+
+    alternative_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Alternativer Name"),
+    )
+
+    class Meta:
+        abstract = True
+
+
+class NameMixin(models.Model):
+    """
+    Mixin for "name" field shared between entities.
+    """
+
+    name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        abstract = True
+
+
+@reversion.register
+class DescriptionMixin(models.Model):
+    """
+    Mixin for "description" field shared between entities.
+    """
+
+    description = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_("Beschreibung"),
+    )
+
+    class Meta:
+        abstract = True
+
+
+@reversion.register
+class HumanBeingMixin(AlternativeNameMixin, models.Model):
+    """
+    Mixin for fields shared between person-like entities.
+    """
+
+    first_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Vorname"),
+    )
+
+    last_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Nachname"),
+    )
+
+    class Meta:
+        abstract = True
+
+
+@reversion.register
 class WorkMixin(models.Model):
     """
     Mixin for fields shared between work-like entities.
