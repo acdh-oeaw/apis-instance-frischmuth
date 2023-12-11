@@ -326,30 +326,6 @@ APIS_ENTITIES = {
             "data_source": {},
         },
     },
-    "Type": {
-        "search": [
-            "name",
-            "name_plural",
-            "data_source",
-        ],
-        "form_order": [
-            "name",
-            "name_plural",
-            "data_source",
-        ],
-        "table_fields": [
-            "name",
-        ],
-        "additional_cols": [
-            "data_source",
-            "name_plural",
-        ],
-        "list_filters": {
-            "name": {"method": "name_label_filter"},
-            "name_plural": {"method": "name_label_filter"},
-            "data_source": {},
-        },
-    },
     "Person": {
         "search": [
             "name",
