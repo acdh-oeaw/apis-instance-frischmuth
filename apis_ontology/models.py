@@ -495,7 +495,7 @@ class PhysicalObject(DescriptionMixin, AbstractEntity):
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Person(HumanBeingMixin, StatusMixin, AbstractEntity):
+class Person(HumanBeingMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     Any natural person.
     """
