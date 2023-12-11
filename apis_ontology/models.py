@@ -544,3 +544,68 @@ class Organisation(AlternativeNameMixin, DescriptionMixin, StatusMixin, Abstract
         verbose_name = _("körperschaft")
         verbose_name_plural = _("körperschaften")
         ordering = ["name"]
+
+
+@reversion.register(follow=["rootobject_ptr"])
+class Character(HumanBeingMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+    """
+    A real or fictitious person who appears in or is mentioned in a Work.
+
+    Defined per work, so "Anna" in Work A is distinct from "Anna" in Work B,
+    even if they are the same character.
+    """
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="characters",
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name=_("Datenquelle"),
+    )
+
+    class CharacterRelevancy(models.TextChoices):
+        MAIN = "protagonist", _("Hauptfigur")
+        SUPPORTING = "supporting_character", _("Nebenfigur")
+        REFERENCED = "referenced_character", _("erwähnte Figur")
+
+    relevancy = models.CharField(
+        max_length=255,
+        choices=CharacterRelevancy.choices,
+        null=True,
+        blank=False,
+        verbose_name=_("Relevanz"),
+        help_text=_("Bedeutsamkeit für den Text, Erzählfokus"),
+    )
+
+    class Meta:
+        verbose_name = _("figur")
+        verbose_name_plural = _("figuren")
+        ordering = ["name", "-relevancy"]
+
+
+@reversion.register(follow=["rootobject_ptr"])
+class MetaCharacter(DescriptionMixin, StatusMixin, AbstractEntity):
+    """
+    A composite entity to refer to related characters across works.
+
+    Used to group identical characters (e.g. recurring characters),
+    as well as different representations of the same characters
+    (or what's assumed to be the same characters).
+    """
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="metacharacters",
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name=_("Datenquelle"),
+    )
+
+    class Meta:
+        verbose_name = _("metafigur")
+        verbose_name_plural = _("metafiguren")
+        ordering = ["name"]
