@@ -431,3 +431,46 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         verbose_name = _("werksexpression")
         verbose_name_plural = _("werksexpressionen")
         ordering = ["title", "subtitle"]
+
+
+@reversion.register(follow=["rootobject_ptr"])
+class Archive(DescriptionMixin, AbstractEntity):
+    """
+    An institution or organisation where physical objects are
+    stored and cared for.
+    """
+
+    location = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Anschrift"),
+    )
+
+    website = models.URLField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Webseite"),
+    )
+
+    class Meta:
+        verbose_name = _("archiv")
+        verbose_name_plural = _("archive")
+
+
+@reversion.register(follow=["rootobject_ptr"])
+class PhysicalObject(DescriptionMixin, AbstractEntity):
+    """
+    A physical object pertaining to a Work.
+
+    Has a quantifiable size, e.g. has a number of pages, comprises
+    a number of folders, contains a number of items,...
+
+    May be a manuscript or typoscript of a given Work, but extends to
+    all kinds of material which are (loosely) related to a Work.
+    """
+
+    class Meta:
+        verbose_name = _("vorlassobjekt")
+        verbose_name_plural = _("vorlassobjekte")
