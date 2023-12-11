@@ -217,6 +217,7 @@ class Work(StatusMixin, AbstractEntity):
         related_name="works",
         blank=True,
         null=True,
+        editable=False,
         verbose_name=_("Datenquelle"),
     )
 
