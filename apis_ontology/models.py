@@ -176,14 +176,6 @@ class Work(StatusMixin, AbstractEntity):
             "homodiegetisches Erzählen – Hauptfigur"
         )  # a.k.a. autodiegetic
 
-    title = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name=_("Titel")
-    )
-
-    subtitle = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name=_("Untertitel")
-    )
-
     siglum = models.CharField(
         max_length=6, blank=True, null=True, verbose_name=_("Sigle")
     )
@@ -305,4 +297,4 @@ class Work(StatusMixin, AbstractEntity):
     class Meta:
         verbose_name = _("werk")
         verbose_name_plural = _("werke")
-        ordering = ["title", "subtitle", "-siglum"]
+        ordering = ["-siglum"]
