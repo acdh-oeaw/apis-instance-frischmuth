@@ -669,7 +669,7 @@ class ResearchPerspective(DescriptionMixin, StatusMixin, AbstractEntity):
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Topic(DescriptionMixin, StatusMixin, AbstractEntity):
+class Topic(AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     Topic with regard to content, theme.
     """
