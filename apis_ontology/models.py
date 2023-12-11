@@ -609,3 +609,38 @@ class MetaCharacter(DescriptionMixin, StatusMixin, AbstractEntity):
         verbose_name = _("metafigur")
         verbose_name_plural = _("metafiguren")
         ordering = ["name"]
+
+
+@reversion.register(follow=["rootobject_ptr"])
+class Place(AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+    """
+    A real place in our world, either in the past or present.
+    Has a physical location which can be referenced via geocoordinates.
+    """
+
+    latitude = models.FloatField(
+        blank=True,
+        null=True,
+        verbose_name=_("latitude"),
+    )
+
+    longitude = models.FloatField(
+        blank=True,
+        null=True,
+        verbose_name=_("longitude"),
+    )
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="places",
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name=_("Datenquelle"),
+    )
+
+    class Meta:
+        verbose_name = _("ort")
+        verbose_name_plural = _("orte")
+        ordering = ["name"]
