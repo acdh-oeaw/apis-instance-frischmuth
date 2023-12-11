@@ -492,3 +492,55 @@ class PhysicalObject(DescriptionMixin, AbstractEntity):
     class Meta:
         verbose_name = _("vorlassobjekt")
         verbose_name_plural = _("vorlassobjekte")
+
+
+@reversion.register(follow=["rootobject_ptr"])
+class Person(HumanBeingMixin, StatusMixin, AbstractEntity):
+    """
+    Any natural person.
+    """
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="persons",
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name=_("Datenquelle"),
+    )
+
+    class Meta:
+        verbose_name_plural = _("personen")
+        ordering = ["last_name", "first_name", "name"]
+
+
+@reversion.register(follow=["rootobject_ptr"])
+class Organisation(AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+    """
+    Any legal entity, or subunit of a legal entity.
+
+    Child class of abstract Actor class.
+    """
+
+    website = models.URLField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Webseite"),
+    )
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="organisations",
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name=_("Datenquelle"),
+    )
+
+    class Meta:
+        verbose_name = _("körperschaft")
+        verbose_name_plural = _("körperschaften")
+        ordering = ["name"]
