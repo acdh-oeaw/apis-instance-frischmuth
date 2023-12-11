@@ -454,6 +454,15 @@ class Archive(DescriptionMixin, AbstractEntity):
         verbose_name=_("Webseite"),
     )
 
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="archives",
+        blank=True,
+        null=True,
+        verbose_name=_("Datenquelle"),
+    )
+
     class Meta:
         verbose_name = _("archiv")
         verbose_name_plural = _("archive")
@@ -470,6 +479,15 @@ class PhysicalObject(DescriptionMixin, AbstractEntity):
     May be a manuscript or typoscript of a given Work, but extends to
     all kinds of material which are (loosely) related to a Work.
     """
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="physicalobjects",
+        blank=True,
+        null=True,
+        verbose_name=_("Datenquelle"),
+    )
 
     class Meta:
         verbose_name = _("vorlassobjekt")
