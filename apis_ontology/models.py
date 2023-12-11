@@ -391,6 +391,31 @@ class Work(WorkMixin, StatusMixin, AbstractEntity):
 
 
 @reversion.register(follow=["rootobject_ptr"])
+class WorkType(AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+    name_plural = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Pluralform"),
+    )
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="worktypes",
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name=_("Datenquelle"),
+    )
+
+    class Meta:
+        verbose_name = _("werktyp")
+        verbose_name_plural = _("werktypen")
+        ordering = ["name"]
+
+
+@reversion.register(follow=["rootobject_ptr"])
 class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     A concrete representation of a given Work,
