@@ -412,7 +412,7 @@ class WorkType(AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEnti
     class Meta:
         verbose_name = _("werktyp")
         verbose_name_plural = _("werktypen")
-        ordering = ["name"]
+        ordering = ["name", "name_plural", "alternative_name"]
 
 
 @reversion.register(follow=["rootobject_ptr"])
