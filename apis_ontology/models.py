@@ -29,6 +29,24 @@ class StatusMixin(models.Model):
 
 
 @reversion.register
+class WorkMixin(models.Model):
+    """
+    Mixin for fields shared between work-like entities.
+    """
+
+    title = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name=_("Titel")
+    )
+
+    subtitle = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name=_("Untertitel")
+    )
+
+    class Meta:
+        abstract = True
+
+
+@reversion.register
 class DataSource(models.Model):
     """
     Holds (meta) information about data sources.
@@ -92,7 +110,7 @@ class DataSource(models.Model):
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Work(StatusMixin, AbstractEntity):
+class Work(WorkMixin, StatusMixin, AbstractEntity):
     """
     The abstract notion of an intellectual creation, irrespective
     of its exact transmitted version, language or other form.
