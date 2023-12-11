@@ -647,7 +647,9 @@ class Place(AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity)
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class ResearchPerspective(DescriptionMixin, StatusMixin, AbstractEntity):
+class ResearchPerspective(
+    AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+):
     """
     Lens through which works are investigated.
     """
