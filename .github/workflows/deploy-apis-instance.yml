@@ -1,9 +1,9 @@
 name: deploy
 on:
   push:
-    # Run deployment only on pushes to main, not other branches
+    # run deployment only on pushes to specific branches
     branches: ["frischmuth/deploy"]
-  # Allows you to run this workflow manually from the Actions tab or through HTTP API
+  # for triggering deployments manually via button in GitHub interface
   workflow_dispatch:
 
 jobs:
