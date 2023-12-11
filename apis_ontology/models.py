@@ -315,4 +315,4 @@ class Work(WorkMixin, StatusMixin, AbstractEntity):
     class Meta:
         verbose_name = _("werk")
         verbose_name_plural = _("werke")
-        ordering = ["-siglum"]
+        ordering = ["title", "subtitle", "-siglum"]
