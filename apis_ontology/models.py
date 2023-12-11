@@ -644,3 +644,69 @@ class Place(AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity)
         verbose_name = _("ort")
         verbose_name_plural = _("orte")
         ordering = ["name"]
+
+
+@reversion.register(follow=["rootobject_ptr"])
+class ResearchPerspective(DescriptionMixin, StatusMixin, AbstractEntity):
+    """
+    Lens through which works are investigated.
+    """
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="researchperspectives",
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name=_("Datenquelle"),
+    )
+
+    class Meta:
+        verbose_name = _("forschungshinsicht")
+        verbose_name_plural = _("forschungshinsichten")
+        ordering = ["name"]
+
+
+@reversion.register(follow=["rootobject_ptr"])
+class Topic(DescriptionMixin, StatusMixin, AbstractEntity):
+    """
+    Topic with regard to content, theme.
+    """
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="topics",
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name=_("Datenquelle"),
+    )
+
+    class Meta:
+        verbose_name = _("thema")
+        verbose_name_plural = _("themen")
+        ordering = ["name"]
+
+
+@reversion.register(follow=["rootobject_ptr"])
+class Interpretatem(DescriptionMixin, StatusMixin, AbstractEntity):
+    """
+    A conceptual object representing a specific (interpretative/scholarly)
+    view on one or more Works.
+    """
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="interpretatems",
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name=_("Datenquelle"),
+    )
+
+    class Meta:
+        verbose_name_plural = _("interpretateme")
+        ordering = ["name"]
