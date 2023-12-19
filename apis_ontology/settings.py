@@ -178,7 +178,6 @@ APIS_ENTITIES = {
             "narrative_chronology",
             "narrative_level",
             "narrative_voice",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -244,7 +243,6 @@ APIS_ENTITIES = {
             "relevant_page_range_start",
             "relevant_page_range_end",
             "language",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -281,7 +279,6 @@ APIS_ENTITIES = {
             "alternative_name",
             "description",
             "progress_status",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -311,7 +308,6 @@ APIS_ENTITIES = {
         "form_order": [
             "name",
             "description",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -343,7 +339,6 @@ APIS_ENTITIES = {
             "alternative_name",
             "progress_status",
             "description",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -381,7 +376,6 @@ APIS_ENTITIES = {
             "progress_status",
             "description",
             "website",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -421,7 +415,6 @@ APIS_ENTITIES = {
             "relevancy",
             "progress_status",
             "description",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -457,7 +450,6 @@ APIS_ENTITIES = {
             "name",
             "description",
             "progress_status",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -487,7 +479,6 @@ APIS_ENTITIES = {
             "alternative_name",
             "description",
             "progress_status",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -519,7 +510,6 @@ APIS_ENTITIES = {
             "alternative_name",
             "description",
             "progress_status",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -553,7 +543,6 @@ APIS_ENTITIES = {
             "description",
             "latitude",
             "longitude",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -585,7 +574,6 @@ APIS_ENTITIES = {
             "name",
             "description",
             "progress_status",
-            "data_source",
         ],
         "table_fields": [
             "name",
@@ -615,7 +603,6 @@ APIS_ENTITIES = {
             "description",
             "location",
             "website",
-            "data_source",
         ],
         "table_fields": [
             "name",
