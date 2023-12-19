@@ -485,6 +485,7 @@ class Archive(DescriptionMixin, AbstractEntity):
         related_name="archives",
         blank=True,
         null=True,
+        editable=False,
         verbose_name=_("Datenquelle"),
     )
 
@@ -511,6 +512,7 @@ class PhysicalObject(DescriptionMixin, AbstractEntity):
         related_name="physicalobjects",
         blank=True,
         null=True,
+        editable=False,
         verbose_name=_("Datenquelle"),
     )
 
