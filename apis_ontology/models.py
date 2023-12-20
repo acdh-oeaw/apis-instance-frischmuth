@@ -10,6 +10,7 @@ class StatusMixin(models.Model):
     class ProgressStates(models.TextChoices):
         CREATED = "created", _("neu angelegt")
         MINOR_EDITS = "edited", _("reine Datenänderung")
+        NEEDS_DATA_CHECK = "verify_data", _("dubios")
         WORK_IN_PROGRESS = "worked_on", _("in Bearbeitung")
         NEEDS_REVIEW = "awaiting_review", _("Review erbeten")
         HAS_REVIEW = "reviewed", _("Review abgeschlossen")
