@@ -20,6 +20,7 @@ class StatusMixin(models.Model):
         max_length=255,
         choices=ProgressStates.choices,
         null=True,
+        blank=True,
         verbose_name=_("Bearbeitungsstatus"),
     )
 
