@@ -16,13 +16,13 @@ six = "*"
 
 [[package]]
 name = "apis-acdhch-default-settings"
-version = "0.1.18"
+version = "0.1.22"
 description = "Default settings for APIS instances at the ACDH-CH"
 optional = false
 python-versions = ">=3.11,<4.0"
 files = [
-    {file = "apis_acdhch_default_settings-0.1.18-py3-none-any.whl", hash = "sha256:a31163d4a6ea050a4b31bde08a0acf20693fd06f8cf0f203d6768f806df9a7fc"},
-    {file = "apis_acdhch_default_settings-0.1.18.tar.gz", hash = "sha256:7ac90e2e7b91d628a9b37255fe68b6e56331ed213a5e23033df7592c53fd3326"},
+    {file = "apis_acdhch_default_settings-0.1.22-py3-none-any.whl", hash = "sha256:e8dc6fb2810aa3150f0425492d0d392907cfa7354e47238499bab012ab2e9232"},
+    {file = "apis_acdhch_default_settings-0.1.22.tar.gz", hash = "sha256:4b18961b85f4ecf63b669ab1a3167e1ad1a05db2a2af59bba90d03a28e3a4f67"},
 ]
 
 [package.dependencies]
@@ -1762,4 +1762,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "3c165018368ceb02b5533478a8ecf3b8af71b38d4eb649181cda04dcf88fbdd5"
+content-hash = "049d86c386f364fb9bbb2106be441b5fca8139e37ced6a733fa2f2d96014ad01"

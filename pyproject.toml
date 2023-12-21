@@ -8,7 +8,7 @@ packages = [{include = "apis_ontology"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-apis-acdhch-default-settings = "v0.1.18"
+apis-acdhch-default-settings = "^0.1.22"
 apis-core = {git = "https://github.com/acdh-oeaw/apis-core-rdf", rev = "v0.9.1"}
 Django = "^4.2.7"
 django-extensions = "^3.2.3"
