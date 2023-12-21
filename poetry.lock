@@ -34,7 +34,7 @@ whitenoise = ">=5.2.0,<6.0.0"
 
 [[package]]
 name = "apis-core"
-version = "0.8.1"
+version = "0.9.1"
 description = "Base package for the APIS framework"
 optional = false
 python-versions = "^3.11"
@@ -43,12 +43,13 @@ develop = false
 
 [package.dependencies]
 apis-override-select2js = "^0.1.0"
+crispy-bootstrap4 = "^2023.1"
 Django = "^4.1"
 django-admin-csvexport = "^2.2"
 django-autocomplete-light = "~3.9.4"
-django-crispy-forms = "^1.10.0"
+django-crispy-forms = "^2"
 django-crum = "^0.7.9"
-django-filter = "^2.4.0"
+django-filter = "^23.5"
 django-model-utils = "^4.1.1"
 django-reversion = "^5.0"
 django-tables2 = "^2.3.3"
@@ -66,8 +67,8 @@ tablib = "^3.5.0"
 [package.source]
 type = "git"
 url = "https://github.com/acdh-oeaw/apis-core-rdf"
-reference = "v0.8.1"
-resolved_reference = "ba2bb9e1c3a94f9fb76a11ba10bcc07bd3157e0a"
+reference = "v0.9.1"
+resolved_reference = "3fcd5d85c8193b475c1a2e86d77ad1a34556d012"
 
 [[package]]
 name = "apis-override-select2js"
@@ -319,6 +320,21 @@ files = [
 ]
 
 [[package]]
+name = "crispy-bootstrap4"
+version = "2023.1"
+description = "Bootstrap4 template pack for django-crispy-forms"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "crispy-bootstrap4-2023.1.tar.gz", hash = "sha256:d60e93eb6d82886c009eb174f2a4c78fdac602a1efadf0305471c84815bd973a"},
+    {file = "crispy_bootstrap4-2023.1-py3-none-any.whl", hash = "sha256:1a88e74f8d36d2dedeb40a66f246994f3ce5cd855017785d0291e741d3e7d7c2"},
+]
+
+[package.dependencies]
+django = ">=4.2"
+django-crispy-forms = ">=2.0"
+
+[[package]]
 name = "cssbeautifier"
 version = "1.14.11"
 description = "CSS unobfuscator and beautifier."
@@ -445,14 +461,17 @@ tags = ["django-taggit"]
 
 [[package]]
 name = "django-crispy-forms"
-version = "1.14.0"
+version = "2.1"
 description = "Best way to have Django DRY forms"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "django-crispy-forms-1.14.0.tar.gz", hash = "sha256:35887b8851a931374dd697207a8f56c57a9c5cb9dbf0b9fa54314da5666cea5b"},
-    {file = "django_crispy_forms-1.14.0-py3-none-any.whl", hash = "sha256:bc4d2037f6de602d39c0bc452ac3029d1f5d65e88458872cc4dbc01c3a400604"},
+    {file = "django-crispy-forms-2.1.tar.gz", hash = "sha256:4d7ec431933ad4d4b5c5a6de4a584d24613c347db9ac168723c9aaf63af4bb96"},
+    {file = "django_crispy_forms-2.1-py3-none-any.whl", hash = "sha256:d592044771412ae1bd539cc377203aa61d4eebe77fcbc07fbc8f12d3746d4f6b"},
 ]
+
+[package.dependencies]
+django = ">=4.2"
 
 [[package]]
 name = "django-crum"
@@ -502,17 +521,17 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-filter"
-version = "2.4.0"
+version = "23.5"
 description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.7"
 files = [
-    {file = "django-filter-2.4.0.tar.gz", hash = "sha256:84e9d5bb93f237e451db814ed422a3a625751cbc9968b484ecc74964a8696b06"},
-    {file = "django_filter-2.4.0-py3-none-any.whl", hash = "sha256:e00d32cebdb3d54273c48f4f878f898dced8d5dfaad009438fe61ebdf535ace1"},
+    {file = "django-filter-23.5.tar.gz", hash = "sha256:67583aa43b91fe8c49f74a832d95f4d8442be628fd4c6d65e9f811f5153a4e5c"},
+    {file = "django_filter-23.5-py3-none-any.whl", hash = "sha256:99122a201d83860aef4fe77758b69dda913e874cc5e0eaa50a86b0b18d708400"},
 ]
 
 [package.dependencies]
-Django = ">=2.2"
+Django = ">=3.2"
 
 [[package]]
 name = "django-model-utils"
@@ -1743,4 +1762,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5da6baf27cdfbd6db5ed652877397fff8f387d3bbaf7045104dc24d7d671e640"
+content-hash = "3c165018368ceb02b5533478a8ecf3b8af71b38d4eb649181cda04dcf88fbdd5"
