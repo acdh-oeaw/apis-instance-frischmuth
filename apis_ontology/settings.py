@@ -61,9 +61,9 @@ ALLOWED_CIDR_NETS = ["10.0.0.0/8", "127.0.0.0/8"]
 # see https://www.django-rest-framework.org/api-guide/permissions/
 
 
-REST_FRAMEWORK[
-    "DEFAULT_PERMISSION_CLASSES"
-] = "rest_framework.permissions.IsAuthenticated"
+REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"] = (
+    "rest_framework.permissions.IsAuthenticated",
+)
 
 # drf-spectacular
 # see https://drf-spectacular.readthedocs.io/en/latest/settings.html
