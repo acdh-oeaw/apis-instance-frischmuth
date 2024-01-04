@@ -48,7 +48,7 @@ def create_source(
     :return:
     """
     # script from which create_source is called
-    #calling_script = os.path.basename(inspect.getsourcefile(sys._getframe(1)))
+    calling_script = os.path.basename(inspect.getsourcefile(sys._getframe(1)))
 
     if with_date:
         dt_string = create_import_date_string()
