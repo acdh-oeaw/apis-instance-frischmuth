@@ -1,0 +1,509 @@
+[
+	{
+			"id": 1,
+			"name": "discusses",
+			"name_reverse": "is discussed in",
+			"subj": [
+					"Work"
+			],
+			"obj": [
+					"Work",
+					"Place"
+			]
+	},
+	{
+		"id": 2,
+		"name": "mentions",
+		"name_reverse": "is mentioned in",
+		"subj": [
+				"Work"
+		],
+		"obj": [
+				"Work",
+				"Place"
+		]
+},
+{
+	"id": 3,
+	"name": "takes place in",
+	"name_reverse": "is locale in",
+	"subj": [
+			"Work"
+	],
+	"obj": [
+			"Place"
+	]
+},
+{
+	"id": 4,
+	"name": "references",
+	"name_reverse": "is referenced by",
+	"subj": [
+			"Work"
+	],
+	"obj": [
+			"Work"
+	]
+},
+{
+	"id": 5,
+	"name": "is part of work",
+	"name_reverse": "has part",
+	"subj": [
+			"Work"
+	],
+	"obj": [
+			"Work"
+	]
+},
+{
+	"id": 6,
+	"name": "has type",
+	"name_reverse": "is type of",
+	"subj": [
+			"Work"
+	],
+	"obj": [
+			"WorkType"
+	]
+},
+{
+	"id": 7,
+	"name": "has broader term",
+	"name_reverse": "has narrower term",
+	"subj": [
+			"WorkType"
+	],
+	"obj": [
+			"WorkType"
+	]
+},
+{
+	"id": 8,
+	"name": "is realised in",
+	"name_reverse": "realises",
+	"subj": [
+			"Work"
+	],
+	"obj": [
+			"Expression"
+	]
+},
+{
+	"id": 9,
+	"name": "is part of expression",
+	"name_reverse": "has part",
+	"subj": [
+			"Expression"
+	],
+	"obj": [
+			"Expression"
+	]
+},
+{
+	"id": 10,
+	"name": "is published in",
+	"name_reverse": "is place of publication of",
+	"subj": [
+			"Expression"
+	],
+	"obj": [
+			"Place"
+	]
+},
+{
+	"id": 11,
+	"name": "features",
+	"name_reverse": "is featured in",
+	"subj": [
+			"Work"
+	],
+	"obj": [
+			"Character"
+	]
+},
+{
+	"id": 12,
+	"name": "groups",
+	"name_reverse": "is grouped in",
+	"subj": [
+			"MetaCharacter"
+	],
+	"obj": [
+			"Character"
+	]
+},
+{
+	"id": 13,
+	"name": "inspires",
+	"name_reverse": "is inspired by",
+	"subj": [
+			"Place"
+	],
+	"obj": [
+			"Place"
+	]
+},
+{
+	"id": 14,
+	"name": "holds",
+	"name_reverse": "is held in",
+	"subj": [
+			"Archive"
+	],
+	"obj": [
+			"PhysicalObject"
+	]
+},
+{
+	"id": 15,
+	"name": "relates to",
+	"name_reverse": "is connected with",
+	"subj": [
+			"PhysicalObject"
+	],
+	"obj": [
+			"Work"
+	]
+},
+{
+	"id": 16,
+	"name": "has source",
+	"name_reverse": "is source for",
+	"subj": [
+			"Interpretatem"
+	],
+	"obj": [
+			"Work"
+	]
+},
+{
+	"id": 17,
+	"name": "interprets",
+	"name_reverse": "is interpreted by",
+	"subj": [
+			"Interpretatem"
+	],
+	"obj": [
+			"Work"
+	]
+},
+{
+	"id": 18,
+	"name": "is based on",
+	"name_reverse": "is base for",
+	"subj": [
+			"Character"
+	],
+	"obj": [
+			"Person",
+			"Topic"
+	]
+},
+{
+	"id": 19,
+	"name": "is about topic",
+	"name_reverse": "is topic of",
+	"subj": [
+			"Work",
+			"Interpretatem"
+	],
+	"obj": [
+			"Topic"
+	]
+},
+{
+	"id": 20,
+	"name": "applies research perspective",
+	"name_reverse": "is research perspective of",
+	"subj": [
+			"Work",
+			"Interpretatem"
+	],
+	"obj": [
+			"ResearchPerspective"
+	]
+},
+{
+	"id": 21,
+	"name": "has current or former residence",
+	"name_reverse": "is current or former residence of",
+	"subj": [
+			"Organisation"
+	],
+	"obj": [
+			"Place"
+	]
+},
+{
+	"id": 22,
+	"name": "is publisher of",
+	"name_reverse": "has publisher",
+	"subj": [
+			"Organisation"
+	],
+	"obj": [
+			"Expression"
+	]
+},
+{
+	"id": 23,
+	"name": "is contributor to",
+	"name_reverse": "has contributor",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 24,
+	"name": "is author of",
+	"name_reverse": "has author",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 25,
+	"name": "is photographer of/for",
+	"name_reverse": "has photographer",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 26,
+	"name": "is illustrator of/for",
+	"name_reverse": "has illustrator",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 27,
+	"name": "is translator of",
+	"name_reverse": "has translator",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 28,
+	"name": "is editor of",
+	"name_reverse": "has editor",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 29,
+	"name": "is director of",
+	"name_reverse": "has director",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 30,
+	"name": "is dramaturg for",
+	"name_reverse": "has dramaturg",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 31,
+	"name": "is composer of",
+	"name_reverse": "has composer",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 32,
+	"name": "is session musician on",
+	"name_reverse": "has session musician",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 33,
+	"name": "is stage designer for",
+	"name_reverse": "has stage designer",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 34,
+	"name": "is costume designer for",
+	"name_reverse": "has costume designer",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 35,
+	"name": "is make-up artist on",
+	"name_reverse": "has make-up artist",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 36,
+	"name": "is sound engineer of",
+	"name_reverse": "has sound engineer",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 37,
+	"name": "is film editor of",
+	"name_reverse": "has film editor",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 38,
+	"name": "is actor in",
+	"name_reverse": "has actor",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 39,
+	"name": "is narrator of",
+	"name_reverse": "has narrator",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 40,
+	"name": "is cinematographer of",
+	"name_reverse": "has cinematographer",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 41,
+	"name": "is head of production of",
+	"name_reverse": "has head of production",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+},
+{
+	"id": 42,
+	"name": "is production designer of",
+	"name_reverse": "has production designer",
+	"subj": [
+			"Person",
+			"Organisation"
+	],
+	"obj": [
+			"Work",
+			"Expression"
+	]
+}
+]
