@@ -71,7 +71,7 @@ def create_source(
 
     source_obj, created = DataSource.objects.get_or_create(
         file_name=name,
-        pubinfo=metadata,
+        # pubinfo=metadata,
         author=author,
     )
 
@@ -150,7 +150,7 @@ def create_expression(
     """
     expression, created = Expression.objects.get_or_create(
         name=title,
-        manifestation_type=man_types,
+        # manifestation_type=man_types,
         year_of_publication=pub_date,
         page_count=pages,
         defaults={"data_source": source},
