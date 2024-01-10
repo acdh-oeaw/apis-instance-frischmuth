@@ -741,3 +741,508 @@ class Interpretatem(DescriptionMixin, StatusMixin, AbstractEntity):
     class Meta:
         verbose_name_plural = _("interpretateme")
         ordering = ["name"]
+
+
+def construct_properties():
+    """
+    Create relationships between entity classes.
+
+    Regarding property definitions:
+    - each "name" (and "name_reversed") may only be used once,
+    - a relationship can connect more than two entities, i.e. can have more
+    than just one Subject (subj_class) or just one Object (obj_class).
+    """
+    from apis_core.apis_relations.models import Property
+    from django.contrib.auth.models import User
+
+    # WORK-focussed relations
+    # Aussage – something is talked about in a work
+    discusses = Property.objects.get_or_create(
+        name="discusses",
+        name_reverse="is discussed in",
+    )[0]
+    discusses.subj_class.clear()
+    discusses.obj_class.clear()
+    discusses.subj_class.add(ContentType.objects.get(model=Work.__name__))
+    discusses.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    discusses.obj_class.add(ContentType.objects.get(model=Place.__name__))
+
+    # Erwähnung – something is only mentioned by name
+    mentions = Property.objects.get_or_create(
+        name="mentions",
+        name_reverse="is mentioned in",
+    )[0]
+    mentions.subj_class.clear()
+    mentions.obj_class.clear()
+    mentions.subj_class.add(ContentType.objects.get(model=Work.__name__))
+    mentions.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    mentions.obj_class.add(ContentType.objects.get(model=Place.__name__))
+
+    # Schauplatz – a place is an actual location in the work
+    takes_place_in = Property.objects.get_or_create(
+        name="takes place in",
+        name_reverse="is locale in",
+    )[0]
+    takes_place_in.subj_class.clear()
+    takes_place_in.obj_class.clear()
+    takes_place_in.subj_class.add(ContentType.objects.get(model=Work.__name__))
+    takes_place_in.obj_class.add(ContentType.objects.get(model=Place.__name__))
+
+    # Binnenverweis
+    references = Property.objects.get_or_create(
+        name="references",
+        name_reverse="is referenced by",
+    )[0]
+    references.subj_class.clear()
+    references.obj_class.clear()
+    references.subj_class.add(ContentType.objects.get(model=Work.__name__))
+    references.obj_class.add(ContentType.objects.get(model=Work.__name__))
+
+    is_part_of_work = Property.objects.get_or_create(
+        name="is part of work",
+        name_reverse="has part",
+    )[0]
+    is_part_of_work.subj_class.clear()
+    is_part_of_work.obj_class.clear()
+    is_part_of_work.subj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_part_of_work.obj_class.add(ContentType.objects.get(model=Work.__name__))
+
+    # TYPE-focussed relations
+    has_type = Property.objects.get_or_create(
+        name="has type",
+        name_reverse="is type of",
+    )[0]
+    has_type.subj_class.clear()
+    has_type.obj_class.clear()
+    has_type.subj_class.add(ContentType.objects.get(model=Work.__name__))
+    has_type.obj_class.add(ContentType.objects.get(model=WorkType.__name__))
+
+    has_broader_term = Property.objects.get_or_create(
+        name="has broader term",
+        name_reverse="has narrower term",
+    )[0]
+    has_broader_term.subj_class.clear()
+    has_broader_term.obj_class.clear()
+    has_broader_term.subj_class.add(ContentType.objects.get(model=WorkType.__name__))
+    has_broader_term.obj_class.add(ContentType.objects.get(model=WorkType.__name__))
+
+    # EXPRESSION-focussed relations
+    is_realised_in = Property.objects.get_or_create(
+        name="is realised in",
+        name_reverse="realises",
+    )[0]
+    is_realised_in.subj_class.clear()
+    is_realised_in.obj_class.clear()
+    is_realised_in.subj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_realised_in.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    is_part_of_expression = Property.objects.get_or_create(
+        name="is part of expression",
+        name_reverse="has part",
+    )[0]
+    is_part_of_expression.subj_class.clear()
+    is_part_of_expression.obj_class.clear()
+    is_part_of_expression.subj_class.add(
+        ContentType.objects.get(model=Expression.__name__)
+    )
+    is_part_of_expression.obj_class.add(
+        ContentType.objects.get(model=Expression.__name__)
+    )
+
+    published_in = Property.objects.get_or_create(
+        name="is published in",
+        name_reverse="is place of publication of",
+    )[0]
+    published_in.subj_class.clear()
+    published_in.obj_class.clear()
+    published_in.subj_class.add(ContentType.objects.get(model=Expression.__name__))
+    published_in.obj_class.add(ContentType.objects.get(model=Place.__name__))
+
+    # CHARACTER-focussed relations
+    features = Property.objects.get_or_create(
+        name="features",
+        name_reverse="is featured in",
+    )[0]
+    features.subj_class.clear()
+    features.obj_class.clear()
+    features.subj_class.add(ContentType.objects.get(model=Work.__name__))
+    features.obj_class.add(ContentType.objects.get(model=Character.__name__))
+
+    groups = Property.objects.get_or_create(
+        name="groups",
+        name_reverse="is grouped in",
+    )[0]
+    groups.subj_class.clear()
+    groups.obj_class.clear()
+    groups.subj_class.add(ContentType.objects.get(model=MetaCharacter.__name__))
+    groups.obj_class.add(ContentType.objects.get(model=Character.__name__))
+
+    place_inspires = Property.objects.get_or_create(
+        name="inspires",
+        name_reverse="is inspired by",
+    )[0]
+    place_inspires.subj_class.clear()
+    place_inspires.obj_class.clear()
+    place_inspires.subj_class.add(ContentType.objects.get(model=Place.__name__))
+    place_inspires.obj_class.add(ContentType.objects.get(model=Place.__name__))
+
+    # ARCHIVE-focussed relations
+    archive_holds = Property.objects.get_or_create(
+        name="holds",
+        name_reverse="is held in",
+    )[0]
+    archive_holds.subj_class.clear()
+    archive_holds.obj_class.clear()
+    archive_holds.subj_class.add(ContentType.objects.get(model=Archive.__name__))
+    archive_holds.obj_class.add(ContentType.objects.get(model=PhysicalObject.__name__))
+
+    relates_to = Property.objects.get_or_create(
+        name="relates to",
+        name_reverse="is connected with",
+    )[0]
+    relates_to.subj_class.clear()
+    relates_to.obj_class.clear()
+    relates_to.subj_class.add(ContentType.objects.get(model=PhysicalObject.__name__))
+    relates_to.obj_class.add(ContentType.objects.get(model=Work.__name__))
+
+    # INTERPRETATEM-focussed relations
+    has_source = Property.objects.get_or_create(
+        name="has source",
+        name_reverse="is source for",
+    )[0]
+    has_source.subj_class.clear()
+    has_source.obj_class.clear()
+    has_source.subj_class.add(ContentType.objects.get(model=Interpretatem.__name__))
+    has_source.obj_class.add(ContentType.objects.get(model=Work.__name__))
+
+    interprets = Property.objects.get_or_create(
+        name="interprets",
+        name_reverse="is interpreted by",
+    )[0]
+    interprets.subj_class.clear()
+    interprets.obj_class.clear()
+    interprets.subj_class.add(ContentType.objects.get(model=Interpretatem.__name__))
+    interprets.obj_class.add(ContentType.objects.get(model=Work.__name__))
+
+    # CONCEPT-focussed relations
+    is_based_on = Property.objects.get_or_create(
+        name="is based on",
+        name_reverse="is base for",
+    )[0]
+    is_based_on.subj_class.clear()
+    is_based_on.obj_class.clear()
+    is_based_on.subj_class.add(ContentType.objects.get(model=Character.__name__))
+    is_based_on.obj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_based_on.obj_class.add(ContentType.objects.get(model=Topic.__name__))
+
+    is_about = Property.objects.get_or_create(
+        name="is about topic",
+        name_reverse="is topic of",
+    )[0]
+    is_about.subj_class.clear()
+    is_about.obj_class.clear()
+    is_about.subj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_about.subj_class.add(ContentType.objects.get(model=Interpretatem.__name__))
+    is_about.obj_class.add(ContentType.objects.get(model=Topic.__name__))
+
+    applies_research_perspective = Property.objects.get_or_create(
+        name="applies research perspective",
+        name_reverse="is research perspective of",
+    )[0]
+    applies_research_perspective.subj_class.clear()
+    applies_research_perspective.obj_class.clear()
+    applies_research_perspective.subj_class.add(
+        ContentType.objects.get(model=Work.__name__)
+    )
+    applies_research_perspective.subj_class.add(
+        ContentType.objects.get(model=Interpretatem.__name__)
+    )
+    applies_research_perspective.obj_class.add(
+        ContentType.objects.get(model=ResearchPerspective.__name__)
+    )
+
+    # ORGANISATION-focussed relations
+    has_residence = Property.objects.get_or_create(
+        name="has current or former residence",
+        name_reverse="is current or former residence of",
+    )[0]
+    has_residence.subj_class.clear()
+    has_residence.obj_class.clear()
+    has_residence.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    has_residence.obj_class.add(ContentType.objects.get(model=Place.__name__))
+
+    is_publisher = Property.objects.get_or_create(
+        name="is publisher of",
+        name_reverse="has publisher",
+    )[0]
+    is_publisher.subj_class.clear()
+    is_publisher.obj_class.clear()
+    is_publisher.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_publisher.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # ACTOR roles in relation to Work, Expression
+    # Beitragende:r (generisch)
+    is_contributor = Property.objects.get_or_create(
+        name="is contributor to",
+        name_reverse="has contributor",
+    )[0]
+    is_contributor.subj_class.clear()
+    is_contributor.obj_class.clear()
+    is_contributor.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_contributor.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_contributor.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_contributor.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Autor*in
+    is_author = Property.objects.get_or_create(
+        name="is author of",
+        name_reverse="has author",
+    )[0]
+    is_author.subj_class.clear()
+    is_author.obj_class.clear()
+    is_author.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_author.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_author.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_author.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Fotograf:in
+    is_photographer = Property.objects.get_or_create(
+        name="is photographer of/for",
+        name_reverse="has photographer",
+    )[0]
+    is_photographer.subj_class.clear()
+    is_photographer.obj_class.clear()
+    is_photographer.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_photographer.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_photographer.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_photographer.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Illustrator:in
+    is_illustrator = Property.objects.get_or_create(
+        name="is illustrator of/for",
+        name_reverse="has illustrator",
+    )[0]
+    is_illustrator.subj_class.clear()
+    is_illustrator.obj_class.clear()
+    is_illustrator.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_illustrator.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_illustrator.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_illustrator.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Übersetzer:in
+    is_translator = Property.objects.get_or_create(
+        name="is translator of",
+        name_reverse="has translator",
+    )[0]
+    is_translator.subj_class.clear()
+    is_translator.obj_class.clear()
+    is_translator.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_translator.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_translator.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_translator.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Herausgeber*in
+    is_editor = Property.objects.get_or_create(
+        name="is editor of",
+        name_reverse="has editor",
+    )[0]
+    is_editor.subj_class.clear()
+    is_editor.obj_class.clear()
+    is_editor.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_editor.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_editor.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_editor.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Regisseur*in
+    is_director = Property.objects.get_or_create(
+        name="is director of",
+        name_reverse="has director",
+    )[0]
+    is_director.subj_class.clear()
+    is_director.obj_class.clear()
+    is_director.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_director.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_director.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_director.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Dramaturg*in
+    is_dramaturg = Property.objects.get_or_create(
+        name="is dramaturg for",
+        name_reverse="has dramaturg",
+    )[0]
+    is_dramaturg.subj_class.clear()
+    is_dramaturg.obj_class.clear()
+    is_dramaturg.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_dramaturg.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_dramaturg.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_dramaturg.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Komponist*in
+    is_composer = Property.objects.get_or_create(
+        name="is composer of",
+        name_reverse="has composer",
+    )[0]
+    is_composer.subj_class.clear()
+    is_composer.obj_class.clear()
+    is_composer.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_composer.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_composer.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_composer.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Musiker*in
+    is_session_musician = Property.objects.get_or_create(
+        name="is session musician on",
+        name_reverse="has session musician",
+    )[0]
+    is_session_musician.subj_class.clear()
+    is_session_musician.obj_class.clear()
+    is_session_musician.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_session_musician.subj_class.add(
+        ContentType.objects.get(model=Organisation.__name__)
+    )
+    is_session_musician.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_session_musician.obj_class.add(
+        ContentType.objects.get(model=Expression.__name__)
+    )
+
+    # Bühnenbildner*in (Kontext: Theater; vgl. Szenenbildner*in)
+    is_stage_designer = Property.objects.get_or_create(
+        name="is stage designer for",
+        name_reverse="has stage designer",
+    )[0]
+    is_stage_designer.subj_class.clear()
+    is_stage_designer.obj_class.clear()
+    is_stage_designer.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_stage_designer.subj_class.add(
+        ContentType.objects.get(model=Organisation.__name__)
+    )
+    is_stage_designer.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_stage_designer.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Kostümbildner*in
+    is_costume_designer = Property.objects.get_or_create(
+        name="is costume designer for",
+        name_reverse="has costume designer",
+    )[0]
+    is_costume_designer.subj_class.clear()
+    is_costume_designer.obj_class.clear()
+    is_costume_designer.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_costume_designer.subj_class.add(
+        ContentType.objects.get(model=Organisation.__name__)
+    )
+    is_costume_designer.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_costume_designer.obj_class.add(
+        ContentType.objects.get(model=Expression.__name__)
+    )
+
+    # Maskenbildner*in
+    is_makeup_artist = Property.objects.get_or_create(
+        name="is make-up artist on",
+        name_reverse="has make-up artist",
+    )[0]
+    is_makeup_artist.subj_class.clear()
+    is_makeup_artist.obj_class.clear()
+    is_makeup_artist.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_makeup_artist.subj_class.add(
+        ContentType.objects.get(model=Organisation.__name__)
+    )
+    is_makeup_artist.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_makeup_artist.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Tonmeister*in
+    is_sound_engineer = Property.objects.get_or_create(
+        name="is sound engineer of",
+        name_reverse="has sound engineer",
+    )[0]
+    is_sound_engineer.subj_class.clear()
+    is_sound_engineer.obj_class.clear()
+    is_sound_engineer.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_sound_engineer.subj_class.add(
+        ContentType.objects.get(model=Organisation.__name__)
+    )
+    is_sound_engineer.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_sound_engineer.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Cutter*in
+    is_film_editor = Property.objects.get_or_create(
+        name="is film editor of",
+        name_reverse="has film editor",
+    )[0]
+    is_film_editor.subj_class.clear()
+    is_film_editor.obj_class.clear()
+    is_film_editor.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_film_editor.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_film_editor.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_film_editor.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Schauspieler*in
+    is_actor = Property.objects.get_or_create(
+        name="is actor in",
+        name_reverse="has actor",
+    )[0]
+    is_actor.subj_class.clear()
+    is_actor.obj_class.clear()
+    is_actor.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_actor.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_actor.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_actor.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Sprecher*in
+    is_narrator = Property.objects.get_or_create(
+        name="is narrator of",
+        name_reverse="has narrator",
+    )[0]
+    is_narrator.subj_class.clear()
+    is_narrator.obj_class.clear()
+    is_narrator.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_narrator.subj_class.add(ContentType.objects.get(model=Organisation.__name__))
+    is_narrator.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_narrator.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Kameramensch
+    is_cinematographer = Property.objects.get_or_create(
+        name="is cinematographer of",
+        name_reverse="has cinematographer",
+    )[0]
+    is_cinematographer.subj_class.clear()
+    is_cinematographer.obj_class.clear()
+    is_cinematographer.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_cinematographer.subj_class.add(
+        ContentType.objects.get(model=Organisation.__name__)
+    )
+    is_cinematographer.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_cinematographer.obj_class.add(ContentType.objects.get(model=Expression.__name__))
+
+    # Produktionsleiter*in
+    is_head_of_production = Property.objects.get_or_create(
+        name="is head of production of",
+        name_reverse="has head of production",
+    )[0]
+    is_head_of_production.subj_class.clear()
+    is_head_of_production.obj_class.clear()
+    is_head_of_production.subj_class.add(ContentType.objects.get(model=Person.__name__))
+    is_head_of_production.subj_class.add(
+        ContentType.objects.get(model=Organisation.__name__)
+    )
+    is_head_of_production.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_head_of_production.obj_class.add(
+        ContentType.objects.get(model=Expression.__name__)
+    )
+
+    # Szenenbilder*in (Kontext: Film; vgl. Bühnenbildner*in)
+    is_production_designer = Property.objects.get_or_create(
+        name="is production designer of",
+        name_reverse="has production designer",
+    )[0]
+    is_production_designer.subj_class.clear()
+    is_production_designer.obj_class.clear()
+    is_production_designer.subj_class.add(
+        ContentType.objects.get(model=Person.__name__)
+    )
+    is_production_designer.subj_class.add(
+        ContentType.objects.get(model=Organisation.__name__)
+    )
+    is_production_designer.obj_class.add(ContentType.objects.get(model=Work.__name__))
+    is_production_designer.obj_class.add(
+        ContentType.objects.get(model=Expression.__name__)
+    )
