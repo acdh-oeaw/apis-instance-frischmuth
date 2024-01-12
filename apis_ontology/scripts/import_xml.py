@@ -3,7 +3,14 @@ import xml.etree.ElementTree as ET
 
 # from django.core.validators import URLValidator
 from apis_core.apis_relations.models import Property
-from apis_ontology.models import Person, Work, Archive, PhysicalObject, Expression, Type
+from apis_ontology.models import (
+    Person,
+    Work,
+    Archive,
+    PhysicalObject,
+    Expression,
+    WorkType,
+)
 from .additional_infos import WORK_TYPES, WORKTYPE_MAPPINGS
 from .import_helpers import create_triple, create_source
 from .create_base_entities import create_archives, create_persons, create_types
@@ -82,7 +89,7 @@ def run():
                         workelem.attrib.get("category")
                     )
                     if work_type_key_name:
-                        work_type = Type.objects.get(
+                        work_type = WorkType.objects.get(
                             name=WORK_TYPES.get(work_type_key_name)["german_label"]
                         )
                         create_triple(
