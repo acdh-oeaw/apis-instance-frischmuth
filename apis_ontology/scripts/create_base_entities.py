@@ -1,6 +1,6 @@
 import os
 from apis_core.apis_relations.models import Property
-from apis_ontology.models import Archive, Person, Type
+from apis_ontology.models import Archive, Person, WorkType
 from .additional_infos import ARCHIVES, PERSONS, WORK_TYPES
 from .import_helpers import create_triple, create_source
 
@@ -53,7 +53,7 @@ def create_persons(calling_file=fname):
 
 def create_types(calling_file=fname):
     """
-    Create objects for Type entity.
+    Create objects for WorkType entity.
 
     :param calling_file: optional argument to pass filename of the calling
                          script, otherwise uses this file's name
@@ -66,16 +66,18 @@ def create_types(calling_file=fname):
 
     # create objects for all types
     for work_type in WORK_TYPES.values():
-        wtype, created = Type.objects.get_or_create(
+        wtype, created = WorkType.objects.get_or_create(
             name=work_type["german_label"],
             name_plural=work_type["german_label_plural"],
             defaults={"source": source},
         )
 
     for work_type in children.values():
-        wt_object = Type.objects.get(name=work_type["german_label"])
+        wt_object = WorkType.objects.get(name=work_type["german_label"])
         parent_key = work_type["parent_key"]
-        parent_object = Type.objects.get(name=WORK_TYPES[parent_key]["german_label"])
+        parent_object = WorkType.objects.get(
+            name=WORK_TYPES[parent_key]["german_label"]
+        )
         create_triple(
             entity_subj=wt_object,
             entity_obj=parent_object,

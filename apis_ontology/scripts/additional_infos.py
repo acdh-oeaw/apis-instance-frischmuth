@@ -37,7 +37,7 @@ MISC_ENTITIES = [
     },
 ]
 
-# dictionary for script-based creation of "Type" entity objects
+# dictionary for script-based creation of "WorkType" entity objects
 # dictionary keys are used for required field "name"
 WORK_TYPES = {
     # example dict item:
