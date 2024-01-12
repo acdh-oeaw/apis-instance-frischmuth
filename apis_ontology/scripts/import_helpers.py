@@ -5,6 +5,7 @@ import sys
 
 from apis_core.apis_relations.models import TempTriple
 from apis_ontology.models import (
+    Archive,
     DataSource,
     Expression,
     Organisation,
@@ -253,3 +254,20 @@ def create_place(place_name: str, source: DataSource, place_type: str = None):
     )
 
     return place, created
+
+
+def create_archive(archive_name: str, source: DataSource):
+    """
+    Create a new Archive entity object if one with the given parameters
+    does not exist yet.
+
+    :param archive_name: name of an archive, used for "name" field
+    :param source: DataSource object to link to, used to identify data imports
+    :return: Archive object
+    """
+    archive, created = Archive.objects.get_or_create(
+        name=archive_name,
+        defaults={"data_source": source},
+    )
+
+    return archive, created
