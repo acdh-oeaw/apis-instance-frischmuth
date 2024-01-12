@@ -316,7 +316,7 @@ def import_items_from_collection(zot, coll_key, include_subs=True, import_name=N
 def import_items(collection_items, import_name):
     """
     :param collection_items: list of Zotero items to import
-    :param import_name: name to use for Source for entity objects
+    :param import_name: name to use for DataSource for entity objects
     :return: tuple with list of imported items and list of failed items
              to use for further processing
     """
@@ -463,7 +463,7 @@ def get_work_references_fom_tags(tags):
 def get_work_types_from_tags(tags):
     """
     Check if a Zotero collection item's tags contain valid work type labels
-    to create relationships between Work entities and Type entities.
+    to create relationships between Work entities and WorkType entities.
 
     :param tags: a list of strings
     :return: a list of dictionaries
