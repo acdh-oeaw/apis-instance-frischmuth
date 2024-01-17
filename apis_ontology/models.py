@@ -3,6 +3,7 @@ from apis_core.apis_entities.models import AbstractEntity
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from multiselectfield import MultiSelectField
 
 
 @reversion.register
@@ -424,6 +425,10 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     captured in signs, images, audio signals,...
     """
 
+    class ManifestationTypes(models.TextChoices):
+        FIRST_EDITION = "first_edition", _("Erstausgabe")
+        REFERENCE_EDITION = "reference_edition", _("Referenzausgabe")
+
     year_of_publication = models.DateField(
         blank=True,
         null=True,
@@ -442,6 +447,15 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         blank=True,
         null=True,
         verbose_name=_("Forschungsrelevante Seiten"),
+    )
+
+    manifestation_type = MultiSelectField(
+        max_length=255,
+        choices=ManifestationTypes.choices,
+        null=True,
+        blank=True,
+        verbose_name="Ausgabetyp",
+        help_text="Zur Markierung speziell relevanter Manifestationen",
     )
 
     data_source = models.ForeignKey(
