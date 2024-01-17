@@ -613,6 +613,11 @@ class Character(HumanBeingMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         SUPPORTING = "supporting_character", _("Nebenfigur")
         REFERENCED = "referenced_character", _("erwähnte Figur")
 
+    class CharacterFictionality(models.TextChoices):
+        FICTIONAL = "fictional_character", _("fiktive Figur")
+        HISTORICAL = "historical_character", _("historische Figur")
+        MYTHICAL = "mythical_character", _("mythologische Figur")
+
     relevancy = models.CharField(
         max_length=255,
         choices=CharacterRelevancy.choices,
@@ -620,6 +625,15 @@ class Character(HumanBeingMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         blank=False,
         verbose_name=_("Relevanz"),
         help_text=_("Bedeutsamkeit für den Text, Erzählfokus"),
+    )
+
+    fictionality = MultiSelectField(
+        max_length=255,
+        choices=CharacterFictionality.choices,
+        null=True,
+        blank=False,
+        verbose_name="Erfindungsgrad",
+        help_text="Faktizität vs. Fiktionalität",
     )
 
     class Meta:
