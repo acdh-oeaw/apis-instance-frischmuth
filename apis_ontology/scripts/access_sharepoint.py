@@ -12,14 +12,14 @@ from pathlib import Path
 from urllib.parse import quote
 
 
-def run():
+def import_and_parse_data(parse_data):
     s = sharepoint_connect()
 
     files = fetch_sharepoint_files(s)
 
     fname, file_url = input_dialog(files)
 
-    imported, failed = import_file_data(s, fname, file_url)
+    imported, failed = import_file_data(s, fname, file_url, parse_data)
 
     for i in imported:
         # TODO processing equivalent to Zotero import script
@@ -213,7 +213,7 @@ def fetch_file_data(s, sp_fname, sp_file_url):
     return source_file_by_url
 
 
-def import_file_data(s, in_fname, in_file_url, out_fname=None, out_dir=None):
+def import_file_data(s, in_fname, in_file_url, parse_data, out_fname=None, out_dir=None):
     """
     Import data from an Excel file.
 
@@ -238,27 +238,6 @@ def import_file_data(s, in_fname, in_file_url, out_fname=None, out_dir=None):
         # do not overwrite existing copies of import file
         s.getfile(in_file, filename=out_file)
 
-    success, failure = parse_excel(out_file)
-
-    return success, failure
-
-
-def parse_excel(excel_file):
-    """
-
-    :param excel_file:
-    :return:
-    """
-    success = []
-    failure = []
-
-    file_contents = pd.read_excel(excel_file)
-
-    for f in file_contents:
-        # TODO process Excel sheets
-        # success.append()
-        # failure.append()
-        # print(f)
-        pass
+    success, failure = parse_data(out_file)
 
     return success, failure
