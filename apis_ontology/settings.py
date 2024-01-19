@@ -230,6 +230,7 @@ APIS_ENTITIES = {
         "search": [
             "name",
             "progress_status",
+            "manifestation_type",
             "description",
             "language",
             "data_source",
@@ -239,6 +240,7 @@ APIS_ENTITIES = {
             "progress_status",
             "description",
             "publication_date",
+            "manifestation_type",
             "page_count",
             "relevant_page_range_start",
             "relevant_page_range_end",
@@ -247,6 +249,7 @@ APIS_ENTITIES = {
         "table_fields": [
             "name",
             "progress_status",
+            "manifestation_type",
             "publication_date",
         ],
         "additional_cols": [
@@ -258,6 +261,7 @@ APIS_ENTITIES = {
         "list_filters": {
             "name": {"method": "name_label_filter"},
             "progress_status": {},
+            "manifestation_type": {},
             "publication_date": {"method": "name_label_filter"},
             "description": {"method": "name_label_filter"},
             "language": {},
@@ -404,6 +408,7 @@ APIS_ENTITIES = {
             "alternative_name",
             "progress_status",
             "relevancy",
+            "fictionality",
             "description",
             "data_source",
         ],
@@ -413,6 +418,7 @@ APIS_ENTITIES = {
             "last_name",
             "alternative_name",
             "relevancy",
+            "fictionality",
             "progress_status",
             "description",
         ],
@@ -421,6 +427,7 @@ APIS_ENTITIES = {
             "last_name",
             "first_name",
             "relevancy",
+            "fictionality",
             "progress_status",
         ],
         "additional_cols": [
@@ -435,6 +442,7 @@ APIS_ENTITIES = {
             "alternative_name": {"method": "name_label_filter"},
             "progress_status": {},
             "relevancy": {},
+            "fictionality": {},
             "description": {"method": "name_label_filter"},
             "data_source": {},
         },
