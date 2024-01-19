@@ -232,7 +232,6 @@ APIS_ENTITIES = {
             "progress_status",
             "manifestation_type",
             "description",
-            "language",
             "data_source",
         ],
         "form_order": [
@@ -242,9 +241,7 @@ APIS_ENTITIES = {
             "publication_date",
             "manifestation_type",
             "page_count",
-            "relevant_page_range_start",
-            "relevant_page_range_end",
-            "language",
+            "relevant_pages",
         ],
         "table_fields": [
             "name",
@@ -256,7 +253,6 @@ APIS_ENTITIES = {
             "data_source",
             "description",
             "page_count",
-            "language",
         ],
         "list_filters": {
             "name": {"method": "name_label_filter"},
@@ -264,7 +260,6 @@ APIS_ENTITIES = {
             "manifestation_type": {},
             "publication_date": {"method": "name_label_filter"},
             "description": {"method": "name_label_filter"},
-            "language": {},
             "data_source": {},
         },
     },
@@ -539,6 +534,7 @@ APIS_ENTITIES = {
     "Place": {
         "search": [
             "name",
+            "alternative_name",
             "progress_status",
             "description",
             "latitude",
@@ -547,6 +543,7 @@ APIS_ENTITIES = {
         ],
         "form_order": [
             "name",
+            "alternative_name",
             "progress_status",
             "description",
             "latitude",
@@ -554,6 +551,7 @@ APIS_ENTITIES = {
         ],
         "table_fields": [
             "name",
+            "alternative_name",
             "progress_status",
         ],
         "additional_cols": [
@@ -564,6 +562,7 @@ APIS_ENTITIES = {
         ],
         "list_filters": {
             "name": {"method": "name_label_filter"},
+            "alternative_name": {"method": "name_label_filter"},
             "progress_status": {},
             "description": {"method": "name_label_filter"},
             "latitude": {},
