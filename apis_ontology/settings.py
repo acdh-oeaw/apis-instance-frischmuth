@@ -238,7 +238,7 @@ APIS_ENTITIES = {
             "name",
             "progress_status",
             "description",
-            "year_of_publication",
+            "publication_date",
             "page_count",
             "relevant_page_range_start",
             "relevant_page_range_end",
@@ -247,7 +247,7 @@ APIS_ENTITIES = {
         "table_fields": [
             "name",
             "progress_status",
-            "year_of_publication",
+            "publication_date",
         ],
         "additional_cols": [
             "data_source",
@@ -258,7 +258,7 @@ APIS_ENTITIES = {
         "list_filters": {
             "name": {"method": "name_label_filter"},
             "progress_status": {},
-            "year_of_publication": {"method": "name_label_filter"},
+            "publication_date": {"method": "name_label_filter"},
             "description": {"method": "name_label_filter"},
             "language": {},
             "data_source": {},
