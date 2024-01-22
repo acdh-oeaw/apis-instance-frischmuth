@@ -229,6 +229,8 @@ APIS_ENTITIES = {
     "Expression": {
         "search": [
             "name",
+            "title",
+            "subtitle",
             "edition_type",
             "progress_status",
             "description",
@@ -236,6 +238,8 @@ APIS_ENTITIES = {
         ],
         "form_order": [
             "name",
+            "title",
+            "subtitle",
             "progress_status",
             "description",
             "publication_date",
@@ -245,6 +249,8 @@ APIS_ENTITIES = {
         ],
         "table_fields": [
             "name",
+            "title",
+            "subtitle",
             "edition_type",
             "publication_date",
             "progress_status",
@@ -256,6 +262,8 @@ APIS_ENTITIES = {
         ],
         "list_filters": {
             "name": {"method": "name_label_filter"},
+            "title": {"method": "name_label_filter"},
+            "subtitle": {"method": "name_label_filter"},
             "edition_type": {},
             "publication_date": {"method": "name_label_filter"},
             "description": {"method": "name_label_filter"},
