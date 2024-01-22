@@ -522,6 +522,14 @@ class PhysicalObject(DescriptionMixin, AbstractEntity):
     all kinds of material which are (loosely) related to a Work.
     """
 
+    vorlass_doc_reference = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Vorlassdokument-Referenz"),
+        editable=False,
+    )
+
     data_source = models.ForeignKey(
         DataSource,
         on_delete=models.SET_NULL,
