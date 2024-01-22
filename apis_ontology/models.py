@@ -425,7 +425,7 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     captured in signs, images, audio signals,...
     """
 
-    class ManifestationTypes(models.TextChoices):
+    class EditionTypes(models.TextChoices):
         FIRST_EDITION = "first_edition", _("Erstausgabe")
         REFERENCE_EDITION = "reference_edition", _("Referenzausgabe")
 
@@ -451,11 +451,11 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
 
     edition_type = MultiSelectField(
         max_length=255,
-        choices=ManifestationTypes.choices,
+        choices=EditionTypes.choices,
         null=True,
         blank=True,
         verbose_name="Ausgabetyp",
-        help_text="Zur Markierung speziell relevanter Manifestationen",
+        help_text="Zur Markierung speziell relevanter Ausgaben",
     )
 
     data_source = models.ForeignKey(
