@@ -230,7 +230,7 @@ APIS_ENTITIES = {
         "search": [
             "name",
             "progress_status",
-            "manifestation_type",
+            "edition_type",
             "description",
             "data_source",
         ],
@@ -239,14 +239,14 @@ APIS_ENTITIES = {
             "progress_status",
             "description",
             "publication_date",
-            "manifestation_type",
+            "edition_type",
             "page_count",
             "relevant_pages",
         ],
         "table_fields": [
             "name",
             "progress_status",
-            "manifestation_type",
+            "edition_type",
             "publication_date",
         ],
         "additional_cols": [
@@ -257,7 +257,7 @@ APIS_ENTITIES = {
         "list_filters": {
             "name": {"method": "name_label_filter"},
             "progress_status": {},
-            "manifestation_type": {},
+            "edition_type": {},
             "publication_date": {"method": "name_label_filter"},
             "description": {"method": "name_label_filter"},
             "data_source": {},

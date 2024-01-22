@@ -449,7 +449,7 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         verbose_name=_("Forschungsrelevante Seiten"),
     )
 
-    manifestation_type = MultiSelectField(
+    edition_type = MultiSelectField(
         max_length=255,
         choices=ManifestationTypes.choices,
         null=True,
