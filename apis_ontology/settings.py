@@ -301,6 +301,7 @@ APIS_ENTITIES = {
     "PhysicalObject": {
         "search": [
             "name",
+            "vorlass_doc_reference",
             "description",
             "data_source",
         ],
@@ -312,11 +313,13 @@ APIS_ENTITIES = {
             "name",
         ],
         "additional_cols": [
+            "vorlass_doc_reference",
             "data_source",
             "description",
         ],
         "list_filters": {
             "name": {"method": "name_label_filter"},
+            "vorlass_doc_reference": {},
             "description": {"method": "name_label_filter"},
             "data_source": {},
         },
