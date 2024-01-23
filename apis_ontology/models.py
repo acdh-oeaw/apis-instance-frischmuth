@@ -1,5 +1,6 @@
 import reversion
 from apis_core.apis_entities.models import AbstractEntity
+from apis_core.apis_relations.models import Property
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -779,6 +780,34 @@ class Interpretatem(DescriptionMixin, StatusMixin, AbstractEntity):
         ordering = ["name"]
 
 
+def update_properties():
+    """
+    Function for temporary storage of destructive changes to Property
+    objects until the changes have been applied (/deployed).
+
+    Workaround for dealing with Property deletions or changes to
+    values of fields by which they are looked up, like "name", "name_reverse",
+    because there is no equivalent to Django migrations, with which
+    changes to model classes can be preserved independently of changes
+    to the code recorded via commits.
+
+    ATTN.: Do not use update() to modify "name" or "name_reverse"
+    as it ignores custom save() methods, which for changes to these
+    Property fields is relevant.
+
+    Examples:
+    Property.objects.filter(name="is part of").delete()
+    for prop in Property.objects.filter(name="includes"):
+        prop.name = "is included in"
+        prop.name_reverse = "includes"
+        prop.save()
+
+    Don't forget to also always update a Property's "name" field values
+    in construct_properties() when they are modified here.
+    """
+    pass
+
+
 def construct_properties():
     """
     Create relationships between entity classes.
@@ -790,6 +819,8 @@ def construct_properties():
     """
     from apis_core.apis_relations.models import Property
     from django.contrib.auth.models import User
+
+    update_properties()
 
     # WORK-focussed relations
     # Aussage – something is talked about in a work
