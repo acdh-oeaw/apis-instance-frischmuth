@@ -844,606 +844,327 @@ def construct_properties():
 
     # WORK-focussed relations
     # Aussage – something is talked about in a work
-    discusses = Property.objects.get_or_create(
+    discusses = create_properties(
         name="discusses",
         name_reverse="is discussed in",
-    )[0]
-    discusses.subj_class.clear()
-    discusses.obj_class.clear()
-    discusses.subj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    discusses.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    discusses.obj_class.add(ContentType.objects.get(model=Place._meta.model_name))
+        subjects=[Work],
+        objects=[Work, Place],
+    )
 
     # Erwähnung – something is only mentioned by name
-    mentions = Property.objects.get_or_create(
+    mentions = create_properties(
         name="mentions",
         name_reverse="is mentioned in",
-    )[0]
-    mentions.subj_class.clear()
-    mentions.obj_class.clear()
-    mentions.subj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    mentions.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    mentions.obj_class.add(ContentType.objects.get(model=Place._meta.model_name))
+        subjects=[Work],
+        objects=[Work, Place],
+    )
 
     # Schauplatz – a place is an actual location in the work
-    takes_place_in = Property.objects.get_or_create(
+    takes_place_in = create_properties(
         name="takes place in",
         name_reverse="is locale in",
-    )[0]
-    takes_place_in.subj_class.clear()
-    takes_place_in.obj_class.clear()
-    takes_place_in.subj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    takes_place_in.obj_class.add(ContentType.objects.get(model=Place._meta.model_name))
+        subjects=[Work],
+        objects=[Place],
+    )
 
     # Binnenverweis
-    references = Property.objects.get_or_create(
+    references = create_properties(
         name="references",
         name_reverse="is referenced by",
-    )[0]
-    references.subj_class.clear()
-    references.obj_class.clear()
-    references.subj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    references.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
+        subjects=[Work],
+        objects=[Work],
+    )
 
-    is_part_of_work = Property.objects.get_or_create(
+    is_part_of_work = create_properties(
         name="is part of work",
         name_reverse="has part",
-    )[0]
-    is_part_of_work.subj_class.clear()
-    is_part_of_work.obj_class.clear()
-    is_part_of_work.subj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_part_of_work.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
+        subjects=[Work],
+        objects=[Work],
+    )
 
     # TYPE-focussed relations
-    has_type = Property.objects.get_or_create(
+    has_type = create_properties(
         name="has type",
         name_reverse="is type of",
-    )[0]
-    has_type.subj_class.clear()
-    has_type.obj_class.clear()
-    has_type.subj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    has_type.obj_class.add(ContentType.objects.get(model=WorkType._meta.model_name))
+        subjects=[Work],
+        objects=[WorkType],
+    )
 
-    has_broader_term = Property.objects.get_or_create(
+    has_broader_term = create_properties(
         name="has broader term",
         name_reverse="has narrower term",
-    )[0]
-    has_broader_term.subj_class.clear()
-    has_broader_term.obj_class.clear()
-    has_broader_term.subj_class.add(
-        ContentType.objects.get(model=WorkType._meta.model_name)
-    )
-    has_broader_term.obj_class.add(
-        ContentType.objects.get(model=WorkType._meta.model_name)
+        subjects=[WorkType],
+        objects=[WorkType],
     )
 
     # EXPRESSION-focussed relations
-    is_realised_in = Property.objects.get_or_create(
+    is_realised_in = create_properties(
         name="is realised in",
         name_reverse="realises",
-    )[0]
-    is_realised_in.subj_class.clear()
-    is_realised_in.obj_class.clear()
-    is_realised_in.subj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_realised_in.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Work],
+        objects=[Expression],
     )
 
-    is_part_of_expression = Property.objects.get_or_create(
+    is_part_of_expression = create_properties(
         name="is part of expression",
         name_reverse="has part",
-    )[0]
-    is_part_of_expression.subj_class.clear()
-    is_part_of_expression.obj_class.clear()
-    is_part_of_expression.subj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
-    )
-    is_part_of_expression.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Expression],
+        objects=[Expression],
     )
 
-    published_in = Property.objects.get_or_create(
+    published_in = create_properties(
         name="is published in",
         name_reverse="is place of publication of",
-    )[0]
-    published_in.subj_class.clear()
-    published_in.obj_class.clear()
-    published_in.subj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Expression],
+        objects=[Place],
     )
-    published_in.obj_class.add(ContentType.objects.get(model=Place._meta.model_name))
 
     # CHARACTER-focussed relations
-    features = Property.objects.get_or_create(
+    features = create_properties(
         name="features",
         name_reverse="is featured in",
-    )[0]
-    features.subj_class.clear()
-    features.obj_class.clear()
-    features.subj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    features.obj_class.add(ContentType.objects.get(model=Character._meta.model_name))
+        subjects=[Work],
+        objects=[Character],
+    )
 
-    groups = Property.objects.get_or_create(
+    groups = create_properties(
         name="groups",
         name_reverse="is grouped in",
-    )[0]
-    groups.subj_class.clear()
-    groups.obj_class.clear()
-    groups.subj_class.add(ContentType.objects.get(model=MetaCharacter._meta.model_name))
-    groups.obj_class.add(ContentType.objects.get(model=Character._meta.model_name))
+        subjects=[MetaCharacter],
+        objects=[Character],
+    )
 
-    place_inspires = Property.objects.get_or_create(
+    place_inspires = create_properties(
         name="inspires",
         name_reverse="is inspired by",
-    )[0]
-    place_inspires.subj_class.clear()
-    place_inspires.obj_class.clear()
-    place_inspires.subj_class.add(ContentType.objects.get(model=Place._meta.model_name))
-    place_inspires.obj_class.add(ContentType.objects.get(model=Place._meta.model_name))
+        subjects=[Place],
+        objects=[Place],
+    )
 
     # ARCHIVE-focussed relations
-    archive_holds = Property.objects.get_or_create(
+    archive_holds = create_properties(
         name="holds",
         name_reverse="is held in",
-    )[0]
-    archive_holds.subj_class.clear()
-    archive_holds.obj_class.clear()
-    archive_holds.subj_class.add(
-        ContentType.objects.get(model=Archive._meta.model_name)
-    )
-    archive_holds.obj_class.add(
-        ContentType.objects.get(model=PhysicalObject._meta.model_name)
+        subjects=[Archive],
+        objects=[PhysicalObject],
     )
 
-    relates_to = Property.objects.get_or_create(
+    relates_to = create_properties(
         name="relates to",
         name_reverse="is connected with",
-    )[0]
-    relates_to.subj_class.clear()
-    relates_to.obj_class.clear()
-    relates_to.subj_class.add(
-        ContentType.objects.get(model=PhysicalObject._meta.model_name)
+        subjects=[PhysicalObject],
+        objects=[Work],
     )
-    relates_to.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
 
     # INTERPRETATEM-focussed relations
-    has_source = Property.objects.get_or_create(
+    has_source = create_properties(
         name="has source",
         name_reverse="is source for",
-    )[0]
-    has_source.subj_class.clear()
-    has_source.obj_class.clear()
-    has_source.subj_class.add(
-        ContentType.objects.get(model=Interpretatem._meta.model_name)
+        subjects=[Interpretatem],
+        objects=[Work],
     )
-    has_source.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
 
-    interprets = Property.objects.get_or_create(
+    interprets = create_properties(
         name="interprets",
         name_reverse="is interpreted by",
-    )[0]
-    interprets.subj_class.clear()
-    interprets.obj_class.clear()
-    interprets.subj_class.add(
-        ContentType.objects.get(model=Interpretatem._meta.model_name)
+        subjects=[Interpretatem],
+        objects=[Work],
     )
-    interprets.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
 
     # CONCEPT-focussed relations
-    is_based_on = Property.objects.get_or_create(
+    is_based_on = create_properties(
         name="is based on",
         name_reverse="is base for",
-    )[0]
-    is_based_on.subj_class.clear()
-    is_based_on.obj_class.clear()
-    is_based_on.subj_class.add(
-        ContentType.objects.get(model=Character._meta.model_name)
+        subjects=[Character],
+        objects=[Person, Topic],
     )
-    is_based_on.obj_class.add(ContentType.objects.get(model=Person._meta.model_name))
-    is_based_on.obj_class.add(ContentType.objects.get(model=Topic._meta.model_name))
 
-    is_about = Property.objects.get_or_create(
+    is_about = create_properties(
         name="is about topic",
         name_reverse="is topic of",
-    )[0]
-    is_about.subj_class.clear()
-    is_about.obj_class.clear()
-    is_about.subj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_about.subj_class.add(
-        ContentType.objects.get(model=Interpretatem._meta.model_name)
+        subjects=[Work, Interpretatem],
+        objects=[Topic],
     )
-    is_about.obj_class.add(ContentType.objects.get(model=Topic._meta.model_name))
 
-    applies_research_perspective = Property.objects.get_or_create(
+    applies_research_perspective = create_properties(
         name="applies research perspective",
         name_reverse="is research perspective of",
-    )[0]
-    applies_research_perspective.subj_class.clear()
-    applies_research_perspective.obj_class.clear()
-    applies_research_perspective.subj_class.add(
-        ContentType.objects.get(model=Work._meta.model_name)
-    )
-    applies_research_perspective.subj_class.add(
-        ContentType.objects.get(model=Interpretatem._meta.model_name)
-    )
-    applies_research_perspective.obj_class.add(
-        ContentType.objects.get(model=ResearchPerspective._meta.model_name)
+        subjects=[Work, Interpretatem],
+        objects=[ResearchPerspective],
     )
 
     # ORGANISATION-focussed relations
-    has_residence = Property.objects.get_or_create(
+    has_residence = create_properties(
         name="has current or former residence",
         name_reverse="is current or former residence of",
-    )[0]
-    has_residence.subj_class.clear()
-    has_residence.obj_class.clear()
-    has_residence.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
+        subjects=[Organisation],
+        objects=[Place],
     )
-    has_residence.obj_class.add(ContentType.objects.get(model=Place._meta.model_name))
 
-    is_publisher = Property.objects.get_or_create(
+    is_publisher = create_properties(
         name="is publisher of",
         name_reverse="has publisher",
-    )[0]
-    is_publisher.subj_class.clear()
-    is_publisher.obj_class.clear()
-    is_publisher.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_publisher.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Organisation],
+        objects=[Expression],
     )
 
     # ACTOR roles in relation to Work, Expression
     # Beitragende:r (generisch)
-    is_contributor = Property.objects.get_or_create(
+    is_contributor = create_properties(
         name="is contributor to",
         name_reverse="has contributor",
-    )[0]
-    is_contributor.subj_class.clear()
-    is_contributor.obj_class.clear()
-    is_contributor.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_contributor.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_contributor.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_contributor.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Autor*in
-    is_author = Property.objects.get_or_create(
+    is_author = create_properties(
         name="is author of",
         name_reverse="has author",
-    )[0]
-    is_author.subj_class.clear()
-    is_author.obj_class.clear()
-    is_author.subj_class.add(ContentType.objects.get(model=Person._meta.model_name))
-    is_author.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
-    is_author.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_author.obj_class.add(ContentType.objects.get(model=Expression._meta.model_name))
 
     # Fotograf:in
-    is_photographer = Property.objects.get_or_create(
+    is_photographer = create_properties(
         name="is photographer of/for",
         name_reverse="has photographer",
-    )[0]
-    is_photographer.subj_class.clear()
-    is_photographer.obj_class.clear()
-    is_photographer.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_photographer.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_photographer.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_photographer.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Organisation],
+        objects=[Work, Expression],
     )
 
     # Illustrator:in
-    is_illustrator = Property.objects.get_or_create(
+    is_illustrator = create_properties(
         name="is illustrator of/for",
         name_reverse="has illustrator",
-    )[0]
-    is_illustrator.subj_class.clear()
-    is_illustrator.obj_class.clear()
-    is_illustrator.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_illustrator.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_illustrator.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_illustrator.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Organisation],
+        objects=[Work, Expression],
     )
 
     # Übersetzer:in
-    is_translator = Property.objects.get_or_create(
+    is_translator = create_properties(
         name="is translator of",
         name_reverse="has translator",
-    )[0]
-    is_translator.subj_class.clear()
-    is_translator.obj_class.clear()
-    is_translator.subj_class.add(ContentType.objects.get(model=Person._meta.model_name))
-    is_translator.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_translator.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_translator.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Herausgeber*in
-    is_editor = Property.objects.get_or_create(
+    is_editor = create_properties(
         name="is editor of",
         name_reverse="has editor",
-    )[0]
-    is_editor.subj_class.clear()
-    is_editor.obj_class.clear()
-    is_editor.subj_class.add(ContentType.objects.get(model=Person._meta.model_name))
-    is_editor.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
-    is_editor.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_editor.obj_class.add(ContentType.objects.get(model=Expression._meta.model_name))
 
     # Regisseur*in
-    is_director = Property.objects.get_or_create(
+    is_director = create_properties(
         name="is director of",
         name_reverse="has director",
-    )[0]
-    is_director.subj_class.clear()
-    is_director.obj_class.clear()
-    is_director.subj_class.add(ContentType.objects.get(model=Person._meta.model_name))
-    is_director.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_director.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_director.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Dramaturg*in
-    is_dramaturg = Property.objects.get_or_create(
+    is_dramaturg = create_properties(
         name="is dramaturg for",
         name_reverse="has dramaturg",
-    )[0]
-    is_dramaturg.subj_class.clear()
-    is_dramaturg.obj_class.clear()
-    is_dramaturg.subj_class.add(ContentType.objects.get(model=Person._meta.model_name))
-    is_dramaturg.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_dramaturg.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_dramaturg.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Komponist*in
-    is_composer = Property.objects.get_or_create(
+    is_composer = create_properties(
         name="is composer of",
         name_reverse="has composer",
-    )[0]
-    is_composer.subj_class.clear()
-    is_composer.obj_class.clear()
-    is_composer.subj_class.add(ContentType.objects.get(model=Person._meta.model_name))
-    is_composer.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_composer.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_composer.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Musiker*in
-    is_session_musician = Property.objects.get_or_create(
+    is_session_musician = create_properties(
         name="is session musician on",
         name_reverse="has session musician",
-    )[0]
-    is_session_musician.subj_class.clear()
-    is_session_musician.obj_class.clear()
-    is_session_musician.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_session_musician.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_session_musician.obj_class.add(
-        ContentType.objects.get(model=Work._meta.model_name)
-    )
-    is_session_musician.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Bühnenbildner*in (Kontext: Theater; vgl. Szenenbildner*in)
-    is_stage_designer = Property.objects.get_or_create(
+    is_stage_designer = create_properties(
         name="is stage designer for",
         name_reverse="has stage designer",
-    )[0]
-    is_stage_designer.subj_class.clear()
-    is_stage_designer.obj_class.clear()
-    is_stage_designer.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_stage_designer.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_stage_designer.obj_class.add(
-        ContentType.objects.get(model=Work._meta.model_name)
-    )
-    is_stage_designer.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Kostümbildner*in
-    is_costume_designer = Property.objects.get_or_create(
+    is_costume_designer = create_properties(
         name="is costume designer for",
         name_reverse="has costume designer",
-    )[0]
-    is_costume_designer.subj_class.clear()
-    is_costume_designer.obj_class.clear()
-    is_costume_designer.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_costume_designer.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_costume_designer.obj_class.add(
-        ContentType.objects.get(model=Work._meta.model_name)
-    )
-    is_costume_designer.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Maskenbildner*in
-    is_makeup_artist = Property.objects.get_or_create(
+    is_makeup_artist = create_properties(
         name="is make-up artist on",
         name_reverse="has make-up artist",
-    )[0]
-    is_makeup_artist.subj_class.clear()
-    is_makeup_artist.obj_class.clear()
-    is_makeup_artist.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_makeup_artist.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_makeup_artist.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_makeup_artist.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Organisation],
+        objects=[Work, Expression],
     )
 
     # Tonmeister*in
-    is_sound_engineer = Property.objects.get_or_create(
+    is_sound_engineer = create_properties(
         name="is sound engineer of",
         name_reverse="has sound engineer",
-    )[0]
-    is_sound_engineer.subj_class.clear()
-    is_sound_engineer.obj_class.clear()
-    is_sound_engineer.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_sound_engineer.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_sound_engineer.obj_class.add(
-        ContentType.objects.get(model=Work._meta.model_name)
-    )
-    is_sound_engineer.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Cutter*in
-    is_film_editor = Property.objects.get_or_create(
+    is_film_editor = create_properties(
         name="is film editor of",
         name_reverse="has film editor",
-    )[0]
-    is_film_editor.subj_class.clear()
-    is_film_editor.obj_class.clear()
-    is_film_editor.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_film_editor.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_film_editor.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_film_editor.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Schauspieler*in
-    is_actor = Property.objects.get_or_create(
+    is_actor = create_properties(
         name="is actor in",
         name_reverse="has actor",
-    )[0]
-    is_actor.subj_class.clear()
-    is_actor.obj_class.clear()
-    is_actor.subj_class.add(ContentType.objects.get(model=Person._meta.model_name))
-    is_actor.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
-    is_actor.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_actor.obj_class.add(ContentType.objects.get(model=Expression._meta.model_name))
 
     # Sprecher*in
-    is_narrator = Property.objects.get_or_create(
+    is_narrator = create_properties(
         name="is narrator of",
         name_reverse="has narrator",
-    )[0]
-    is_narrator.subj_class.clear()
-    is_narrator.obj_class.clear()
-    is_narrator.subj_class.add(ContentType.objects.get(model=Person._meta.model_name))
-    is_narrator.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_narrator.obj_class.add(ContentType.objects.get(model=Work._meta.model_name))
-    is_narrator.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Kameramensch
-    is_cinematographer = Property.objects.get_or_create(
+    is_cinematographer = create_properties(
         name="is cinematographer of",
         name_reverse="has cinematographer",
-    )[0]
-    is_cinematographer.subj_class.clear()
-    is_cinematographer.obj_class.clear()
-    is_cinematographer.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_cinematographer.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_cinematographer.obj_class.add(
-        ContentType.objects.get(model=Work._meta.model_name)
-    )
-    is_cinematographer.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Produktionsleiter*in
-    is_head_of_production = Property.objects.get_or_create(
+    is_head_of_production = create_properties(
         name="is head of production of",
         name_reverse="has head of production",
-    )[0]
-    is_head_of_production.subj_class.clear()
-    is_head_of_production.obj_class.clear()
-    is_head_of_production.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_head_of_production.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_head_of_production.obj_class.add(
-        ContentType.objects.get(model=Work._meta.model_name)
-    )
-    is_head_of_production.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
 
     # Szenenbilder*in (Kontext: Film; vgl. Bühnenbildner*in)
-    is_production_designer = Property.objects.get_or_create(
+    is_production_designer = create_properties(
         name="is production designer of",
         name_reverse="has production designer",
-    )[0]
-    is_production_designer.subj_class.clear()
-    is_production_designer.obj_class.clear()
-    is_production_designer.subj_class.add(
-        ContentType.objects.get(model=Person._meta.model_name)
-    )
-    is_production_designer.subj_class.add(
-        ContentType.objects.get(model=Organisation._meta.model_name)
-    )
-    is_production_designer.obj_class.add(
-        ContentType.objects.get(model=Work._meta.model_name)
-    )
-    is_production_designer.obj_class.add(
-        ContentType.objects.get(model=Expression._meta.model_name)
+        subjects=[Person, Organisation],
+        objects=[Work, Expression],
     )
