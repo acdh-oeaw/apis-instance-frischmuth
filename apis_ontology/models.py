@@ -780,6 +780,26 @@ class Interpretatem(DescriptionMixin, StatusMixin, AbstractEntity):
         ordering = ["name"]
 
 
+def create_properties(name: str, name_reverse: str, subjects: list, objects: list):
+    """
+    Helper function for creating new Properties.
+    """
+    prop, created = Property.objects.get_or_create(
+        name=name,
+        name_reverse=name_reverse,
+    )
+
+    prop.subj_class.clear()
+    prop.obj_class.clear()
+
+    for entity in subjects:
+        prop.subj_class.add(ContentType.objects.get(model=entity._meta.model_name))
+    for entity in objects:
+        prop.obj_class.add(ContentType.objects.get(model=entity._meta.model_name))
+
+    return prop, created
+
+
 def update_properties():
     """
     Function for temporary storage of destructive changes to Property
