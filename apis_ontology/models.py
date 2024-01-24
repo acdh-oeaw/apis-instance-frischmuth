@@ -843,9 +843,6 @@ def construct_properties():
     - a relationship can connect more than two entities, i.e. can have more
     than just one Subject (subj_class) or just one Object (obj_class).
     """
-    from apis_core.apis_relations.models import Property
-    from django.contrib.auth.models import User
-
     update_properties()
 
     # WORK-focussed relations
