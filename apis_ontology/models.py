@@ -825,7 +825,13 @@ def update_properties():
     Don't forget to also always update a Property's "name" field values
     in construct_properties() when they are modified here.
     """
-    pass
+
+    delete_is_part_of_work = Property.objects.filter(name="is part of work").delete()
+
+    # rename name field of Expression/Expression relation
+    for prop in Property.objects.filter(name="is part of expression"):
+        prop.name = "is part of"
+        prop.save()
 
 
 def construct_properties():
@@ -875,13 +881,6 @@ def construct_properties():
         objects=[Work],
     )
 
-    is_part_of_work = create_properties(
-        name="is part of work",
-        name_reverse="has part",
-        subjects=[Work],
-        objects=[Work],
-    )
-
     # TYPE-focussed relations
     has_type = create_properties(
         name="has type",
@@ -906,7 +905,7 @@ def construct_properties():
     )
 
     is_part_of_expression = create_properties(
-        name="is part of expression",
+        name="is part of",
         name_reverse="has part",
         subjects=[Expression],
         objects=[Expression],
