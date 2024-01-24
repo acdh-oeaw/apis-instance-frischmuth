@@ -904,7 +904,7 @@ def construct_properties():
     is_part_of_expression = create_properties(
         name="is part of",
         name_reverse="has part",
-        subjects=[Expression],
+        subjects=[Expression, Work],
         objects=[Expression],
     )
 
