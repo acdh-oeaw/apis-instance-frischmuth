@@ -1,8 +1,9 @@
-name: deploy
+name: Deploy Frischmuth app
+
 on:
   push:
     # run deployment only on pushes to specific branches
-    branches: ["frischmuth/deploy"]
+    branches: ["deploy", "frischmuth/deploy"]
   # for triggering deployments manually via button in GitHub interface
   workflow_dispatch:
 
