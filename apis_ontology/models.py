@@ -828,9 +828,13 @@ def update_properties():
 
     delete_is_part_of_work = Property.objects.filter(name="is part of work").delete()
 
-    # rename name field of Expression/Expression relation
-    for prop in Property.objects.filter(name="is part of expression"):
-        prop.name = "is part of"
+    # rename "name" field of Expression/Expression relation
+    # and also rename "name_reverse" field
+    for prop in Property.objects.filter(
+        name__in=["is part of expression", "is part of"]
+    ):
+        prop.name = "expression is part of expression"
+        prop.name_reverse = "expression has part expression"
         prop.save()
 
 
@@ -901,10 +905,17 @@ def construct_properties():
         objects=[Expression],
     )
 
-    is_part_of_expression = create_properties(
-        name="is part of",
-        name_reverse="has part",
-        subjects=[Expression, Work],
+    expression_is_part_of_expression = create_properties(
+        name="expression is part of expression",
+        name_reverse="expression has part expression",
+        subjects=[Expression],
+        objects=[Expression],
+    )
+
+    work_is_part_of_expression = create_properties(
+        name="work is part of expression",
+        name_reverse="expression has part work",
+        subjects=[Work],
         objects=[Expression],
     )
 
