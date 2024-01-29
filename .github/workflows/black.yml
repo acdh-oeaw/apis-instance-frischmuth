@@ -1,0 +1,15 @@
+# Run Black via Poetry on opened, synchronised, reopened pull requests.
+
+name: Run Black code formatter
+
+on:
+  pull_request:
+    paths:
+      - '**.py'
+
+jobs:
+  black:
+    uses: acdh-oeaw/prosnet-workflows/.github/workflows/poetry-black.yml@v0.3.5
+    with:
+      src: "."
+      options: "--check --diff --color"
