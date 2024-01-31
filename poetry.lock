@@ -16,22 +16,25 @@ six = "*"
 
 [[package]]
 name = "apis-acdhch-default-settings"
-version = "0.1.24"
+version = "0.1.23"
 description = "Default settings for APIS instances at the ACDH-CH"
 optional = false
-python-versions = ">=3.11,<4.0"
-files = [
-    {file = "apis_acdhch_default_settings-0.1.24-py3-none-any.whl", hash = "sha256:1aa4c6ce4c78481c697e837bdcde8d1f177f53c900600734bb2f95b2a9d9ea5e"},
-    {file = "apis_acdhch_default_settings-0.1.24.tar.gz", hash = "sha256:13573db308736659c79f6820533e9bb8b483fdb00f718dcd939179dd2623cd46"},
-]
+python-versions = "^3.11"
+files = []
+develop = false
 
 [package.dependencies]
-dj-database-url = ">=2.0.0,<3.0.0"
-django-allow-cidr = ">=0.6.0,<0.7.0"
-django-auth-ldap = ">=4.6.0,<5.0.0"
-django-csp = ">=3.7,<4.0"
-sentry-sdk = ">=1.26.0,<2.0.0"
-whitenoise = ">=5.2.0,<6.0.0"
+dj-database-url = "^2.0.0"
+django-allow-cidr = "^0.6.0"
+django-csp = "^3.7"
+sentry-sdk = "^1.26.0"
+whitenoise = "^5.2.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/acdh-oeaw/apis-acdhch-default-settings"
+reference = "v0.1.23"
+resolved_reference = "1376a101e82fa9dc1144c6bcc6f6fffb19378dbd"
 
 [[package]]
 name = "apis-core"
@@ -441,21 +444,6 @@ files = [
 [package.dependencies]
 Django = ">=2.2"
 packaging = "*"
-
-[[package]]
-name = "django-auth-ldap"
-version = "4.6.0"
-description = "Django LDAP authentication backend"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "django-auth-ldap-4.6.0.tar.gz", hash = "sha256:9ae2bf87f9b6367b6cfd94a0451896cbc728e5400ed81cbfbd58ce743c0909a2"},
-    {file = "django_auth_ldap-4.6.0-py3-none-any.whl", hash = "sha256:4e82ded9292dc6ac7a75784d81b95174b72ca5e650a76e11317e3b68008e56d8"},
-]
-
-[package.dependencies]
-Django = ">=3.2"
-python-ldap = ">=3.1"
 
 [[package]]
 name = "django-autocomplete-light"
@@ -1123,31 +1111,6 @@ pool = ["psycopg-pool"]
 test = ["anyio (>=3.6.2,<4.0)", "mypy (>=1.4.1)", "pproxy (>=2.7)", "pytest (>=6.2.5)", "pytest-cov (>=3.0)", "pytest-randomly (>=3.5)"]
 
 [[package]]
-name = "pyasn1"
-version = "0.5.1"
-description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
-optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,>=2.7"
-files = [
-    {file = "pyasn1-0.5.1-py2.py3-none-any.whl", hash = "sha256:4439847c58d40b1d0a573d07e3856e95333f1976294494c325775aeca506eb58"},
-    {file = "pyasn1-0.5.1.tar.gz", hash = "sha256:6d391a96e59b23130a5cfa74d6fd7f388dbbe26cc8f1edf39fdddf08d9d6676c"},
-]
-
-[[package]]
-name = "pyasn1-modules"
-version = "0.3.0"
-description = "A collection of ASN.1-based protocols modules"
-optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,>=2.7"
-files = [
-    {file = "pyasn1_modules-0.3.0-py2.py3-none-any.whl", hash = "sha256:d3ccd6ed470d9ffbc716be08bd90efbd44d0734bc9303818f7336070984a162d"},
-    {file = "pyasn1_modules-0.3.0.tar.gz", hash = "sha256:5bd01446b736eb9d31512a30d46c1ac3395d676c6f3cafa4c03eb54b9925631c"},
-]
-
-[package.dependencies]
-pyasn1 = ">=0.4.6,<0.6.0"
-
-[[package]]
 name = "pylint"
 version = "3.0.3"
 description = "python code static checker"
@@ -1201,20 +1164,6 @@ files = [
 
 [package.dependencies]
 six = ">=1.5"
-
-[[package]]
-name = "python-ldap"
-version = "3.4.4"
-description = "Python modules for implementing LDAP clients"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "python-ldap-3.4.4.tar.gz", hash = "sha256:7edb0accec4e037797705f3a05cbf36a9fde50d08c8f67f2aef99a2628fab828"},
-]
-
-[package.dependencies]
-pyasn1 = ">=0.3.7"
-pyasn1_modules = ">=0.1.5"
 
 [[package]]
 name = "pytz"
@@ -1857,4 +1806,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "245defc7ca3bcfb5515b68ddfe9684506f360cf542d5eb229d13900933053740"
+content-hash = "d475718eab64214b9831245a83eea735191a9c93e1b923fc642670fd03cb7031"
