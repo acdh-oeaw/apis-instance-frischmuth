@@ -271,7 +271,11 @@ class Work(WorkMixin, StatusMixin, AbstractEntity):
         )  # a.k.a. autodiegetic
 
     siglum = models.CharField(
-        max_length=6, blank=True, null=True, verbose_name=_("Sigle")
+        max_length=6,
+        unique=True,
+        blank=True,
+        null=True,
+        verbose_name=_("Sigle"),
     )
 
     summary = models.TextField(
