@@ -441,6 +441,14 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         help_text=_("Eingabe muss im Format YYYY-MM-DD erfolgen"),
     )
 
+    issue = models.CharField(
+        max_length=30,
+        blank=True,
+        null=True,
+        verbose_name=_("(Zeitungs)Ausgabe"),
+        help_text=_("Nummer/Kennung einer Ausgabe eines periodischen Mediums"),
+    )
+
     page_count = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
