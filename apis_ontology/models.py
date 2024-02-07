@@ -434,7 +434,7 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         FIRST_EDITION = "first_edition", _("Erstausgabe")
         REFERENCE_EDITION = "reference_edition", _("Referenzausgabe")
 
-    publication_date = models.DateField(
+    publication_date_iso = models.DateField(
         blank=True,
         null=True,
         verbose_name=_("Erscheinungsdatum"),
