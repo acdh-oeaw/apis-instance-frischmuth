@@ -468,6 +468,7 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         blank=True,
         null=True,
         verbose_name=_("Forschungsrelevante Seiten"),
+        help_text=_('Eingabe muss im Format "X-Y" erfolgen, z.B. 5-12'),
     )
 
     edition_type = MultiSelectField(
