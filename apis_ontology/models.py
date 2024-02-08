@@ -437,7 +437,8 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     publication_date_iso = models.DateField(
         blank=True,
         null=True,
-        verbose_name=_("Erscheinungsdatum im ISO-Format"),
+        verbose_name=_("Erscheinungsdatum (ISO 8601)"),
+        help_text=_("Format YYYY-MM-DD"),
         editable=False,
     )
 
