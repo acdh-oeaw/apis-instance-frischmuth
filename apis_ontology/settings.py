@@ -244,6 +244,7 @@ APIS_ENTITIES = {
             "progress_status",
             "description",
             "publication_date_iso",
+            "publication_date",
             "issue",
             "edition_type",
             "page_count",
@@ -262,6 +263,7 @@ APIS_ENTITIES = {
             "issue",
             "description",
             "page_count",
+            "publication_date",
         ],
         "list_filters": {
             "name": {"method": "name_label_filter"},

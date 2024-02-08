@@ -441,6 +441,13 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         editable=False,
     )
 
+    publication_date = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name=_("Erscheinungsdatum (freie Eingabe)"),
+        help_text=_("Eingabe sollte im Format YYYY-MM-DD erfolgen"),
+    )
+
     issue = models.CharField(
         max_length=30,
         blank=True,
