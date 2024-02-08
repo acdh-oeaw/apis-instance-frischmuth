@@ -97,8 +97,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
+# Internationalization / Globalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
+# https://docs.djangoproject.com/en/4.2/ref/settings/#globalization-i18n-l10n
 
 LANGUAGE_CODE = "de"
 
@@ -108,6 +109,31 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Date formats allowed in date fields in Django forms
+# https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+DATE_INPUT_FORMATS = [
+    # %m, %d are zero-padded
+    "%Y-%m-%d",  # 1996-02-29
+    "%Y-%m",  # 2015-10
+    "%Y",  # 1999
+    "%m/%Y",  # 2/2002
+    "%m.%Y",  # 2.2002
+    # formats only needed for forms, not for dateparser with DMY language set
+    "%d.%m.%Y",  # 9.7.1982, 18.4.1963
+    "%d/%m/%Y",  # 9/7/1982, 18/4/1963
+    "%d-%m-%Y",  # 23-12-1980
+]
+
+# dateparser settings used for handling incomplete/ambiguous dates
+# https://dateparser.readthedocs.io/en/latest/settings.html
+DATEPARSER_SETTINGS = {
+    "PREFER_DAY_OF_MONTH": "first",
+    "PREFER_MONTH_OF_YEAR": "first",
+    "PREFER_DATES_FROM": "future",
+    "TIMEZONE": TIME_ZONE,
+    "REQUIRE_PARTS": ["year"],
+    "STRICT_PARSING": True,
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
