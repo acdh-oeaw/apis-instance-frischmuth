@@ -1,6 +1,8 @@
 import reversion
 from apis_core.apis_entities.models import AbstractEntity
 from apis_core.apis_relations.models import Property
+from dateparser import parse
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -496,6 +498,40 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         verbose_name = _("werksexpression")
         verbose_name_plural = _("werksexpressionen")
         ordering = ["title", "subtitle"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.cached_publication_date = self.publication_date
+
+    def save(self, *args, **kwargs):
+        if self.publication_date != self.cached_publication_date:
+            # free-form publication date was changed
+            if not self.publication_date:
+                # publication date field was emptied
+                self.publication_date_iso = self.publication_date
+            else:
+                parsed_date = parse(
+                    self.publication_date,
+                    languages=[settings.LANGUAGE_CODE],
+                    date_formats=settings.DATE_INPUT_FORMATS,
+                    settings=settings.DATEPARSER_SETTINGS,
+                )
+                if not parsed_date:
+                    # "log" invalid publication date updates in field string
+                    self.publication_date = (
+                        f"{self.publication_date} (unsupported date)"
+                    )
+                # update ISO date either way: if publication_date is a
+                # recognisable date but wasn't parseable (formatting rules),
+                # we don't want to keep 2 out-of-sync dates around
+                self.publication_date_iso = parsed_date
+
+            if "update_fields" in kwargs and (
+                include_fields := {"publication_date", "publication_date_iso"}
+            ).intersection(update_fields := kwargs.get("update_fields")):
+                kwargs["update_fields"] = set(update_fields) | include_fields
+
+        super().save(*args, **kwargs)
 
 
 @reversion.register(follow=["rootobject_ptr"])
