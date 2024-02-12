@@ -255,6 +255,8 @@ APIS_ENTITIES = {
             "title",
             "subtitle",
             "edition_type",
+            "publication_date_iso",
+            "publication_date",
             "progress_status",
         ],
         "additional_cols": [
@@ -262,7 +264,6 @@ APIS_ENTITIES = {
             "issue",
             "description",
             "page_count",
-            "publication_date_iso",
         ],
         "list_filters": {
             "name": {"method": "name_label_filter"},
