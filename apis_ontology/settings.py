@@ -173,7 +173,6 @@ APIS_DETAIL_VIEWS_ALLOWED = False  # toggle for making detail views public
 APIS_ENTITIES = {
     "Work": {
         "search": [
-            "name",
             "title",
             "subtitle",
             "siglum",
@@ -185,7 +184,6 @@ APIS_ENTITIES = {
             "data_source",
         ],
         "form_order": [
-            "name",
             "title",
             "subtitle",
             "siglum",
@@ -206,7 +204,6 @@ APIS_ENTITIES = {
             "narrative_voice",
         ],
         "table_fields": [
-            "name",
             "title",
             "subtitle",
             "siglum",
@@ -230,7 +227,6 @@ APIS_ENTITIES = {
             "narrative_voice",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "title": {"method": "name_label_filter"},
             "subtitle": {"method": "name_label_filter"},
             "siglum": {"method": "name_label_filter"},
@@ -254,7 +250,6 @@ APIS_ENTITIES = {
     },
     "Expression": {
         "search": [
-            "name",
             "title",
             "subtitle",
             "edition_type",
@@ -265,7 +260,6 @@ APIS_ENTITIES = {
             "data_source",
         ],
         "form_order": [
-            "name",
             "title",
             "subtitle",
             "progress_status",
@@ -277,7 +271,6 @@ APIS_ENTITIES = {
             "relevant_pages",
         ],
         "table_fields": [
-            "name",
             "title",
             "subtitle",
             "edition_type",
@@ -292,7 +285,6 @@ APIS_ENTITIES = {
             "page_count",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "title": {"method": "name_label_filter"},
             "subtitle": {"method": "name_label_filter"},
             "edition_type": {},
@@ -305,7 +297,6 @@ APIS_ENTITIES = {
     },
     "WorkType": {
         "search": [
-            "name",
             "name_plural",
             "alternative_name",
             "description",
@@ -313,14 +304,12 @@ APIS_ENTITIES = {
             "data_source",
         ],
         "form_order": [
-            "name",
             "name_plural",
             "alternative_name",
             "description",
             "progress_status",
         ],
         "table_fields": [
-            "name",
             "name_plural",
             "alternative_name",
         ],
@@ -330,7 +319,6 @@ APIS_ENTITIES = {
             "data_source",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "name_plural": {"method": "name_label_filter"},
             "alternative_name": {"method": "name_label_filter"},
             "description": {"method": "name_label_filter"},
@@ -340,25 +328,20 @@ APIS_ENTITIES = {
     },
     "PhysicalObject": {
         "search": [
-            "name",
             "vorlass_doc_reference",
             "description",
             "data_source",
         ],
         "form_order": [
-            "name",
             "description",
         ],
-        "table_fields": [
-            "name",
-        ],
+        "table_fields": [],
         "additional_cols": [
             "vorlass_doc_reference",
             "data_source",
             "description",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "vorlass_doc_reference": {},
             "description": {"method": "name_label_filter"},
             "data_source": {},
@@ -366,7 +349,6 @@ APIS_ENTITIES = {
     },
     "Person": {
         "search": [
-            "name",
             "first_name",
             "last_name",
             "alternative_name",
@@ -375,7 +357,6 @@ APIS_ENTITIES = {
             "data_source",
         ],
         "form_order": [
-            "name",
             "first_name",
             "last_name",
             "alternative_name",
@@ -383,7 +364,6 @@ APIS_ENTITIES = {
             "description",
         ],
         "table_fields": [
-            "name",
             "last_name",
             "first_name",
             "alternative_name",
@@ -394,7 +374,6 @@ APIS_ENTITIES = {
             "description",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "first_name": {"method": "name_label_filter"},
             "last_name": {"method": "name_label_filter"},
             "alternative_name": {"method": "name_label_filter"},
@@ -405,7 +384,6 @@ APIS_ENTITIES = {
     },
     "Organisation": {
         "search": [
-            "name",
             "alternative_name",
             "progress_status",
             "description",
@@ -413,14 +391,12 @@ APIS_ENTITIES = {
             "data_source",
         ],
         "form_order": [
-            "name",
             "alternative_name",
             "progress_status",
             "description",
             "website",
         ],
         "table_fields": [
-            "name",
             "alternative_name",
             "progress_status",
         ],
@@ -430,7 +406,6 @@ APIS_ENTITIES = {
             "website",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "alternative_name": {"method": "name_label_filter"},
             "progress_status": {},
             "description": {"method": "name_label_filter"},
@@ -440,7 +415,6 @@ APIS_ENTITIES = {
     },
     "Character": {
         "search": [
-            "name",
             "first_name",
             "last_name",
             "alternative_name",
@@ -451,7 +425,6 @@ APIS_ENTITIES = {
             "data_source",
         ],
         "form_order": [
-            "name",
             "first_name",
             "last_name",
             "alternative_name",
@@ -461,7 +434,6 @@ APIS_ENTITIES = {
             "description",
         ],
         "table_fields": [
-            "name",
             "last_name",
             "first_name",
             "relevancy",
@@ -474,7 +446,6 @@ APIS_ENTITIES = {
             "description",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "first_name": {"method": "name_label_filter"},
             "last_name": {"method": "name_label_filter"},
             "alternative_name": {"method": "name_label_filter"},
@@ -487,18 +458,15 @@ APIS_ENTITIES = {
     },
     "MetaCharacter": {
         "search": [
-            "name",
             "description",
             "progress_status",
             "data_source",
         ],
         "form_order": [
-            "name",
             "description",
             "progress_status",
         ],
         "table_fields": [
-            "name",
             "progress_status",
         ],
         "additional_cols": [
@@ -506,7 +474,6 @@ APIS_ENTITIES = {
             "description",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "description": {"method": "name_label_filter"},
             "progress_status": {},
             "data_source": {},
@@ -514,20 +481,17 @@ APIS_ENTITIES = {
     },
     "ResearchPerspective": {
         "search": [
-            "name",
             "alternative_name",
             "description",
             "progress_status",
             "data_source",
         ],
         "form_order": [
-            "name",
             "alternative_name",
             "description",
             "progress_status",
         ],
         "table_fields": [
-            "name",
             "alternative_name",
             "progress_status",
         ],
@@ -536,7 +500,6 @@ APIS_ENTITIES = {
             "description",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "alternative_name": {"method": "name_label_filter"},
             "description": {"method": "name_label_filter"},
             "progress_status": {},
@@ -545,20 +508,17 @@ APIS_ENTITIES = {
     },
     "Topic": {
         "search": [
-            "name",
             "alternative_name",
             "description",
             "progress_status",
             "data_source",
         ],
         "form_order": [
-            "name",
             "alternative_name",
             "description",
             "progress_status",
         ],
         "table_fields": [
-            "name",
             "alternative_name",
             "progress_status",
         ],
@@ -567,7 +527,6 @@ APIS_ENTITIES = {
             "description",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "alternative_name": {"method": "name_label_filter"},
             "description": {"method": "name_label_filter"},
             "progress_status": {},
@@ -576,7 +535,6 @@ APIS_ENTITIES = {
     },
     "Place": {
         "search": [
-            "name",
             "alternative_name",
             "progress_status",
             "description",
@@ -585,7 +543,6 @@ APIS_ENTITIES = {
             "data_source",
         ],
         "form_order": [
-            "name",
             "alternative_name",
             "progress_status",
             "description",
@@ -593,7 +550,6 @@ APIS_ENTITIES = {
             "longitude",
         ],
         "table_fields": [
-            "name",
             "alternative_name",
             "progress_status",
         ],
@@ -604,7 +560,6 @@ APIS_ENTITIES = {
             "longitude",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "alternative_name": {"method": "name_label_filter"},
             "progress_status": {},
             "description": {"method": "name_label_filter"},
@@ -615,18 +570,15 @@ APIS_ENTITIES = {
     },
     "Interpretatem": {
         "search": [
-            "name",
             "description",
             "progress_status",
             "data_source",
         ],
         "form_order": [
-            "name",
             "description",
             "progress_status",
         ],
         "table_fields": [
-            "name",
             "progress_status",
         ],
         "additional_cols": [
@@ -634,7 +586,6 @@ APIS_ENTITIES = {
             "description",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "description": {"method": "name_label_filter"},
             "progress_status": {},
             "data_source": {},
@@ -642,20 +593,17 @@ APIS_ENTITIES = {
     },
     "Archive": {
         "search": [
-            "name",
             "description",
             "location",
             "website",
             "data_source",
         ],
         "form_order": [
-            "name",
             "description",
             "location",
             "website",
         ],
         "table_fields": [
-            "name",
             "location",
         ],
         "additional_cols": [
@@ -664,7 +612,6 @@ APIS_ENTITIES = {
             "description",
         ],
         "list_filters": {
-            "name": {"method": "name_label_filter"},
             "description": {"method": "name_label_filter"},
             "location": {"method": "name_label_filter"},
             "website": {},
