@@ -397,7 +397,6 @@ class Work(WorkMixin, StatusMixin, AbstractEntity):
     class Meta:
         verbose_name = _("werk")
         verbose_name_plural = _("werke")
-        ordering = ["title", "subtitle", "-siglum"]
 
 
 @reversion.register(follow=["rootobject_ptr"])
@@ -422,7 +421,6 @@ class WorkType(AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEnti
     class Meta:
         verbose_name = _("werktyp")
         verbose_name_plural = _("werktypen")
-        ordering = ["name", "name_plural", "alternative_name"]
 
 
 @reversion.register(follow=["rootobject_ptr"])
@@ -497,7 +495,6 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     class Meta:
         verbose_name = _("werksexpression")
         verbose_name_plural = _("werksexpressionen")
-        ordering = ["title", "subtitle"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -623,7 +620,6 @@ class Person(HumanBeingMixin, DescriptionMixin, StatusMixin, AbstractEntity):
 
     class Meta:
         verbose_name_plural = _("personen")
-        ordering = ["last_name", "first_name", "name"]
 
 
 @reversion.register(follow=["rootobject_ptr"])
@@ -654,7 +650,6 @@ class Organisation(AlternativeNameMixin, DescriptionMixin, StatusMixin, Abstract
     class Meta:
         verbose_name = _("körperschaft")
         verbose_name_plural = _("körperschaften")
-        ordering = ["name"]
 
 
 @reversion.register(follow=["rootobject_ptr"])
@@ -707,7 +702,6 @@ class Character(HumanBeingMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     class Meta:
         verbose_name = _("figur")
         verbose_name_plural = _("figuren")
-        ordering = ["name", "-relevancy"]
 
 
 @reversion.register(follow=["rootobject_ptr"])
@@ -733,7 +727,6 @@ class MetaCharacter(DescriptionMixin, StatusMixin, AbstractEntity):
     class Meta:
         verbose_name = _("metafigur")
         verbose_name_plural = _("metafiguren")
-        ordering = ["name"]
 
 
 @reversion.register(follow=["rootobject_ptr"])
@@ -768,7 +761,6 @@ class Place(AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity)
     class Meta:
         verbose_name = _("ort")
         verbose_name_plural = _("orte")
-        ordering = ["name"]
 
 
 @reversion.register(follow=["rootobject_ptr"])
@@ -792,7 +784,6 @@ class ResearchPerspective(
     class Meta:
         verbose_name = _("forschungshinsicht")
         verbose_name_plural = _("forschungshinsichten")
-        ordering = ["name"]
 
 
 @reversion.register(follow=["rootobject_ptr"])
@@ -814,7 +805,6 @@ class Topic(AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity)
     class Meta:
         verbose_name = _("thema")
         verbose_name_plural = _("themen")
-        ordering = ["name"]
 
 
 @reversion.register(follow=["rootobject_ptr"])
@@ -836,7 +826,6 @@ class Interpretatem(DescriptionMixin, StatusMixin, AbstractEntity):
 
     class Meta:
         verbose_name_plural = _("interpretateme")
-        ordering = ["name"]
 
 
 def create_properties(name: str, name_reverse: str, subjects: list, objects: list):
