@@ -77,6 +77,16 @@ SPECTACULAR_SETTINGS["COMPONENT_NO_READ_ONLY_REQUIRED"] = True
 
 DATABASES = {"default": dj_database_url.config(conn_max_age=600)}
 
+# Django-tables2 settings to override defaults
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5-responsive.html"
+
+DJANGO_TABLES2_TABLE_ATTRS = {
+    "class": "table table-hover table-striped",
+    "thead": {
+        "class": "table-light",
+    },
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
