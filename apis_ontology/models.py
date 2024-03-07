@@ -828,12 +828,14 @@ class Interpretatem(DescriptionMixin, StatusMixin, AbstractEntity):
         verbose_name_plural = _("interpretateme")
 
 
-def create_properties(name: str, name_reverse: str, subjects: list, objects: list):
+def create_properties(
+    name_forward: str, name_reverse: str, subjects: list, objects: list
+):
     """
     Helper function for creating new Properties.
     """
     prop, created = Property.objects.get_or_create(
-        name=name,
+        name_forward=name_forward,
         name_reverse=name_reverse,
     )
 
@@ -853,37 +855,39 @@ def update_properties():
     Function for temporary storage of destructive changes to Property
     objects until the changes have been applied (/deployed).
 
-    Workaround for dealing with Property deletions or changes to
-    values of fields by which they are looked up, like "name", "name_reverse",
+    Workaround for dealing with Property deletions or changes to values of
+    fields by which they are looked up, like "name_forward", "name_reverse",
     because there is no equivalent to Django migrations, with which
     changes to model classes can be preserved independently of changes
     to the code recorded via commits.
 
-    ATTN.: Do not use update() to modify "name" or "name_reverse"
+    ATTN.: Do not use update() to modify "name_forward" or "name_reverse"
     as it ignores custom save() methods, which for changes to these
     Property fields is relevant.
 
     Examples:
-    Property.objects.filter(name="is part of").delete()
+    Property.objects.filter(name_forward="is part of").delete()
     for prop in Property.objects.filter(name="includes"):
-        prop.name = "is included in"
+        prop.name_forward = "is included in"
         prop.name_reverse = "includes"
-        prop.save()
+        prop.save("name_forward", "name_reverse")
 
-    Don't forget to also always update a Property's "name" field values
+    Don't forget to also always update a Property's name fields
     in construct_properties() when they are modified here.
     """
 
-    delete_is_part_of_work = Property.objects.filter(name="is part of work").delete()
+    delete_is_part_of_work = Property.objects.filter(
+        name_forward="is part of work"
+    ).delete()
 
-    # rename "name" field of Expression/Expression relation
+    # rename "name_forward" field of Expression/Expression relation
     # and also rename "name_reverse" field
     for prop in Property.objects.filter(
-        name__in=["is part of expression", "is part of"]
+        name_forward__in=["is part of expression", "is part of"]
     ):
-        prop.name = "expression is part of expression"
+        prop.name_forward = "expression is part of expression"
         prop.name_reverse = "expression has part expression"
-        prop.save()
+        prop.save("name_forward", "name_reverse")
 
 
 def construct_properties():
@@ -891,7 +895,7 @@ def construct_properties():
     Create relationships between entity classes.
 
     Regarding property definitions:
-    - each "name" (and "name_reversed") may only be used once,
+    - each "name_forward" (and "name_reverse") may only be used once,
     - a relationship can connect more than two entities, i.e. can have more
     than just one Subject (subj_class) or just one Object (obj_class).
     """
@@ -900,7 +904,7 @@ def construct_properties():
     # WORK-focussed relations
     # Aussage – something is talked about in a work
     discusses = create_properties(
-        name="discusses",
+        name_forward="discusses",
         name_reverse="is discussed in",
         subjects=[Work],
         objects=[Work, Place],
@@ -908,7 +912,7 @@ def construct_properties():
 
     # Erwähnung – something is only mentioned by name
     mentions = create_properties(
-        name="mentions",
+        name_forward="mentions",
         name_reverse="is mentioned in",
         subjects=[Work],
         objects=[Work, Place],
@@ -916,7 +920,7 @@ def construct_properties():
 
     # Schauplatz – a place is an actual location in the work
     takes_place_in = create_properties(
-        name="takes place in",
+        name_forward="takes place in",
         name_reverse="is locale in",
         subjects=[Work],
         objects=[Place],
@@ -924,7 +928,7 @@ def construct_properties():
 
     # Binnenverweis
     references = create_properties(
-        name="references",
+        name_forward="references",
         name_reverse="is referenced by",
         subjects=[Work],
         objects=[Work],
@@ -932,14 +936,14 @@ def construct_properties():
 
     # TYPE-focussed relations
     has_type = create_properties(
-        name="has type",
+        name_forward="has type",
         name_reverse="is type of",
         subjects=[Work],
         objects=[WorkType],
     )
 
     has_broader_term = create_properties(
-        name="has broader term",
+        name_forward="has broader term",
         name_reverse="has narrower term",
         subjects=[WorkType],
         objects=[WorkType],
@@ -947,28 +951,28 @@ def construct_properties():
 
     # EXPRESSION-focussed relations
     is_realised_in = create_properties(
-        name="is realised in",
+        name_forward="is realised in",
         name_reverse="realises",
         subjects=[Work],
         objects=[Expression],
     )
 
     expression_is_part_of_expression = create_properties(
-        name="expression is part of expression",
+        name_forward="expression is part of expression",
         name_reverse="expression has part expression",
         subjects=[Expression],
         objects=[Expression],
     )
 
     work_is_part_of_expression = create_properties(
-        name="work is part of expression",
+        name_forward="work is part of expression",
         name_reverse="expression has part work",
         subjects=[Work],
         objects=[Expression],
     )
 
     published_in = create_properties(
-        name="is published in",
+        name_forward="is published in",
         name_reverse="is place of publication of",
         subjects=[Expression],
         objects=[Place],
@@ -976,21 +980,21 @@ def construct_properties():
 
     # CHARACTER-focussed relations
     features = create_properties(
-        name="features",
+        name_forward="features",
         name_reverse="is featured in",
         subjects=[Work],
         objects=[Character],
     )
 
     groups = create_properties(
-        name="groups",
+        name_forward="groups",
         name_reverse="is grouped in",
         subjects=[MetaCharacter],
         objects=[Character],
     )
 
     place_inspires = create_properties(
-        name="inspires",
+        name_forward="inspires",
         name_reverse="is inspired by",
         subjects=[Place],
         objects=[Place],
@@ -998,14 +1002,14 @@ def construct_properties():
 
     # ARCHIVE-focussed relations
     archive_holds = create_properties(
-        name="holds",
+        name_forward="holds",
         name_reverse="is held in",
         subjects=[Archive],
         objects=[PhysicalObject],
     )
 
     relates_to = create_properties(
-        name="relates to",
+        name_forward="relates to",
         name_reverse="is connected with",
         subjects=[PhysicalObject],
         objects=[Work],
@@ -1013,14 +1017,14 @@ def construct_properties():
 
     # INTERPRETATEM-focussed relations
     has_source = create_properties(
-        name="has source",
+        name_forward="has source",
         name_reverse="is source for",
         subjects=[Interpretatem],
         objects=[Work],
     )
 
     interprets = create_properties(
-        name="interprets",
+        name_forward="interprets",
         name_reverse="is interpreted by",
         subjects=[Interpretatem],
         objects=[Work],
@@ -1028,21 +1032,21 @@ def construct_properties():
 
     # CONCEPT-focussed relations
     is_based_on = create_properties(
-        name="is based on",
+        name_forward="is based on",
         name_reverse="is base for",
         subjects=[Character],
         objects=[Person, Topic],
     )
 
     is_about = create_properties(
-        name="is about topic",
+        name_forward="is about topic",
         name_reverse="is topic of",
         subjects=[Work, Interpretatem],
         objects=[Topic],
     )
 
     applies_research_perspective = create_properties(
-        name="applies research perspective",
+        name_forward="applies research perspective",
         name_reverse="is research perspective of",
         subjects=[Work, Interpretatem],
         objects=[ResearchPerspective],
@@ -1050,14 +1054,14 @@ def construct_properties():
 
     # ORGANISATION-focussed relations
     has_residence = create_properties(
-        name="has current or former residence",
+        name_forward="has current or former residence",
         name_reverse="is current or former residence of",
         subjects=[Organisation],
         objects=[Place],
     )
 
     is_publisher = create_properties(
-        name="is publisher of",
+        name_forward="is publisher of",
         name_reverse="has publisher",
         subjects=[Organisation],
         objects=[Expression],
@@ -1066,7 +1070,7 @@ def construct_properties():
     # ACTOR roles in relation to Work, Expression
     # Beitragende:r (generisch)
     is_contributor = create_properties(
-        name="is contributor to",
+        name_forward="is contributor to",
         name_reverse="has contributor",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1074,7 +1078,7 @@ def construct_properties():
 
     # Autor*in
     is_author = create_properties(
-        name="is author of",
+        name_forward="is author of",
         name_reverse="has author",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1082,7 +1086,7 @@ def construct_properties():
 
     # Fotograf:in
     is_photographer = create_properties(
-        name="is photographer of/for",
+        name_forward="is photographer of/for",
         name_reverse="has photographer",
         subjects=[Organisation],
         objects=[Work, Expression],
@@ -1090,7 +1094,7 @@ def construct_properties():
 
     # Illustrator:in
     is_illustrator = create_properties(
-        name="is illustrator of/for",
+        name_forward="is illustrator of/for",
         name_reverse="has illustrator",
         subjects=[Organisation],
         objects=[Work, Expression],
@@ -1098,7 +1102,7 @@ def construct_properties():
 
     # Übersetzer:in
     is_translator = create_properties(
-        name="is translator of",
+        name_forward="is translator of",
         name_reverse="has translator",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1106,7 +1110,7 @@ def construct_properties():
 
     # Herausgeber*in
     is_editor = create_properties(
-        name="is editor of",
+        name_forward="is editor of",
         name_reverse="has editor",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1114,7 +1118,7 @@ def construct_properties():
 
     # Regisseur*in
     is_director = create_properties(
-        name="is director of",
+        name_forward="is director of",
         name_reverse="has director",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1122,7 +1126,7 @@ def construct_properties():
 
     # Dramaturg*in
     is_dramaturg = create_properties(
-        name="is dramaturg for",
+        name_forward="is dramaturg for",
         name_reverse="has dramaturg",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1130,7 +1134,7 @@ def construct_properties():
 
     # Komponist*in
     is_composer = create_properties(
-        name="is composer of",
+        name_forward="is composer of",
         name_reverse="has composer",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1138,7 +1142,7 @@ def construct_properties():
 
     # Musiker*in
     is_session_musician = create_properties(
-        name="is session musician on",
+        name_forward="is session musician on",
         name_reverse="has session musician",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1146,7 +1150,7 @@ def construct_properties():
 
     # Bühnenbildner*in (Kontext: Theater; vgl. Szenenbildner*in)
     is_stage_designer = create_properties(
-        name="is stage designer for",
+        name_forward="is stage designer for",
         name_reverse="has stage designer",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1154,7 +1158,7 @@ def construct_properties():
 
     # Kostümbildner*in
     is_costume_designer = create_properties(
-        name="is costume designer for",
+        name_forward="is costume designer for",
         name_reverse="has costume designer",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1162,7 +1166,7 @@ def construct_properties():
 
     # Maskenbildner*in
     is_makeup_artist = create_properties(
-        name="is make-up artist on",
+        name_forward="is make-up artist on",
         name_reverse="has make-up artist",
         subjects=[Organisation],
         objects=[Work, Expression],
@@ -1170,7 +1174,7 @@ def construct_properties():
 
     # Tonmeister*in
     is_sound_engineer = create_properties(
-        name="is sound engineer of",
+        name_forward="is sound engineer of",
         name_reverse="has sound engineer",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1178,7 +1182,7 @@ def construct_properties():
 
     # Cutter*in
     is_film_editor = create_properties(
-        name="is film editor of",
+        name_forward="is film editor of",
         name_reverse="has film editor",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1186,7 +1190,7 @@ def construct_properties():
 
     # Schauspieler*in
     is_actor = create_properties(
-        name="is actor in",
+        name_forward="is actor in",
         name_reverse="has actor",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1194,7 +1198,7 @@ def construct_properties():
 
     # Sprecher*in
     is_narrator = create_properties(
-        name="is narrator of",
+        name_forward="is narrator of",
         name_reverse="has narrator",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1202,7 +1206,7 @@ def construct_properties():
 
     # Kameramensch
     is_cinematographer = create_properties(
-        name="is cinematographer of",
+        name_forward="is cinematographer of",
         name_reverse="has cinematographer",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1210,7 +1214,7 @@ def construct_properties():
 
     # Produktionsleiter*in
     is_head_of_production = create_properties(
-        name="is head of production of",
+        name_forward="is head of production of",
         name_reverse="has head of production",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
@@ -1218,7 +1222,7 @@ def construct_properties():
 
     # Szenenbilder*in (Kontext: Film; vgl. Bühnenbildner*in)
     is_production_designer = create_properties(
-        name="is production designer of",
+        name_forward="is production designer of",
         name_reverse="has production designer",
         subjects=[Person, Organisation],
         objects=[Work, Expression],
