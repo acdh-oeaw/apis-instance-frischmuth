@@ -65,6 +65,9 @@ class NameMixin(models.Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return self.name
+
 
 @reversion.register
 class DescriptionMixin(models.Model):
