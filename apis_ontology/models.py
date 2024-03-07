@@ -43,7 +43,7 @@ class AlternativeNameMixin(models.Model):
     alternative_name = models.CharField(
         max_length=255,
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Alternativer Name"),
     )
 
@@ -59,7 +59,7 @@ class NameMixin(models.Model):
     name = models.CharField(
         max_length=255,
         blank=True,
-        null=True,
+        default="",
     )
 
     class Meta:
@@ -77,7 +77,7 @@ class DescriptionMixin(models.Model):
 
     description = models.TextField(
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Beschreibung"),
     )
 
@@ -94,14 +94,14 @@ class HumanBeingMixin(AlternativeNameMixin, models.Model):
     first_name = models.CharField(
         max_length=255,
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Vorname"),
     )
 
     last_name = models.CharField(
         max_length=255,
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Nachname"),
     )
 
@@ -116,11 +116,17 @@ class WorkMixin(models.Model):
     """
 
     title = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name=_("Titel")
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("Titel"),
     )
 
     subtitle = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name=_("Untertitel")
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("Untertitel"),
     )
 
     class Meta:
