@@ -837,6 +837,9 @@ def create_properties(
     prop, created = Property.objects.get_or_create(
         name_forward=name_forward,
         name_reverse=name_reverse,
+        # TODO remove once handling of "deprecated_name" vs. "name_forward"
+        #  is fixed in APIS CORE
+        deprecated_name=name_forward,
     )
 
     prop.subj_class.clear()
@@ -887,7 +890,10 @@ def update_properties():
     ):
         prop.name_forward = "expression is part of expression"
         prop.name_reverse = "expression has part expression"
-        prop.save("name_forward", "name_reverse")
+        # TODO remove once handling of "deprecated_name" vs. "name_forward"
+        #  is fixed in APIS CORE
+        prop.deprecated_name = "expression is part of expression"
+        prop.save()
 
 
 def construct_properties():
