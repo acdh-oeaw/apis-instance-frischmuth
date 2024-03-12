@@ -543,7 +543,7 @@ class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Archive(NameMixin, DescriptionMixin, AbstractEntity):
+class Archive(NameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     An institution or organisation where physical objects are
     stored and cared for.
