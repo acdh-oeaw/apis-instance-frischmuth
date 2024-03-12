@@ -58,29 +58,29 @@ class FullTitleMixin(tables.Table):
 
 class FullNameMixin(tables.Table):
     full_name = GenericEditLinkColumn(
-        accessor="last_name",
+        accessor="surname",
         verbose_name=_("Name (voller)"),
-        order_by=("last_name", "first_name"),
+        order_by=("surname", "forename"),
     )
 
     class Meta:
-        sequence = ("full_name", "last_name", "first_name")
-        exclude = ["last_name", "first_name"]
+        sequence = ("full_name", "surname", "forename")
+        exclude = ["surname", "forename"]
 
     def render_full_name(self, record):
-        last_name = record.last_name
-        first_name = record.first_name
+        surname = record.surname
+        forename = record.forename
         fallback_name = record.fallback_name
 
         if fallback_name != "":
             full_name = fallback_name
         else:
-            if first_name != "" and last_name != "":
-                full_name = f"{first_name} {last_name}"
-            elif last_name != "":
-                full_name = last_name
-            elif first_name != "":
-                full_name = first_name
+            if forename != "" and surname != "":
+                full_name = f"{forename} {surname}"
+            elif surname != "":
+                full_name = surname
+            elif forename != "":
+                full_name = forename
             else:
                 # TODO log as error instead of exiting program
                 f"Missing name to look up or create Person, exiting."
