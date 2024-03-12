@@ -110,7 +110,7 @@ class PersonNameMixin(AlternativeNameMixin, models.Model):
 
 
 @reversion.register
-class WorkMixin(models.Model):
+class TitlesMixin(models.Model):
     """
     Mixin for fields shared between work-like entities.
     """
@@ -197,7 +197,7 @@ class DataSource(models.Model):
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Work(WorkMixin, StatusMixin, AbstractEntity):
+class Work(TitlesMixin, StatusMixin, AbstractEntity):
     """
     The abstract notion of an intellectual creation, irrespective
     of its exact transmitted version, language or other form.
@@ -435,7 +435,7 @@ class WorkType(
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Expression(WorkMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class Expression(TitlesMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     A concrete representation of a given Work,
     captured in signs, images, audio signals,...
