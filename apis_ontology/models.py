@@ -52,9 +52,9 @@ class AlternativeNameMixin(models.Model):
         abstract = True
 
 
-class NameMixin(models.Model):
+class GenericNameMixin(models.Model):
     """
-    Mixin for "name" field shared between entities.
+    Mixin for generic "name" field used by entities.
     """
 
     name = models.CharField(
@@ -455,7 +455,11 @@ class Work(TitlesMixin, StatusMixin, AbstractEntity):
 
 @reversion.register(follow=["rootobject_ptr"])
 class WorkType(
-    NameMixin, AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+    GenericNameMixin,
+    AlternativeNameMixin,
+    DescriptionMixin,
+    StatusMixin,
+    AbstractEntity,
 ):
     name_plural = models.CharField(
         max_length=255,
@@ -588,7 +592,7 @@ class Expression(TitlesMixin, DescriptionMixin, StatusMixin, AbstractEntity):
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Archive(NameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class Archive(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     An institution or organisation where physical objects are
     stored and cared for.
@@ -624,7 +628,7 @@ class Archive(NameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class PhysicalObject(NameMixin, DescriptionMixin, AbstractEntity):
+class PhysicalObject(GenericNameMixin, DescriptionMixin, AbstractEntity):
     """
     A physical object pertaining to a Work.
 
@@ -680,7 +684,11 @@ class Person(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
 
 @reversion.register(follow=["rootobject_ptr"])
 class Organisation(
-    NameMixin, AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+    GenericNameMixin,
+    AlternativeNameMixin,
+    DescriptionMixin,
+    StatusMixin,
+    AbstractEntity,
 ):
     """
     Any legal entity, or subunit of a legal entity.
@@ -763,7 +771,7 @@ class Character(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class MetaCharacter(NameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class MetaCharacter(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     A composite entity to refer to related characters across works.
 
@@ -789,7 +797,11 @@ class MetaCharacter(NameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
 
 @reversion.register(follow=["rootobject_ptr"])
 class Place(
-    NameMixin, AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+    GenericNameMixin,
+    AlternativeNameMixin,
+    DescriptionMixin,
+    StatusMixin,
+    AbstractEntity,
 ):
     """
     A real place in our world, either in the past or present.
@@ -825,7 +837,11 @@ class Place(
 
 @reversion.register(follow=["rootobject_ptr"])
 class ResearchPerspective(
-    NameMixin, AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+    GenericNameMixin,
+    AlternativeNameMixin,
+    DescriptionMixin,
+    StatusMixin,
+    AbstractEntity,
 ):
     """
     Lens through which works are investigated.
@@ -848,7 +864,11 @@ class ResearchPerspective(
 
 @reversion.register(follow=["rootobject_ptr"])
 class Topic(
-    NameMixin, AlternativeNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+    GenericNameMixin,
+    AlternativeNameMixin,
+    DescriptionMixin,
+    StatusMixin,
+    AbstractEntity,
 ):
     """
     Topic with regard to content, theme.
@@ -870,7 +890,7 @@ class Topic(
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Interpretatem(NameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class Interpretatem(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     A conceptual object representing a specific (interpretative/scholarly)
     view on one or more Works.
