@@ -46,7 +46,7 @@ def parse_vorlass_xml(title_siglum_dict):
        
   
     import_name = "Vorlass_Import"
-    b_fr = Person.objects.filter(name="Barbara Frischmuth").exclude(data_source=None)[0]
+    b_fr = Person.objects.filter(first_name="Barbara",last_name="Frischmuth").exclude(data_source=None)[0]
     archive = Archive.objects.filter(name="Franz-Nabl-Institut für Literaturforschung")[0]
     
     source, created = create_source(import_name)
@@ -71,10 +71,10 @@ def parse_vorlass_xml(title_siglum_dict):
                 work_type = title_siglum_dict[workelem.attrib.get("title") + notes]["Werktyp"]
                 status = get_status(title_siglum_dict[workelem.attrib.get("title") + notes]["status"]) 
                 fixed_title = title_siglum_dict[workelem.attrib.get("title") + notes]["Titel"] 
-                subtitle = title_siglum_dict[workelem.attrib.get("title") + notes]["Untertitel"]
+                subtitle = title_siglum_dict[workelem.attrib.get("title") + notes]["Untertitel"] or ""
 
                 work, created = Work.objects.get_or_create(
-                    name=fixed_title,
+                    title=fixed_title,
                     #notes=notes,
                     siglum=siglum,
                     progress_status=status,
@@ -84,7 +84,7 @@ def parse_vorlass_xml(title_siglum_dict):
                 create_triple(
                     entity_subj=b_fr,
                     entity_obj=work,
-                    prop=Property.objects.get(name="is author of"),
+                    prop=Property.objects.get(name_forward="is author of"),
                 )
                 '''work_type_key_name = WORKTYPE_MAPPINGS.get(
                     workelem.attrib.get("category")
@@ -98,7 +98,7 @@ def parse_vorlass_xml(title_siglum_dict):
                     create_triple(
                         entity_subj=work,
                         entity_obj=work_type,
-                        prop=Property.objects.get(name="has type"),
+                        prop=Property.objects.get(name_forward="has type"),
                     )
             
                 if not any(
@@ -106,18 +106,18 @@ def parse_vorlass_xml(title_siglum_dict):
                     for x in ("[unpubl.?]", "Unveröffentlichte Werke")
                 ):
                     expression, created = Expression.objects.get_or_create(
-                        name=fixed_title,
+                        title=fixed_title,
                         defaults={"data_source": source},
                     )
                     create_triple(
                         entity_subj=b_fr,
                         entity_obj=expression,
-                        prop=Property.objects.get(name="is author of"),
+                        prop=Property.objects.get(name_forward="is author of"),
                     )
                     create_triple(
                         entity_subj=work,
                         entity_obj=expression,
-                        prop=Property.objects.get(name="is realised in"),
+                        prop=Property.objects.get(name_forward="is realised in"),
                     )
 
                 for holding in workelem.findall("holding"):
@@ -131,12 +131,12 @@ def parse_vorlass_xml(title_siglum_dict):
                     create_triple(
                         entity_subj=pho,
                         entity_obj=work,
-                        prop=Property.objects.get(name="relates to"),
+                        prop=Property.objects.get(name_forward="relates to"),
                     )
                     create_triple(
                         entity_subj=archive,
                         entity_obj=pho,
-                        prop=Property.objects.get(name="holds"),
+                        prop=Property.objects.get(name_forward="holds"),
                     )
 
             else:
@@ -151,7 +151,7 @@ def parse_vorlass_xml(title_siglum_dict):
                     create_triple(
                         entity_subj=archive,
                         entity_obj=pho,
-                        prop=Property.objects.get(name="holds"),
+                        prop=Property.objects.get(name_forward="holds"),
                     )
 
 def get_text_by_elementpath(element, element_child_name):
