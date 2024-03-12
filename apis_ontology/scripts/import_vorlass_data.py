@@ -125,6 +125,7 @@ def parse_vorlass_xml(title_siglum_dict):
                     pho = PhysicalObject.objects.create(
                         name=description[:60],
                         description=description,
+                        vorlass_doc_reference=notes.replace("docx pointer: ","")[:255],
                         #notes=notes,
                         data_source=source,
                     )
@@ -145,6 +146,7 @@ def parse_vorlass_xml(title_siglum_dict):
                     pho = PhysicalObject.objects.create(
                         name=description[:60],
                         description=description,
+                        vorlass_doc_reference=notes.replace("docx pointer: ","")[:255],
                         #notes=notes,
                         data_source=source
                     )
