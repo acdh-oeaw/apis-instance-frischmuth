@@ -105,6 +105,17 @@ class PersonNameMixin(AlternativeNameMixin, models.Model):
         verbose_name=_("Nachname"),
     )
 
+    fallback_name = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("Uneindeutiger Name"),
+        help_text=_(
+            "Namens-Ersatzfeld, falls weder Vor- noch Nachname eindeutig "
+            "als solche festgelegt bzw. eingegeben werden können"
+        ),
+    )
+
     class Meta:
         abstract = True
 
