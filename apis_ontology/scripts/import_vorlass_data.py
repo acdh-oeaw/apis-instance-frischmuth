@@ -45,7 +45,7 @@ def parse_vorlass_xml(title_siglum_dict):
        
   
     import_name = "Vorlass_Import"
-    b_fr = Person.objects.filter(first_name="Barbara",last_name="Frischmuth").exclude(data_source=None)[0]
+    b_fr = Person.objects.filter(forename="Barbara",surname="Frischmuth").exclude(data_source=None)[0]
     archive = Archive.objects.filter(name="Franz-Nabl-Institut für Literaturforschung")[0]
     
     source, created = create_source(import_name)
