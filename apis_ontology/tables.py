@@ -70,7 +70,7 @@ class FullNameMixin(tables.Table):
     def render_full_name(self, record):
         last_name = record.last_name
         first_name = record.first_name
-        fallback_name = ""
+        fallback_name = record.fallback_name
 
         if fallback_name != "":
             full_name = fallback_name
