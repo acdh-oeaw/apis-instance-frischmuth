@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import xml.etree.ElementTree as ET
+
 # from django.core.validators import URLValidator
 from apis_core.apis_relations.models import Property
 from apis_ontology.models import (
@@ -10,7 +11,7 @@ from apis_ontology.models import (
     Archive,
     PhysicalObject,
     WorkType,
-    StatusMixin
+    StatusMixin,
 )
 from .additional_infos import WORK_TYPES, WORKTYPE_MAPPINGS
 from .import_helpers import create_triple, create_source
@@ -19,39 +20,51 @@ from apis_ontology.scripts.access_sharepoint import import_and_parse_data
 
 fname = os.path.basename(__file__)
 
+
 def run():
     import_and_parse_data(parse_sigle_excel)
 
+
 def parse_sigle_excel(file):
-    
     title_siglum_dict = {}
     success = []
     failure = []
 
     df = pd.read_excel(file)
-    source, created =  create_source(name=file,author='')
+    source, created = create_source(name=file, author="")
 
-    df_filtered = df[(df['Werktyp'].notnull()) | (df['status'].notnull())].replace({np.nan: None})
+    df_filtered = df[(df["Werktyp"].notnull()) | (df["status"].notnull())].replace(
+        {np.nan: None}
+    )
     for index, row in df_filtered.iterrows():
-      title_siglum_dict[row['Name']+row['abgeleitet von']] = row.to_dict()
+        title_siglum_dict[row["Name"] + row["abgeleitet von"]] = row.to_dict()
     parse_vorlass_xml(title_siglum_dict)
     return success, failure
 
+
 def get_status(status):
-    status_choices = dict((v, k) for k, v in dict(StatusMixin.ProgressStates.choices).items())
+    status_choices = dict(
+        (v, k) for k, v in dict(StatusMixin.ProgressStates.choices).items()
+    )
     return status_choices.get(status)
 
+
 def parse_vorlass_xml(title_siglum_dict):
-       
-  
     import_name = "Vorlass_Import"
-    b_fr = Person.objects.filter(forename="Barbara",surname="Frischmuth").exclude(data_source=None)[0]
-    archive = Archive.objects.filter(name="Franz-Nabl-Institut für Literaturforschung")[0]
-    
+    b_fr = Person.objects.filter(forename="Barbara", surname="Frischmuth").exclude(
+        data_source=None
+    )[0]
+    archive = Archive.objects.filter(name="Franz-Nabl-Institut für Literaturforschung")[
+        0
+    ]
+
     source, created = create_source(import_name)
 
-    with open(f"./vorlass_data_frischmuth/04_derived_custom/Frischmuth_Vorlass_FNI-FRISCHMUTH_import-data.xml", "r", encoding="utf-8") as file_obj:
-                
+    with open(
+        f"./vorlass_data_frischmuth/04_derived_custom/Frischmuth_Vorlass_FNI-FRISCHMUTH_import-data.xml",
+        "r",
+        encoding="utf-8",
+    ) as file_obj:
         element = ET.parse(file_obj)
         items = element.findall("item")
 
@@ -66,15 +79,28 @@ def parse_vorlass_xml(title_siglum_dict):
                 in ("Werke", "Sammlungen")
                 and title + notes in title_siglum_dict
             ):
-                siglum = title_siglum_dict[workelem.attrib.get("title") + notes]["Sigle"]
-                work_type = title_siglum_dict[workelem.attrib.get("title") + notes]["Werktyp"]
-                status = get_status(title_siglum_dict[workelem.attrib.get("title") + notes]["status"]) 
-                fixed_title = title_siglum_dict[workelem.attrib.get("title") + notes]["Titel"] 
-                subtitle = title_siglum_dict[workelem.attrib.get("title") + notes]["Untertitel"] or ""
+                siglum = title_siglum_dict[workelem.attrib.get("title") + notes][
+                    "Sigle"
+                ]
+                work_type = title_siglum_dict[workelem.attrib.get("title") + notes][
+                    "Werktyp"
+                ]
+                status = get_status(
+                    title_siglum_dict[workelem.attrib.get("title") + notes]["status"]
+                )
+                fixed_title = title_siglum_dict[workelem.attrib.get("title") + notes][
+                    "Titel"
+                ]
+                subtitle = (
+                    title_siglum_dict[workelem.attrib.get("title") + notes][
+                        "Untertitel"
+                    ]
+                    or ""
+                )
 
                 work, created = Work.objects.get_or_create(
                     title=fixed_title,
-                    #notes=notes,
+                    # notes=notes,
                     siglum=siglum,
                     progress_status=status,
                     subtitle=subtitle,
@@ -85,15 +111,17 @@ def parse_vorlass_xml(title_siglum_dict):
                     entity_obj=work,
                     prop=Property.objects.get(name_forward="is author of"),
                 )
-                '''work_type_key_name = WORKTYPE_MAPPINGS.get(
+                """work_type_key_name = WORKTYPE_MAPPINGS.get(
                     workelem.attrib.get("category")
-                )'''
+                )"""
 
                 if work_type:
                     work_type = WorkType.objects.get(
-                        name=WORK_TYPES.get(work_type.replace('type_','').replace(' ',''))["german_label"]
+                        name=WORK_TYPES.get(
+                            work_type.replace("type_", "").replace(" ", "")
+                        )["german_label"]
                     )
-                    
+
                     create_triple(
                         entity_subj=work,
                         entity_obj=work_type,
@@ -105,8 +133,8 @@ def parse_vorlass_xml(title_siglum_dict):
                     pho = PhysicalObject.objects.create(
                         name=description[:60],
                         description=description,
-                        vorlass_doc_reference=notes.replace("docx pointer: ","")[:255],
-                        #notes=notes,
+                        vorlass_doc_reference=notes.replace("docx pointer: ", "")[:255],
+                        # notes=notes,
                         data_source=source,
                     )
                     create_triple(
@@ -126,15 +154,16 @@ def parse_vorlass_xml(title_siglum_dict):
                     pho = PhysicalObject.objects.create(
                         name=description[:60],
                         description=description,
-                        vorlass_doc_reference=notes.replace("docx pointer: ","")[:255],
-                        #notes=notes,
-                        data_source=source
+                        vorlass_doc_reference=notes.replace("docx pointer: ", "")[:255],
+                        # notes=notes,
+                        data_source=source,
                     )
                     create_triple(
                         entity_subj=archive,
                         entity_obj=pho,
                         prop=Property.objects.get(name_forward="holds"),
                     )
+
 
 def get_text_by_elementpath(element, element_child_name):
     """Helper function to get a cleaned string from an xml-element (as used in the auxiliary files)"""
