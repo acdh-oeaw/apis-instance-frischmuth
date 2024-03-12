@@ -88,17 +88,17 @@ class DescriptionMixin(models.Model):
 @reversion.register
 class PersonNameMixin(AlternativeNameMixin, models.Model):
     """
-    Mixin for fields shared between person-like entities.
+    Mixin for name fields shared between person-like entities.
     """
 
-    first_name = models.CharField(
+    forename = models.CharField(
         max_length=255,
         blank=True,
         default="",
         verbose_name=_("Vorname"),
     )
 
-    last_name = models.CharField(
+    surname = models.CharField(
         max_length=255,
         blank=True,
         default="",
