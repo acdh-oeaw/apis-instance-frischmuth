@@ -213,7 +213,9 @@ def fetch_file_data(s, sp_fname, sp_file_url):
     return source_file_by_url
 
 
-def import_file_data(s, in_fname, in_file_url, parse_data, out_fname=None, out_dir=None):
+def import_file_data(
+    s, in_fname, in_file_url, parse_data, out_fname=None, out_dir=None
+):
     """
     Import data from an Excel file.
 
