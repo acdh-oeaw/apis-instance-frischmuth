@@ -86,7 +86,7 @@ class DescriptionMixin(models.Model):
 
 
 @reversion.register
-class HumanBeingMixin(AlternativeNameMixin, models.Model):
+class PersonNameMixin(AlternativeNameMixin, models.Model):
     """
     Mixin for fields shared between person-like entities.
     """
@@ -614,7 +614,7 @@ class PhysicalObject(NameMixin, DescriptionMixin, AbstractEntity):
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Person(HumanBeingMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class Person(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     Any natural person.
     """
@@ -666,7 +666,7 @@ class Organisation(
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Character(HumanBeingMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class Character(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     A real or fictitious person who appears in or is mentioned in a Work.
 
