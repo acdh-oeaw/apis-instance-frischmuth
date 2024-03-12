@@ -44,8 +44,8 @@ def create_persons(calling_file=fname):
 
     for p in sorted(PERSONS, key=lambda d: d["id"]):
         Person.objects.get_or_create(
-            first_name=p["first_name"],
-            last_name=p["last_name"],
+            forename=p["first_name"],
+            surname=p["last_name"],
             defaults={"data_source": source},
         )
 
