@@ -9,7 +9,6 @@ from apis_ontology.models import (
     Work,
     Archive,
     PhysicalObject,
-    Expression,
     WorkType,
     StatusMixin
 )
@@ -99,25 +98,6 @@ def parse_vorlass_xml(title_siglum_dict):
                         entity_subj=work,
                         entity_obj=work_type,
                         prop=Property.objects.get(name_forward="has type"),
-                    )
-            
-                if not any(
-                    x in workelem.attrib.get("category")
-                    for x in ("[unpubl.?]", "Unveröffentlichte Werke")
-                ):
-                    expression, created = Expression.objects.get_or_create(
-                        title=fixed_title,
-                        defaults={"data_source": source},
-                    )
-                    create_triple(
-                        entity_subj=b_fr,
-                        entity_obj=expression,
-                        prop=Property.objects.get(name_forward="is author of"),
-                    )
-                    create_triple(
-                        entity_subj=work,
-                        entity_obj=expression,
-                        prop=Property.objects.get(name_forward="is realised in"),
                     )
 
                 for holding in workelem.findall("holding"):
