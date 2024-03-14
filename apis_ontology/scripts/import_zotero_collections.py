@@ -652,7 +652,7 @@ def create_entities(item, source):
                     triple, created = create_triple(
                         entity_subj=work,
                         entity_obj=work_type,
-                        prop=Property.objects.get(name="has type"),
+                        prop=Property.objects.get(name_forward="has type"),
                     )
                     if created:
                         success.append(
@@ -669,7 +669,7 @@ def create_entities(item, source):
             triple, created = create_triple(
                 entity_subj=work,
                 entity_obj=expression,
-                prop=Property.objects.get(name="is realised in"),
+                prop=Property.objects.get(name_forward="is realised in"),
             )
             if created:
                 success.append(
@@ -689,7 +689,7 @@ def create_entities(item, source):
                     triple, created = create_triple(
                         entity_subj=work,
                         entity_obj=referenced_work,
-                        prop=Property.objects.get(name=ref_label),
+                        prop=Property.objects.get(name_forward=ref_label),
                     )
                     if created:
                         success.append(
@@ -710,7 +710,9 @@ def create_entities(item, source):
                     triple, created = create_triple(
                         entity_subj=person,
                         entity_obj=work,
-                        prop=Property.objects.get(name=creator["property_name"]),
+                        prop=Property.objects.get(
+                            name_forward=creator["property_name"]
+                        ),
                     )
                     if created:
                         success.append(
@@ -721,7 +723,9 @@ def create_entities(item, source):
                         triple, created = create_triple(
                             entity_subj=person,
                             entity_obj=expression,
-                            prop=Property.objects.get(name=creator["property_name"]),
+                            prop=Property.objects.get(
+                                name_forward=creator["property_name"]
+                            ),
                         )
                         if created:
                             success.append(
@@ -741,7 +745,7 @@ def create_entities(item, source):
                 triple, created = create_triple(
                     entity_subj=organisation,
                     entity_obj=expression,
-                    prop=Property.objects.get(name="is publisher of"),
+                    prop=Property.objects.get(name_forward="is publisher of"),
                 )
                 if created:
                     success.append(
@@ -761,7 +765,7 @@ def create_entities(item, source):
                         triple, created = create_triple(
                             entity_subj=expression,
                             entity_obj=place,
-                            prop=Property.objects.get(name="is published in"),
+                            prop=Property.objects.get(name_forward="is published in"),
                         )
                         if created:
                             success.append(
