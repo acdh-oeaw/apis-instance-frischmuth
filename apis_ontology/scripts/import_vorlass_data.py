@@ -36,7 +36,10 @@ def parse_sigle_excel(file):
     df_filtered = df[(df["Werktyp"].notnull()) | (df["status"].notnull())].replace(
         {np.nan: None}
     )
-    for index, row in df_filtered.iterrows():
+
+    df_cleaned = df_filtered.map(lambda x: x.strip() if isinstance(x, str) else x)
+
+    for index, row in df_cleaned.iterrows():
         title_siglum_dict[row["Name"] + row["abgeleitet von"]] = row.to_dict()
     parse_vorlass_xml(title_siglum_dict)
     return success, failure
