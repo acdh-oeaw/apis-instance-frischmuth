@@ -414,7 +414,7 @@ def get_manifestation_type(collection_name):
     return manifestation_type
 
 
-def get_manifestation_types_from_tags(tags):
+def get_edition_types_from_tags(tags):
     """
     Check if a Zotero collection item's tags contain valid
     manifestation types for Expression entities.
@@ -422,9 +422,7 @@ def get_manifestation_types_from_tags(tags):
     :param tags: a list of strings
     :return: a list of strings
     """
-    man_types_german_labels = [x.label for x in Expression.ManifestationTypes]
-
-    valid_tags = [t for t in tags if t in man_types_german_labels]
+    valid_tags = [t.value for t in Expression.EditionTypes if t.label in tags]
 
     return valid_tags
 
@@ -609,7 +607,7 @@ def create_entities(item, source):
         failure.append("Missing siglum!")
     else:
         creators_with_props = []
-        man_types = []
+        edition_types = []
         work_types = []
         work_refs = []
         page_count = None
@@ -620,7 +618,7 @@ def create_entities(item, source):
         if item_tags:
             tags = [i["tag"].strip() for i in item_tags if "tag" in i]
             if tags:
-                man_types = get_manifestation_types_from_tags(
+                edition_types = get_edition_types_from_tags(
                     [t for t in tags if t.endswith("ausgabe")]
                 )
                 work_refs = get_work_references_fom_tags(
@@ -661,7 +659,7 @@ def create_entities(item, source):
 
             # get or create Expression object
             expression, created = create_expression(
-                title, pub_date, source, page_count, man_types
+                title, pub_date, source, page_count, edition_types
             )
             if created:
                 success.append(expression)
