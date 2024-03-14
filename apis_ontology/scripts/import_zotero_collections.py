@@ -655,7 +655,7 @@ def create_entities(item, source):
                     )
                     if created:
                         success.append(
-                            f"Created new triple: {triple.subj} – {triple.prop.name} – {triple.obj}"
+                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                         )
 
             # get or create Expression object
@@ -672,7 +672,7 @@ def create_entities(item, source):
             )
             if created:
                 success.append(
-                    f"Created new triple: {triple.subj} – {triple.prop.name} – {triple.obj}"
+                    f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                 )
 
             # create relations between Works when tags for Zotero item indicate relation
@@ -692,7 +692,7 @@ def create_entities(item, source):
                     )
                     if created:
                         success.append(
-                            f"Created new triple: {triple.subj} – {triple.prop.name} – {triple.obj}"
+                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                         )
 
                 else:
@@ -715,7 +715,7 @@ def create_entities(item, source):
                     )
                     if created:
                         success.append(
-                            f"Created new triple: {triple.subj} – {triple.prop.name} – {triple.obj}"
+                            f"Created new triple: {triple.subj} – {triple.prop.name_foward} – {triple.obj}"
                         )
 
                     if expression:
@@ -728,7 +728,7 @@ def create_entities(item, source):
                         )
                         if created:
                             success.append(
-                                f"Created new triple: {triple.subj} – {triple.prop.name} – {triple.obj}"
+                                f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                             )
             else:
                 ref_err = f"Work {siglum} is missing creators."
@@ -748,7 +748,7 @@ def create_entities(item, source):
                 )
                 if created:
                     success.append(
-                        f"Created new triple: {triple.subj} – {triple.prop.name} – {triple.obj}"
+                        f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                     )
 
                 # get or create Place object for place of publication
@@ -768,7 +768,7 @@ def create_entities(item, source):
                         )
                         if created:
                             success.append(
-                                f"Created new triple: {triple.subj} – {triple.prop.name} – {triple.obj}"
+                                f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                             )
 
     return success, failure
