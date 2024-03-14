@@ -155,10 +155,12 @@ def create_expression(
         title=title,
         subtitle=subtitle,
         # manifestation_type=man_types,
-        year_of_publication=pub_date,
         page_count=pages,
         defaults={"data_source": source},
     )
+
+    expression.publication_date = pub_date
+    expression.save()
 
     return expression, created
 
