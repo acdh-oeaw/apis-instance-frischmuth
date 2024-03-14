@@ -13,6 +13,7 @@ from apis_ontology.models import (
     Place,
     Work,
     WorkType,
+    Topic,
 )
 from .utils import create_import_date_string, convert_year_only_date
 
@@ -277,6 +278,23 @@ def create_archive(archive_name: str, source: DataSource):
     """
     archive, created = Archive.objects.get_or_create(
         name=archive_name,
+        defaults={"data_source": source},
+    )
+
+    return archive, created
+
+
+def create_topic(topic_name: str, source: DataSource):
+    """
+    Create a new Topic entity object if one with the given parameters
+    does not exist yet.
+
+    :param topic_name: name of an topic, used for "name" field
+    :param source: DataSource object to link to, used to identify data imports
+    :return: Topic object
+    """
+    archive, created = Topic.objects.get_or_create(
+        name=topic_name,
         defaults={"data_source": source},
     )
 

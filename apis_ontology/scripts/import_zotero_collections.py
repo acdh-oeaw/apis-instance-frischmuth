@@ -18,6 +18,7 @@ from .import_helpers import (
     create_person,
     create_organisation,
     create_place,
+    create_topic,
 )
 
 # Use keys or keywords in environment variable ZOTERO_FILTER_COLLECTIONS
@@ -612,6 +613,7 @@ def create_entities(item, source):
         edition_types = []
         work_types = []
         work_refs = []
+        topics = []
         page_count = None
 
         if creators:
@@ -629,6 +631,9 @@ def create_entities(item, source):
                 work_types = get_work_types_from_tags(
                     [t for t in tags if t.startswith("type_")]
                 )
+                topics = [
+                    t.replace("topic_", "") for t in tags if t.startswith("topic_")
+                ]
 
         pub_date = item_date
         if num_pages:
@@ -767,5 +772,20 @@ def create_entities(item, source):
                         success.append(
                             f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                         )
+        # get or create topics and relations between work and topics
+        for topic in topics:
+            topic, created = create_topic(topic_name=topic, source=source)
+            if created:
+                success.append(f"Created topic: {topic}")
+
+            triple, created = create_triple(
+                entity_subj=work,
+                entity_obj=topic,
+                prop=Property.objects.get(name_forward="is about topic"),
+            )
+            if created:
+                success.append(
+                    f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+                )
 
     return success, failure
