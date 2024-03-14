@@ -638,8 +638,6 @@ def create_entities(item, source):
         # get or create Work object
         work, created = create_work(title, subtitle, siglum, source)
 
-        # only add additional data if a work is newly created
-        # -> existing works need manual checking to avoid potential duplicates
         if created:
             success.append(work)
 
@@ -658,57 +656,68 @@ def create_entities(item, source):
                             f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                         )
 
-            # get or create Expression object
-            expression, created = create_expression(
-                title, subtitle, pub_date, source, page_count, edition_types
-            )
-            if created:
-                success.append(expression)
+        # get or create Expression object
+        expression, created = create_expression(
+            title, subtitle, pub_date, source, page_count, edition_types
+        )
+        if created:
+            success.append(expression)
 
-            triple, created = create_triple(
-                entity_subj=work,
-                entity_obj=expression,
-                prop=Property.objects.get(name_forward="is realised in"),
+        triple, created = create_triple(
+            entity_subj=work,
+            entity_obj=expression,
+            prop=Property.objects.get(name_forward="is realised in"),
+        )
+        if created:
+            success.append(
+                f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
             )
-            if created:
-                success.append(
-                    f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+
+        # create relations between Works when tags for Zotero item indicate relation
+        for r in work_refs:
+            ref_siglum = r["ref_siglum"]
+            ref_label = r["ref_label"]
+
+            referenced_work = get_work(ref_siglum)
+
+            if referenced_work:
+                success.append(referenced_work)
+
+                triple, created = create_triple(
+                    entity_subj=work,
+                    entity_obj=referenced_work,
+                    prop=Property.objects.get(name_forward=ref_label),
                 )
-
-            # create relations between Works when tags for Zotero item indicate relation
-            for r in work_refs:
-                ref_siglum = r["ref_siglum"]
-                ref_label = r["ref_label"]
-
-                referenced_work = get_work(ref_siglum)
-
-                if referenced_work:
-                    success.append(referenced_work)
-
-                    triple, created = create_triple(
-                        entity_subj=work,
-                        entity_obj=referenced_work,
-                        prop=Property.objects.get(name_forward=ref_label),
+                if created:
+                    success.append(
+                        f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                     )
-                    if created:
-                        success.append(
-                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
-                        )
 
-                else:
-                    ref_err = f"Referenced work {ref_siglum} does not exist."
-                    failure.append(ref_err)
+            else:
+                ref_err = f"Referenced work {ref_siglum} does not exist."
+                failure.append(ref_err)
 
-            if creators_with_props:
-                # get or create Person object for creators
-                for creator in creators_with_props:
-                    person, created = create_person(creator, source)
-                    if created:
-                        success.append(f"Created author: {person}")
+        if creators_with_props:
+            # get or create Person object for creators
+            for creator in creators_with_props:
+                person, created = create_person(creator, source)
+                if created:
+                    success.append(f"Created author: {person}")
 
+                triple, created = create_triple(
+                    entity_subj=person,
+                    entity_obj=work,
+                    prop=Property.objects.get(name_forward=creator["property_name"]),
+                )
+                if created:
+                    success.append(
+                        f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+                    )
+
+                if expression:
                     triple, created = create_triple(
                         entity_subj=person,
-                        entity_obj=work,
+                        entity_obj=expression,
                         prop=Property.objects.get(
                             name_forward=creator["property_name"]
                         ),
@@ -717,58 +726,45 @@ def create_entities(item, source):
                         success.append(
                             f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                         )
+        else:
+            ref_err = f"Work {siglum} is missing creators."
+            failure.append(ref_err)
 
-                    if expression:
-                        triple, created = create_triple(
-                            entity_subj=person,
-                            entity_obj=expression,
-                            prop=Property.objects.get(
-                                name_forward=creator["property_name"]
-                            ),
-                        )
-                        if created:
-                            success.append(
-                                f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
-                            )
-            else:
-                ref_err = f"Work {siglum} is missing creators."
-                failure.append(ref_err)
+        if publisher:
+            # get or create Organisation object for publisher
+            organisation, created = create_organisation(publisher, source)
 
-            if publisher:
-                # get or create Organisation object for publisher
-                organisation, created = create_organisation(publisher, source)
+            if created:
+                success.append(organisation)
 
-                if created:
-                    success.append(organisation)
-
-                triple, created = create_triple(
-                    entity_subj=organisation,
-                    entity_obj=expression,
-                    prop=Property.objects.get(name_forward="is publisher of"),
+            triple, created = create_triple(
+                entity_subj=organisation,
+                entity_obj=expression,
+                prop=Property.objects.get(name_forward="is publisher of"),
+            )
+            if created:
+                success.append(
+                    f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                 )
-                if created:
-                    success.append(
-                        f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+
+            # get or create Place object for place of publication
+            # ATTN. Zotero "place" field can contain multiple places
+            # separated by semicolons
+            if place_of_publication:
+                places = place_of_publication.split(";")
+                for p in places:
+                    place, created = create_place(p, source)
+                    if created:
+                        success.append(f"Created place: {place}")
+
+                    triple, created = create_triple(
+                        entity_subj=expression,
+                        entity_obj=place,
+                        prop=Property.objects.get(name_forward="is published in"),
                     )
-
-                # get or create Place object for place of publication
-                # ATTN. Zotero "place" field can contain multiple places
-                # separated by semicolons
-                if place_of_publication:
-                    places = place_of_publication.split(";")
-                    for p in places:
-                        place, created = create_place(p, source)
-                        if created:
-                            success.append(f"Created place: {place}")
-
-                        triple, created = create_triple(
-                            entity_subj=expression,
-                            entity_obj=place,
-                            prop=Property.objects.get(name_forward="is published in"),
+                    if created:
+                        success.append(
+                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                         )
-                        if created:
-                            success.append(
-                                f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
-                            )
 
     return success, failure
