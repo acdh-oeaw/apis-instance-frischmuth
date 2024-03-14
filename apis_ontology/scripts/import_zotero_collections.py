@@ -597,7 +597,8 @@ def create_entities(item, source):
     title = item_data["title"]
     siglum = item_data["callNumber"]
     subtitle = item_data.get("shortTitle", None)
-    pages = item_data.get("numPages", None)
+    num_pages = item_data.get("numPages", None)
+    relevant_pages = item_data.get("pages", None)
     item_date = item_data.get("date", None)
     place_of_publication = item_data.get("place", None)
     publisher = item_data.get("publisher", None)
@@ -630,8 +631,8 @@ def create_entities(item, source):
                 )
 
         pub_date = item_date
-        if pages:
-            pages = int(pages)
+        if num_pages:
+            pages = int(num_pages)
             if pages > 0:
                 page_count = pages
 
@@ -658,7 +659,7 @@ def create_entities(item, source):
 
         # get or create Expression object
         expression, created = create_expression(
-            title, subtitle, pub_date, source, page_count, edition_types
+            title, subtitle, pub_date, source, relevant_pages, page_count, edition_types
         )
         if created:
             success.append(expression)
