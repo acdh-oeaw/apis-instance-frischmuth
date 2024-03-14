@@ -139,7 +139,8 @@ def create_expression(
     subtitle: str,
     pub_date: str,
     source: DataSource,
-    pages: int = None,
+    relevant_pages: str,
+    page_count: int = None,
     edition_types: list = None,
 ):
     """
@@ -158,7 +159,8 @@ def create_expression(
         title=title,
         subtitle=subtitle,
         edition_type=edition_types,
-        page_count=pages,
+        page_count=page_count,
+        relevant_pages=relevant_pages,
         defaults={"data_source": source},
     )
 
