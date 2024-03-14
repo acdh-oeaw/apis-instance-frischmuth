@@ -210,9 +210,9 @@ def create_person(person_data: dict, source: DataSource):
                 first_name = " ".join(name_parts[:-1])
 
     person, created = Person.objects.get_or_create(
-        name=full_name,
-        first_name=first_name,
-        last_name=last_name,
+        # name=full_name,
+        forename=first_name,
+        surname=last_name,
         defaults={"data_source": source},
     )
 
@@ -238,7 +238,7 @@ def create_organisation(org_name: str, source: DataSource):
     return organisation, created
 
 
-def create_place(place_name: str, source: DataSource, place_type: str = None):
+def create_place(place_name: str, source: DataSource):
     """
     Create a new Place entity object if one with the given parameters
     does not exist yet.
@@ -255,7 +255,7 @@ def create_place(place_name: str, source: DataSource, place_type: str = None):
     """
     place, created = Place.objects.get_or_create(
         name=place_name,
-        defaults={"data_source": source, "notes": place_type},
+        defaults={"data_source": source},
     )
 
     return place, created
