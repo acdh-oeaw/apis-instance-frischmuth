@@ -715,7 +715,7 @@ def create_entities(item, source):
                     )
                     if created:
                         success.append(
-                            f"Created new triple: {triple.subj} – {triple.prop.name_foward} – {triple.obj}"
+                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                         )
 
                     if expression:
