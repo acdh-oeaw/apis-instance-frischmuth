@@ -152,7 +152,8 @@ def create_expression(
     :return: Expression object
     """
     expression, created = Expression.objects.get_or_create(
-        name=title,
+        title=title,
+        subtitle=subtitle,
         # manifestation_type=man_types,
         year_of_publication=pub_date,
         page_count=pages,
