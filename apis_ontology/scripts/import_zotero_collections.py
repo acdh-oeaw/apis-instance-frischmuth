@@ -357,7 +357,7 @@ def get_collection_data(zot, coll_key, include_subs=True):
     sub_collections = []
 
     if include_subs:
-        items = zot.collection_items(coll_key)
+        items = zot.collection_items(coll_key, itemType="-attachment")
         subs = zot.collections_sub(coll_key)
         for s in subs:
             sub_data = get_collection_data(zot, s["key"], include_subs=False)
