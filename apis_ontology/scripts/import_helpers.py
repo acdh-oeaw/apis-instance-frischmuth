@@ -81,7 +81,7 @@ def create_source(
 
 def create_work(title: str, subtitle: str, siglum: str, source: DataSource):
     """
-    Create a new Work entity object if one with the given parameters
+    Create a new Work entity object if one with the sigle parameter
     does not exist yet.
 
     :param title: main title of the Work, used for "name" field
@@ -91,10 +91,13 @@ def create_work(title: str, subtitle: str, siglum: str, source: DataSource):
     """
     work, created = Work.objects.get_or_create(
         siglum=siglum,
-        title=title,
-        subtitle=subtitle,
-        defaults={"data_source": source},
     )
+
+    if created:
+        work.title = title
+        work.subtitle = subtitle
+        work.data_source = source
+        work.save()
 
     return work, created
 
