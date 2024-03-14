@@ -79,7 +79,7 @@ def create_source(
     return source_obj, created
 
 
-def create_work(title: str, siglum: str, source: DataSource):
+def create_work(title: str, subtitle: str, siglum: str, source: DataSource):
     """
     Create a new Work entity object if one with the given parameters
     does not exist yet.
@@ -91,7 +91,8 @@ def create_work(title: str, siglum: str, source: DataSource):
     """
     work, created = Work.objects.get_or_create(
         siglum=siglum,
-        name=title,
+        title=title,
+        subtitle=subtitle,
         defaults={"data_source": source},
     )
 
@@ -132,6 +133,7 @@ def get_type(title: str):
 
 def create_expression(
     title: str,
+    subtitle: str,
     pub_date: str,
     source: DataSource,
     pages: int = None,

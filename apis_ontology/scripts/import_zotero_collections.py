@@ -596,6 +596,7 @@ def create_entities(item, source):
 
     title = item_data["title"]
     siglum = item_data["callNumber"]
+    subtitle = item_data.get("shortTitle", None)
     pages = item_data.get("numPages", None)
     item_date = item_data.get("date", None)
     place_of_publication = item_data.get("place", None)
@@ -635,7 +636,7 @@ def create_entities(item, source):
                 page_count = pages
 
         # get or create Work object
-        work, created = create_work(title, siglum, source)
+        work, created = create_work(title, subtitle, siglum, source)
 
         # only add additional data if a work is newly created
         # -> existing works need manual checking to avoid potential duplicates
@@ -659,7 +660,7 @@ def create_entities(item, source):
 
             # get or create Expression object
             expression, created = create_expression(
-                title, pub_date, source, page_count, edition_types
+                title, subtitle, pub_date, source, page_count, edition_types
             )
             if created:
                 success.append(expression)
