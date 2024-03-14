@@ -629,7 +629,7 @@ def create_entities(item, source):
                     [t for t in tags if t.startswith("type_")]
                 )
 
-        pub_date = convert_year_only_date(item_date)  # convert to date object
+        pub_date = item_date
         if pages:
             pages = int(pages)
             if pages > 0:
