@@ -598,6 +598,7 @@ def create_entities(item, source):
     title = item_data["title"]
     siglum = item_data["callNumber"]
     subtitle = item_data.get("shortTitle", None)
+    abstract = item_data.get("abstractNote", None)
     num_pages = item_data.get("numPages", None)
     relevant_pages = item_data.get("pages", None)
     item_date = item_data.get("date", None)
@@ -643,6 +644,10 @@ def create_entities(item, source):
 
         # get or create Work object
         work, created = create_work(title, subtitle, siglum, source)
+        # if abstract contains text, we overwrite the existing one
+        if abstract:
+            work.summary = abstract
+            work.save()
 
         if created:
             success.append(work)
