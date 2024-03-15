@@ -3,7 +3,7 @@ import inspect
 import os
 import sys
 
-from apis_core.apis_relations.models import TempTriple
+from apis_core.apis_relations.models import TempTriple, Property
 from apis_ontology.models import (
     Archive,
     DataSource,
@@ -299,3 +299,11 @@ def create_topic(topic_name: str, source: DataSource):
     )
 
     return archive, created
+
+
+def get_expressions_by_work(work_id: int):
+    prop = Property.objects.get(name_forward="is realised in")
+    related_expressions = [
+        i.obj for i in TempTriple.objects.filter(subj__id=work_id, prop=prop)
+    ]
+    return related_expressions
