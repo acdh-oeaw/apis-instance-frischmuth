@@ -5,7 +5,7 @@ import getpass
 import os
 from pyzotero import zotero, zotero_errors
 from apis_core.apis_relations.models import Property
-from apis_ontology.models import Expression
+from apis_ontology.models import Expression, Work
 from .additional_infos import WORK_TYPES, ZOTERO_CREATORS_MAPPING
 from .utils import create_import_name, create_import_date_string, convert_year_only_date
 from .import_helpers import (
@@ -19,6 +19,7 @@ from .import_helpers import (
     create_organisation,
     create_place,
     create_topic,
+    get_expressions_by_work,
 )
 
 # Use keys or keywords in environment variable ZOTERO_FILTER_COLLECTIONS
@@ -459,6 +460,37 @@ def get_work_references_fom_tags(tags):
     return valid_tags
 
 
+def get_expression_references_fom_tags(tags):
+    """
+    Check if a Zotero collection item's tags contain valid references
+    to create relationships between Expression entities.
+
+    :param tags: a list of strings
+    :return: a list of dictionaries containing both the reference label
+             and the siglum of the work being referenced
+    """
+    expression_references = ["expression is part of"]
+    valid_tags = []
+
+    applicable_tags = [t for t in tags if t.startswith("expression_")]
+
+    for t in applicable_tags:
+        explode_string = t.split("_")
+
+        wording = " ".join(explode_string[:-1])
+        siglum = explode_string[-1]
+
+        if wording in expression_references and siglum != wording and siglum != "":
+            valid_tags.append(
+                {
+                    "ref_label": f"{wording} expression",
+                    "ref_siglum": siglum,
+                }
+            )
+
+    return valid_tags
+
+
 def get_work_types_from_tags(tags):
     """
     Check if a Zotero collection item's tags contain valid work type labels
@@ -615,6 +647,7 @@ def create_entities(item, source):
         work_types = []
         work_refs = []
         topics = []
+        expr_refs = []
         page_count = None
 
         if creators:
@@ -628,6 +661,9 @@ def create_entities(item, source):
                 )
                 work_refs = get_work_references_fom_tags(
                     [t for t in tags if t.startswith("work_")]
+                )
+                expr_refs = get_expression_references_fom_tags(
+                    [t for t in tags if t.startswith("expression_")]
                 )
                 work_types = get_work_types_from_tags(
                     [t for t in tags if t.startswith("type_")]
@@ -703,6 +739,46 @@ def create_entities(item, source):
                     success.append(
                         f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                     )
+
+            else:
+                ref_err = f"Referenced work {ref_siglum} does not exist."
+                failure.append(ref_err)
+
+        for r in expr_refs:
+            ref_siglum = r["ref_siglum"]
+            ref_label = r["ref_label"]
+
+            referenced_work = get_work(ref_siglum)
+            if referenced_work:
+                work_expressions = get_expressions_by_work(referenced_work.id)
+
+                # temporary fix because we have a flaw in our logic (expressions have to be in zotero to be referenced)
+                if not work_expressions:
+                    work = Work.objects.get(id=work.id)
+                    exp, created = create_expression(
+                        title=referenced_work.title,
+                        subtitle=referenced_work.subtitle,
+                        source=source,
+                        pub_date=None,
+                        relevant_pages="",
+                    )
+                    create_triple(
+                        entity_subj=referenced_work,
+                        entity_obj=exp,
+                        prop=Property.objects.get(name_forward="is realised in"),
+                    )
+                    work_expressions.append(exp)
+
+                for work_expression in work_expressions:
+                    triple, created = create_triple(
+                        entity_subj=expression,
+                        entity_obj=work_expression,
+                        prop=Property.objects.get(name_forward=ref_label),
+                    )
+                    if created:
+                        success.append(
+                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+                        )
 
             else:
                 ref_err = f"Referenced work {ref_siglum} does not exist."
