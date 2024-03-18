@@ -393,9 +393,8 @@ def get_valid_collection_items(collection_items):
 
     for item in collection_items:
         title = item["data"].get("title", None)
-        siglum = item["data"].get("callNumber", None)
 
-        if title and title != "" and siglum and siglum != "":
+        if title and title != "":
             importable.append(item)
         else:
             # notes for e.g. book items are included again as separate items
@@ -638,101 +637,135 @@ def create_entities(item, source):
     publisher = item_data.get("publisher", None)
     creators = item_data.get("creators", [])
     item_tags = item_data.get("tags", [])
+    creators_with_props = []
+    edition_types = []
+    work_types = []
+    work_refs = []
+    topics = []
+    expr_refs = []
+    page_count = None
 
-    if not siglum or siglum == "":
-        failure.append("Missing siglum!")
-    else:
-        creators_with_props = []
-        edition_types = []
-        work_types = []
-        work_refs = []
-        topics = []
-        expr_refs = []
-        page_count = None
+    if creators:
+        creators_with_props = match_creator_types(creators)
 
-        if creators:
-            creators_with_props = match_creator_types(creators)
-
-        if item_tags:
-            tags = [i["tag"].strip() for i in item_tags if "tag" in i]
-            if tags:
-                edition_types = get_edition_types_from_tags(
-                    [t for t in tags if t.endswith("ausgabe")]
-                )
-                work_refs = get_work_references_fom_tags(
-                    [t for t in tags if t.startswith("work_")]
-                )
-                expr_refs = get_expression_references_fom_tags(
-                    [t for t in tags if t.startswith("expression_")]
-                )
-                work_types = get_work_types_from_tags(
-                    [t for t in tags if t.startswith("type_")]
-                )
-                topics = [
-                    t.replace("topic_", "") for t in tags if t.startswith("topic_")
-                ]
-
-        pub_date = item_date
-        if num_pages:
-            pages = int(num_pages)
-            if pages > 0:
-                page_count = pages
-
-        # get or create Work object
-        work, created = create_work(title, subtitle, siglum, source)
-        # if abstract contains text, we overwrite the existing one
-        if abstract:
-            work.summary = abstract
-            work.save()
-
-        if created:
-            success.append(work)
-
-            if work_types:
-                # create triple for work type
-                for t in work_types:
-                    work_type = get_type(t["german_label"])
-
-                    triple, created = create_triple(
-                        entity_subj=work,
-                        entity_obj=work_type,
-                        prop=Property.objects.get(name_forward="has type"),
-                    )
-                    if created:
-                        success.append(
-                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
-                        )
-
-        # get or create Expression object
-        expression, created = create_expression(
-            title, subtitle, pub_date, source, relevant_pages, page_count, edition_types
-        )
-        if created:
-            success.append(expression)
-
-        triple, created = create_triple(
-            entity_subj=work,
-            entity_obj=expression,
-            prop=Property.objects.get(name_forward="is realised in"),
-        )
-        if created:
-            success.append(
-                f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+    if item_tags:
+        tags = [i["tag"].strip() for i in item_tags if "tag" in i]
+        if tags:
+            edition_types = get_edition_types_from_tags(
+                [t for t in tags if t.endswith("ausgabe")]
             )
+            work_refs = get_work_references_fom_tags(
+                [t for t in tags if t.startswith("work_")]
+            )
+            expr_refs = get_expression_references_fom_tags(
+                [t for t in tags if t.startswith("expression_")]
+            )
+            work_types = get_work_types_from_tags(
+                [t for t in tags if t.startswith("type_")]
+            )
+            topics = [t.replace("topic_", "") for t in tags if t.startswith("topic_")]
 
-        # create relations between Works when tags for Zotero item indicate relation
-        for r in work_refs:
-            ref_siglum = r["ref_siglum"]
-            ref_label = r["ref_label"]
+    pub_date = item_date
+    if num_pages:
+        pages = int(num_pages)
+        if pages > 0:
+            page_count = pages
 
-            referenced_work = get_work(ref_siglum)
+    # get or create Work object
+    work, created = create_work(title, subtitle, siglum, source)
+    # if abstract contains text, we overwrite the existing one
+    if abstract:
+        work.summary = abstract
+        work.save()
 
-            if referenced_work:
-                success.append(referenced_work)
+    if created:
+        success.append(work)
+
+        if work_types:
+            # create triple for work type
+            for t in work_types:
+                work_type = get_type(t["german_label"])
 
                 triple, created = create_triple(
                     entity_subj=work,
-                    entity_obj=referenced_work,
+                    entity_obj=work_type,
+                    prop=Property.objects.get(name_forward="has type"),
+                )
+                if created:
+                    success.append(
+                        f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+                    )
+
+    # get or create Expression object
+    expression, created = create_expression(
+        title, subtitle, pub_date, source, relevant_pages, page_count, edition_types
+    )
+    if created:
+        success.append(expression)
+
+    triple, created = create_triple(
+        entity_subj=work,
+        entity_obj=expression,
+        prop=Property.objects.get(name_forward="is realised in"),
+    )
+    if created:
+        success.append(
+            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+        )
+
+    # create relations between Works when tags for Zotero item indicate relation
+    for r in work_refs:
+        ref_siglum = r["ref_siglum"]
+        ref_label = r["ref_label"]
+
+        referenced_work = get_work(ref_siglum)
+
+        if referenced_work:
+            success.append(referenced_work)
+
+            triple, created = create_triple(
+                entity_subj=work,
+                entity_obj=referenced_work,
+                prop=Property.objects.get(name_forward=ref_label),
+            )
+            if created:
+                success.append(
+                    f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+                )
+
+        else:
+            ref_err = f"Referenced work {ref_siglum} does not exist."
+            failure.append(ref_err)
+
+    for r in expr_refs:
+        ref_siglum = r["ref_siglum"]
+        ref_label = r["ref_label"]
+
+        referenced_work = get_work(ref_siglum)
+        if referenced_work:
+            work_expressions = get_expressions_by_work(referenced_work.id)
+
+            # temporary fix because we have a flaw in our logic (expressions have to be in zotero to be referenced)
+            if not work_expressions:
+                work = Work.objects.get(id=work.id)
+                exp, created = create_expression(
+                    title=referenced_work.title,
+                    subtitle=referenced_work.subtitle,
+                    source=source,
+                    pub_date=None,
+                    relevant_pages="",
+                )
+                create_triple(
+                    entity_subj=referenced_work,
+                    entity_obj=exp,
+                    prop=Property.objects.get(name_forward="is realised in"),
+                )
+                work_expressions.append(exp)
+
+            for work_expression in work_expressions:
+                triple, created = create_triple(
+                    entity_subj=expression,
+                    entity_obj=work_expression,
                     prop=Property.objects.get(name_forward=ref_label),
                 )
                 if created:
@@ -740,133 +773,91 @@ def create_entities(item, source):
                         f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                     )
 
-            else:
-                ref_err = f"Referenced work {ref_siglum} does not exist."
-                failure.append(ref_err)
+        else:
+            ref_err = f"Referenced work {ref_siglum} does not exist."
+            failure.append(ref_err)
 
-        for r in expr_refs:
-            ref_siglum = r["ref_siglum"]
-            ref_label = r["ref_label"]
+    if creators_with_props:
+        # get or create Person object for creators
+        for creator in creators_with_props:
+            person, created = create_person(creator, source)
+            if created:
+                success.append(f"Created author: {person}")
 
-            referenced_work = get_work(ref_siglum)
-            if referenced_work:
-                work_expressions = get_expressions_by_work(referenced_work.id)
+            triple, created = create_triple(
+                entity_subj=person,
+                entity_obj=work,
+                prop=Property.objects.get(name_forward=creator["property_name"]),
+            )
+            if created:
+                success.append(
+                    f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+                )
 
-                # temporary fix because we have a flaw in our logic (expressions have to be in zotero to be referenced)
-                if not work_expressions:
-                    work = Work.objects.get(id=work.id)
-                    exp, created = create_expression(
-                        title=referenced_work.title,
-                        subtitle=referenced_work.subtitle,
-                        source=source,
-                        pub_date=None,
-                        relevant_pages="",
-                    )
-                    create_triple(
-                        entity_subj=referenced_work,
-                        entity_obj=exp,
-                        prop=Property.objects.get(name_forward="is realised in"),
-                    )
-                    work_expressions.append(exp)
-
-                for work_expression in work_expressions:
-                    triple, created = create_triple(
-                        entity_subj=expression,
-                        entity_obj=work_expression,
-                        prop=Property.objects.get(name_forward=ref_label),
-                    )
-                    if created:
-                        success.append(
-                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
-                        )
-
-            else:
-                ref_err = f"Referenced work {ref_siglum} does not exist."
-                failure.append(ref_err)
-
-        if creators_with_props:
-            # get or create Person object for creators
-            for creator in creators_with_props:
-                person, created = create_person(creator, source)
-                if created:
-                    success.append(f"Created author: {person}")
-
+            if expression:
                 triple, created = create_triple(
                     entity_subj=person,
-                    entity_obj=work,
+                    entity_obj=expression,
                     prop=Property.objects.get(name_forward=creator["property_name"]),
                 )
                 if created:
                     success.append(
                         f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                     )
+    else:
+        ref_err = f"Work {siglum} is missing creators."
+        failure.append(ref_err)
 
-                if expression:
-                    triple, created = create_triple(
-                        entity_subj=person,
-                        entity_obj=expression,
-                        prop=Property.objects.get(
-                            name_forward=creator["property_name"]
-                        ),
-                    )
-                    if created:
-                        success.append(
-                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
-                        )
-        else:
-            ref_err = f"Work {siglum} is missing creators."
-            failure.append(ref_err)
+    if publisher:
+        # get or create Organisation object for publisher
+        organisation, created = create_organisation(publisher, source)
 
-        if publisher:
-            # get or create Organisation object for publisher
-            organisation, created = create_organisation(publisher, source)
+        if created:
+            success.append(organisation)
 
-            if created:
-                success.append(organisation)
-
-            triple, created = create_triple(
-                entity_subj=organisation,
-                entity_obj=expression,
-                prop=Property.objects.get(name_forward="is publisher of"),
+        triple, created = create_triple(
+            entity_subj=organisation,
+            entity_obj=expression,
+            prop=Property.objects.get(name_forward="is publisher of"),
+        )
+        if created:
+            success.append(
+                f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
             )
-            if created:
-                success.append(
-                    f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+
+        # get or create Place object for place of publication
+        # ATTN. Zotero "place" field can contain multiple places
+        # separated by semicolons
+        if place_of_publication:
+            places = place_of_publication.split(";")
+            for p in places:
+                place, created = create_place(p, source)
+                if created:
+                    success.append(f"Created place: {place}")
+
+                triple, created = create_triple(
+                    entity_subj=expression,
+                    entity_obj=place,
+                    prop=Property.objects.get(name_forward="is published in"),
                 )
-
-            # get or create Place object for place of publication
-            # ATTN. Zotero "place" field can contain multiple places
-            # separated by semicolons
-            if place_of_publication:
-                places = place_of_publication.split(";")
-                for p in places:
-                    place, created = create_place(p, source)
-                    if created:
-                        success.append(f"Created place: {place}")
-
-                    triple, created = create_triple(
-                        entity_subj=expression,
-                        entity_obj=place,
-                        prop=Property.objects.get(name_forward="is published in"),
+                if created:
+                    success.append(
+                        f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                     )
-                    if created:
-                        success.append(
-                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
-                        )
-        # get or create topics and relations between work and topics
-        for topic in topics:
-            topic, created = create_topic(topic_name=topic, source=source)
-            if created:
-                success.append(f"Created topic: {topic}")
+    # get or create topics and relations between work and topics
+    for topic in topics:
+        topic, created = create_topic(topic_name=topic, source=source)
+        if created:
+            success.append(f"Created topic: {topic}")
 
-            triple, created = create_triple(
-                entity_subj=work,
-                entity_obj=topic,
-                prop=Property.objects.get(name_forward="is about topic"),
+        triple, created = create_triple(
+            entity_subj=work,
+            entity_obj=topic,
+            prop=Property.objects.get(name_forward="is about topic"),
+        )
+        if created:
+            success.append(
+                f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
             )
-            if created:
-                success.append(
-                    f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
-                )
 
     return success, failure
