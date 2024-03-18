@@ -120,6 +120,9 @@ class PersonNameMixin(AlternativeNameMixin, models.Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return self.full_name()
+
     def full_name(self):
         full_name = ""
         surname = self.surname
