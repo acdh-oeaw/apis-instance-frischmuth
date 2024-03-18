@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from multiselectfield import MultiSelectField
+import re
 
 
 @reversion.register
@@ -142,6 +143,19 @@ class TitlesMixin(models.Model):
 
     class Meta:
         abstract = True
+
+    def full_title(self):
+        full_title = self.title
+        subtitle = self.subtitle
+        letter_or_digit = re.compile(r"[\W\d]", re.U)
+
+        if subtitle:
+            if letter_or_digit.match(subtitle[0]):
+                full_title += f" {subtitle}"
+            else:
+                full_title += f". {subtitle}"
+
+        return full_title
 
 
 @reversion.register
