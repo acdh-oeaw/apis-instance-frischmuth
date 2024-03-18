@@ -120,6 +120,26 @@ class PersonNameMixin(AlternativeNameMixin, models.Model):
     class Meta:
         abstract = True
 
+    def full_name(self):
+        full_name = ""
+        surname = self.surname
+        forename = self.forename
+        fallback_name = self.fallback_name
+
+        if fallback_name != "":
+            full_name = fallback_name
+        else:
+            if forename != "" and surname != "":
+                full_name = f"{forename} {surname}"
+            elif surname != "":
+                full_name = surname
+            elif forename != "":
+                full_name = forename
+            else:
+                pass
+
+        return full_name
+
 
 @reversion.register
 class TitlesMixin(models.Model):
