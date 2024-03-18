@@ -164,9 +164,9 @@ def create_expression(
         relevant_pages=relevant_pages,
         defaults={"data_source": source},
     )
-
-    expression.publication_date = pub_date
-    expression.save()
+    if pub_date:
+        expression.publication_date = pub_date
+        expression.save()
 
     return expression, created
 
