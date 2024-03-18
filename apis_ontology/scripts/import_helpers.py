@@ -90,15 +90,20 @@ def create_work(title: str, subtitle: str, siglum: str, source: DataSource):
     :param source: DataSource object to link to, used to identify data imports
     :return: Work object
     """
-    work, created = Work.objects.get_or_create(
-        siglum=siglum,
-    )
 
-    if created:
-        work.title = title
-        work.subtitle = subtitle
-        work.data_source = source
-        work.save()
+    if siglum:
+        work, created = Work.objects.get_or_create(
+            siglum=siglum,
+        )
+
+        if created:
+            work.title = title
+            work.subtitle = subtitle
+            work.data_source = source
+            work.save()
+    else:
+        work = Work.objects.create(title=title, subtitle=subtitle, data_source=source)
+        created = True
 
     return work, created
 
