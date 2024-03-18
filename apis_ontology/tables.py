@@ -37,7 +37,7 @@ class GenericEditLinkColumn(tables.Column):
 
 class FullTitleMixin(tables.Table):
     full_title = GenericEditLinkColumn(
-        accessor="title",
+        accessor="full_title",
         verbose_name=_("Titel (gesamt)"),
         order_by=("title", "subtitle"),
     )
@@ -45,15 +45,6 @@ class FullTitleMixin(tables.Table):
     class Meta:
         sequence = ("full_title", "title", "subtitle")
         exclude = ["title", "subtitle"]
-
-    def render_full_title(self, record):
-        full_title = record.title
-        subtitle = record.subtitle
-
-        if subtitle:
-            full_title += f". {subtitle}"
-
-        return full_title
 
 
 class FullNameMixin(tables.Table):
