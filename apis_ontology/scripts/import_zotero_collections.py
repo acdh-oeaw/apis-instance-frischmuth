@@ -7,7 +7,7 @@ from pyzotero import zotero, zotero_errors
 from apis_core.apis_relations.models import Property
 from apis_ontology.models import Expression, Work
 from .additional_infos import WORK_TYPES, ZOTERO_CREATORS_MAPPING
-from .utils import create_import_name, create_import_date_string, convert_year_only_date
+from .utils import create_import_date_string, convert_year_only_date
 from .import_helpers import (
     create_triple,
     create_source,
@@ -90,18 +90,10 @@ def import_work_collections(zot, coll_id, include_subs=True):
                     sub_ids.append(d["key"])
 
             # check all required sub collections are present
-            dt_string = create_import_date_string()
-            import_name = create_import_name(
-                [
-                    collection_data["name"],
-                    dt_string,
-                ],
-                import_source="Zotero",
-            )
 
             for coll_id in sub_ids:
                 imported, failed = import_items_from_collection(
-                    zot, coll_id, include_subs=True, import_name=import_name
+                    zot, coll_id, include_subs=True, import_name=collection_data["name"]
                 )
                 success.append(imported)
                 failure.append(failed)
@@ -300,16 +292,6 @@ def import_items_from_collection(zot, coll_key, include_subs=True, import_name=N
     """
     collection_data = get_collection_data(zot, coll_key, include_subs=include_subs)
 
-    if not import_name:
-        dt_string = create_import_date_string()
-        import_name = create_import_name(
-            [
-                collection_data["name"],
-                dt_string,
-            ],
-            import_source="Zotero",
-        )
-
     success, failure = import_items(collection_data["items"], import_name)
 
     return success, failure
@@ -325,7 +307,7 @@ def import_items(collection_items, import_name):
     success = []
     failure = []
 
-    source, created = create_source(import_name)
+    source, created = create_source(import_name, "", "", "", "Zotero")
     importable, non_importable = get_valid_collection_items(collection_items)
 
     if importable:
