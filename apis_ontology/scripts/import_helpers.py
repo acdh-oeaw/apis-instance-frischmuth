@@ -34,10 +34,10 @@ def create_triple(entity_subj, entity_obj, prop):
 
 def create_source(
     name: str,
-    separator="_",
-    metadata: str = None,
+    file_name: str = None,
+    data_type: str = None,
     author: str = None,
-    with_date: bool = True,
+    provider: str = None,
 ):
     """
     Helper function for creating a DataSource object by which
@@ -60,21 +60,24 @@ def create_source(
     # script from which create_source is called
     calling_script = os.path.basename(inspect.getsourcefile(sys._getframe(1)))
 
-    if with_date:
-        dt_string = create_import_date_string()
-        name = f"{name}{separator}{dt_string}"
-
-    if not metadata:
-        metadata = calling_script
+    added_date = datetime.datetime.now()
 
     if not author:
         # required field for DataSource, cannot be empty
         author = ""
 
+    if not provider:
+        # required field for DataSource, cannot be empty
+        provider = ""
+
     source_obj, created = DataSource.objects.get_or_create(
-        file_name=name,
-        # pubinfo=metadata,
+        name=name,
+        file_name=file_name,
+        added_date=added_date,
+        data_type=data_type,
+        provider=provider,
         author=author,
+        added_by=calling_script,
     )
 
     return source_obj, created
