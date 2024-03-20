@@ -916,6 +916,10 @@ class Interpretatem(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEnt
         verbose_name_plural = _("interpretateme")
 
 
+deprecated_name = AbstractEntity._meta.get_field("deprecated_name")
+deprecated_name.verbose_name = "[deprecated; ignore]"
+
+
 def create_properties(
     name_forward: str, name_reverse: str, subjects: list, objects: list
 ):
