@@ -35,6 +35,23 @@ class StatusMixin(models.Model):
         verbose_name_plural = _("progress states")
 
 
+class NotesMixin(models.Model):
+    """
+    Mixin for internal notes.
+    """
+
+    notes = models.TextField(
+        max_length=1024,
+        blank=True,
+        default="",
+        verbose_name=_("Notiz"),
+        help_text=_("Feld für interne Notizen"),
+    )
+
+    class Meta:
+        abstract = True
+
+
 @reversion.register
 class AlternativeNameMixin(models.Model):
     """
