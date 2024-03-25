@@ -1070,7 +1070,7 @@ def construct_properties():
     is_realised_in = create_properties(
         name_forward="is realised in",
         name_reverse="realises",
-        subjects=[Work],
+        subjects=[Work, Expression],
         objects=[Expression],
     )
 
