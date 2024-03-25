@@ -9,7 +9,7 @@ packages = [{include = "apis_ontology"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 apis-acdhch-default-settings = "v0.1.24"
-apis-core = {git = "https://github.com/acdh-oeaw/apis-core-rdf", rev = "v0.15.0"}
+apis-core = {git = "https://github.com/acdh-oeaw/apis-core-rdf", rev = "kk/fix/rootobject_field_rename_leftovers"}
 dateparser = "^1.2.0"
 Django = "^4.2.7"
 django-extensions = "^3.2.3"
