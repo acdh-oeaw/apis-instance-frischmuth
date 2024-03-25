@@ -507,7 +507,9 @@ class WorkType(
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Expression(TitlesMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class Expression(
+    TitlesMixin, DescriptionMixin, NotesMixin, StatusMixin, AbstractEntity
+):
     """
     A concrete representation of a given Work,
     captured in signs, images, audio signals,...
