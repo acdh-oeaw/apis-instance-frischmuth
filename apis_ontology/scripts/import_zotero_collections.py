@@ -382,7 +382,10 @@ def get_valid_collection_items(collection_items):
             # notes for e.g. book items are included again as separate items
             parent_key = item["data"].get("parentItem", None)
             if parent_key and parent_key in [s["key"] for s in importable]:
-                pass
+                parent = list(
+                    filter(lambda item: item["key"] == parent_key, importable)
+                )[0]
+                parent.update({"enriched": {"note": item["data"].get("note", None)}})
             else:
                 not_importable.append(item)
 
@@ -626,6 +629,7 @@ def create_entities(item, source):
     topics = []
     expr_refs = []
     page_count = None
+    item_note = item.get("enriched", {}).get("note", None)
 
     if creators:
         creators_with_props = match_creator_types(creators)
@@ -683,6 +687,9 @@ def create_entities(item, source):
         title, subtitle, pub_date, source, relevant_pages, page_count, edition_types
     )
     if created:
+        if item_note:
+            expression.notes = item_note
+            expression.save()
         success.append(expression)
 
     triple, created = create_triple(
