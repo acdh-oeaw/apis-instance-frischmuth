@@ -616,7 +616,7 @@ def create_entities(item, source):
     subtitle = item_data.get("shortTitle", None)
     abstract = item_data.get("abstractNote", None)
     num_pages = item_data.get("numPages", None)
-    relevant_pages = item_data.get("pages", None)
+    relevant_pages = item_data.get("pages", "")
     item_date = item_data.get("date", None)
     place_of_publication = item_data.get("place", None)
     publisher = item_data.get("publisher", None)
