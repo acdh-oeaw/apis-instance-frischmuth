@@ -574,8 +574,8 @@ class Expression(
         choices=EditionTypes.choices,
         blank=True,
         default="",
-        verbose_name="Ausgabetyp",
-        help_text="Zur Markierung speziell relevanter Ausgaben",
+        verbose_name=_("Ausgabetyp"),
+        help_text=_("Zur Markierung speziell relevanter Ausgaben"),
     )
 
     data_source = models.ForeignKey(
@@ -797,8 +797,8 @@ class Character(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         choices=CharacterFictionality.choices,
         blank=False,
         default="",
-        verbose_name="Erfindungsgrad",
-        help_text="Faktizität vs. Fiktionalität",
+        verbose_name=_("Erfindungsgrad"),
+        help_text=_("Faktizität vs. Fiktionalität"),
     )
 
     class Meta:
