@@ -373,11 +373,15 @@ class Work(TitlesMixin, StatusMixin, AbstractEntity):
     )
 
     context = models.TextField(
-        blank=True, null=True, verbose_name=_("Entstehungskontext")
+        blank=True,
+        null=True,
+        verbose_name=_("Entstehungskontext"),
     )
 
     historical_events = models.TextField(
-        blank=True, null=True, verbose_name=_("Historischer Kontext")
+        blank=True,
+        null=True,
+        verbose_name=_("Historischer Kontext"),
     )
 
     data_source = models.ForeignKey(
