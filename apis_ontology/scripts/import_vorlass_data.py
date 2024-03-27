@@ -51,7 +51,7 @@ def get_status(status):
     status_choices = dict(
         (v, k) for k, v in dict(StatusMixin.ProgressStates.choices).items()
     )
-    return status_choices.get(status)
+    return status_choices.get(status, "")
 
 
 def parse_vorlass_xml(title_siglum_dict, vorlass_excel_source):
