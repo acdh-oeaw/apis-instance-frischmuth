@@ -201,6 +201,29 @@ class TitlesMixin(models.Model):
         return full_title
 
 
+class LanguageMixin(models.Model):
+    class Languages_ISO_639_3(models.TextChoices):
+        """
+        A selection of ISO 639-3 language codes
+        relevant to the project.
+        """
+
+        DE = "deu", _("Deutsch")
+        EN = "eng", _("Englisch")
+        FR = "fra", _("Französisch")
+
+    language = models.CharField(
+        max_length=3,
+        choices=Languages_ISO_639_3.choices,
+        blank=True,
+        default="",
+        verbose_name=_("Sprache"),
+    )
+
+    class Meta:
+        abstract = True
+
+
 @reversion.register
 class DataSource(models.Model):
     """
