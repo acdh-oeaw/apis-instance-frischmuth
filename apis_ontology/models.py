@@ -540,6 +540,13 @@ class Expression(
         ),
     )
 
+    isbn = models.CharField(
+        max_length=50,
+        blank=True,
+        default="",
+        verbose_name=_("ISBN"),
+    )
+
     issue = models.CharField(
         max_length=30,
         blank=True,
