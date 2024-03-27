@@ -24,8 +24,8 @@ class StatusMixin(models.Model):
     progress_status = models.CharField(
         max_length=255,
         choices=ProgressStates.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Bearbeitungsstatus"),
     )
 
@@ -360,27 +360,27 @@ class Work(TitlesMixin, StatusMixin, AbstractEntity):
     summary = models.TextField(
         max_length=1024,
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Teaser"),
         help_text=_("Kurzzusammenfassung"),
     )
 
     text_analysis = models.TextField(
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Textanalyse"),
         help_text=_("Fließtext"),
     )
 
     context = models.TextField(
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Entstehungskontext"),
     )
 
     historical_events = models.TextField(
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Historischer Kontext"),
     )
 
@@ -398,80 +398,80 @@ class Work(TitlesMixin, StatusMixin, AbstractEntity):
     temporal_order = models.CharField(
         max_length=255,
         choices=TemporalOrder.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Erzählordnung"),
     )
 
     temporal_duration = models.CharField(
         max_length=255,
         choices=TemporalDuration.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Dauer"),
     )
 
     temporal_frequency = models.CharField(
         max_length=255,
         choices=TemporalFrequency.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Frequenz"),
     )
 
     figure_speech = models.CharField(
         max_length=255,
         choices=FigureSpeech.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Figurenrede"),
     )
 
     representation_of_thought = models.CharField(
         max_length=255,
         choices=RepresentationOfThought.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Darstellung von Gedanken"),
     )
 
     focalization = models.CharField(
         max_length=255,
         choices=Focalization.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Fokalisierung"),
     )
 
     narrative_situation = models.CharField(
         max_length=255,
         choices=NarrativeSituation.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Erzählperspektive"),
     )
 
     narrative_chronology = models.CharField(
         max_length=255,
         choices=NarrativeChronology.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Zeitpunkt des Erzählens"),
     )
 
     narrative_level = models.CharField(
         max_length=255,
         choices=NarrativeLevel.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Ort des Erzählens"),
     )
 
     narrative_voice = models.CharField(
         max_length=255,
         choices=NarrativeVoice.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Stellung des:der Erzähler:in zum Geschehen"),
     )
 
@@ -491,7 +491,7 @@ class WorkType(
     name_plural = models.CharField(
         max_length=255,
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Pluralform"),
     )
 
@@ -533,7 +533,7 @@ class Expression(
 
     publication_date = models.CharField(
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Erscheinungsdatum"),
         help_text=_(
             "Erlaubte Formatvariationen u.a. 1.1.1920, 12/2010, 1999-12-23,..."
@@ -543,7 +543,7 @@ class Expression(
     issue = models.CharField(
         max_length=30,
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("(Zeitungs)Ausgabe"),
         help_text=_("Nummer/Kennung einer Ausgabe eines periodischen Mediums"),
     )
@@ -557,7 +557,7 @@ class Expression(
 
     relevant_pages = models.CharField(
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Forschungsrelevante Seiten"),
         help_text=_('Eingabe muss im Format "X-Y" erfolgen, z.B. 5-12'),
     )
@@ -565,8 +565,8 @@ class Expression(
     edition_type = MultiSelectField(
         max_length=255,
         choices=EditionTypes.choices,
-        null=True,
         blank=True,
+        default="",
         verbose_name="Ausgabetyp",
         help_text="Zur Markierung speziell relevanter Ausgaben",
     )
@@ -630,14 +630,14 @@ class Archive(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     location = models.CharField(
         max_length=255,
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Anschrift"),
     )
 
     website = models.URLField(
         max_length=255,
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Webseite"),
     )
 
@@ -671,7 +671,7 @@ class PhysicalObject(GenericNameMixin, DescriptionMixin, AbstractEntity):
     vorlass_doc_reference = models.CharField(
         max_length=255,
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Vorlassdokument-Referenz"),
         editable=False,
     )
@@ -728,7 +728,7 @@ class Organisation(
     website = models.URLField(
         max_length=255,
         blank=True,
-        null=True,
+        default="",
         verbose_name=_("Webseite"),
     )
 
@@ -779,8 +779,8 @@ class Character(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     relevancy = models.CharField(
         max_length=255,
         choices=CharacterRelevancy.choices,
-        null=True,
         blank=False,
+        default="",
         verbose_name=_("Relevanz"),
         help_text=_("Bedeutsamkeit für den Text, Erzählfokus"),
     )
@@ -788,8 +788,8 @@ class Character(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     fictionality = MultiSelectField(
         max_length=255,
         choices=CharacterFictionality.choices,
-        null=True,
         blank=False,
+        default="",
         verbose_name="Erfindungsgrad",
         help_text="Faktizität vs. Fiktionalität",
     )
