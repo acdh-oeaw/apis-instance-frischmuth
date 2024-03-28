@@ -122,9 +122,9 @@ def parse_entities_dataframe(sheet_name, df, file):
 
         if sheet_name == "Namen":
             character_name = row["Name"]
-            character_forename = row["Vorname"]
-            character_surname = row["Nachname"]
-            character_alternative_name = row["alternativeName"]
+            person_forename = row["Vorname"]
+            person_surname = row["Nachname"]
+            person_alternative_name = row["alternativeName"]
             character_description = row["Beschreibung"]
             character_relevancy = RELEVANCIES.get(row["Rolle"], "")
             character_fictionality = row["Kategorie"]
@@ -134,9 +134,6 @@ def parse_entities_dataframe(sheet_name, df, file):
 
             character = Character.objects.create(
                 fallback_name=character_name,
-                forename=character_forename,
-                surname=character_surname,
-                alternative_name=character_alternative_name,
                 description=character_description,
                 relevancy=character_relevancy,
                 fictionality=character_fictionality_degree,
@@ -163,27 +160,27 @@ def parse_entities_dataframe(sheet_name, df, file):
                 person = None
                 person_qs = None
 
+                person_fallback_name = (
+                    character_name if not (person_forename or person_surname) else ""
+                )
+
                 if len(person_uri_objects) > 0:
                     person_qs = Person.objects.filter(
                         uri__in=[uri.id for uri in person_uri_objects],
                     )
                 else:
                     person_qs = Person.objects.filter(
-                        fallback_name=character_name,
-                        forename=character_forename,
-                        surname=character_surname,
+                        fallback_name=person_fallback_name,
+                        forename=person_forename,
+                        surname=person_surname,
                     )
 
                 if person_qs.count() == 0:
-                    person_fallback_name = (
-                        character_name
-                        if not (character_forename or character_surname)
-                        else ""
-                    )
                     person, created = Person.objects.get_or_create(
                         fallback_name=person_fallback_name,
-                        forename=character_forename,
-                        surname=character_surname,
+                        forename=person_forename,
+                        surname=person_surname,
+                        alternative_name=person_alternative_name,
                         defaults={"data_source": data_source},
                     )
                 else:
