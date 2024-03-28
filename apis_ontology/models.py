@@ -589,7 +589,7 @@ class Expression(
         max_length=30,
         blank=True,
         default="",
-        verbose_name=_("(Zeitungs)Ausgabe"),
+        verbose_name=_("Zeitungsnummer"),
         help_text=_("Nummer/Kennung einer Ausgabe eines periodischen Mediums"),
     )
 
