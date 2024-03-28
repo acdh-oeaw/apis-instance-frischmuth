@@ -213,7 +213,7 @@ class LanguageMixin(models.Model):
         FR = "fra", _("Französisch")
 
     language = models.CharField(
-        max_length=3,
+        max_length=255,
         choices=Languages_ISO_639_3.choices,
         blank=True,
         default="",
