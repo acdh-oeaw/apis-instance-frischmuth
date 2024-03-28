@@ -7,7 +7,7 @@ from pyzotero import zotero, zotero_errors
 from apis_core.apis_relations.models import Property
 from apis_ontology.models import Expression, Work
 from .additional_infos import WORK_TYPES, ZOTERO_CREATORS_MAPPING
-from .utils import create_import_date_string, convert_year_only_date
+from .utils import clean_and_split_multivalue_string
 from .import_helpers import (
     create_triple,
     create_source,
@@ -618,6 +618,7 @@ def create_entities(item, source):
     num_pages = item_data.get("numPages", None)
     relevant_pages = item_data.get("pages", "")
     item_date = item_data.get("date", None)
+    languages = clean_and_split_multivalue_string(item_data.get("language", ""), ";")
     place_of_publication = item_data.get("place", None)
     publisher = item_data.get("publisher", None)
     creators = item_data.get("creators", [])
@@ -664,6 +665,10 @@ def create_entities(item, source):
         work.summary = abstract
         work.save()
 
+    if languages:
+        work.language = languages
+        work.save()
+
     if created:
         success.append(work)
 
@@ -687,6 +692,9 @@ def create_entities(item, source):
         title, subtitle, pub_date, source, relevant_pages, page_count, edition_types
     )
     if created:
+        if languages:
+            expression.language = languages
+            expression.save()
         if item_note:
             expression.notes = item_note
             expression.save()
