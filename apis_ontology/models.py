@@ -288,7 +288,7 @@ class DataSource(models.Model):
 
 
 @reversion.register(follow=["rootobject_ptr"])
-class Work(TitlesMixin, StatusMixin, AbstractEntity):
+class Work(TitlesMixin, LanguageMixin, StatusMixin, AbstractEntity):
     """
     The abstract notion of an intellectual creation, irrespective
     of its exact transmitted version, language or other form.
@@ -535,7 +535,12 @@ class WorkType(
 
 @reversion.register(follow=["rootobject_ptr"])
 class Expression(
-    TitlesMixin, DescriptionMixin, NotesMixin, StatusMixin, AbstractEntity
+    TitlesMixin,
+    DescriptionMixin,
+    LanguageMixin,
+    NotesMixin,
+    StatusMixin,
+    AbstractEntity,
 ):
     """
     A concrete representation of a given Work,
