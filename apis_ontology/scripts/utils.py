@@ -81,3 +81,7 @@ def convert_year_only_date(year: str):
         publish_date = datetime.datetime.strptime("1111", "%Y").date()
 
     return publish_date
+
+
+def clean_and_split_multivalue_string(str, separator):
+    return [val.strip() for val in str.split(separator)]
