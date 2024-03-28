@@ -1,6 +1,6 @@
 import itertools
 from django.core.management.base import BaseCommand
-from apis_core.apis_metainfo.models import Source
+from apis_ontology.models import DataSource
 from apis_core.utils.caching import (
     get_all_entity_class_names,
     get_entity_class_of_name,
@@ -12,8 +12,8 @@ class Command(BaseCommand):
 
     help = "Delete entity objects from specific Sources."
 
-    all_sources = Source.objects.all()
-    source_names = [s.orig_filename for s in all_sources]
+    all_sources = DataSource.objects.all()
+    source_names = [s.name for s in all_sources]
     # allow targeting of objects which don't belong to a Source; useful
     # e.g. when objects were previously imported without assigning a Source
     # or when a Source was deleted (by name) but its objects remained
@@ -70,7 +70,7 @@ class Command(BaseCommand):
         entities = []
         entities_failed = []
 
-        all_sources = Source.objects.all()
+        all_sources = DataSource.objects.all()
         all_entities = get_all_entity_class_names()
         entity_names = [m for m in all_entities]
 
@@ -80,9 +80,9 @@ class Command(BaseCommand):
 
         source_name = options["source"][0]
         if source_name == "ALL_SOURCES":
-            source_obj = Source.objects.all()
+            source_obj = DataSource.objects.all()
         elif source_name != "NULL":
-            source_obj = Source.objects.filter(orig_filename=source_name)
+            source_obj = DataSource.objects.filter(name=source_name)
             if len(source_obj) == 0:
                 for src in self.source_names:
                     self.stdout.write(src)
@@ -104,18 +104,16 @@ class Command(BaseCommand):
                     src_ids_str.append("ALL")
 
                     for src in source_obj:
-                        self.stdout.write(
-                            f"{src.id}, {src.orig_filename}, {src.pubinfo}"
-                        )
+                        self.stdout.write(f"{src.id}, {src.name}")
 
                     while src_id not in src_ids_str and src_id != "ALL":
                         src_id = input()
 
                     if src_id != "ALL":
-                        source_obj = Source.objects.get(id=src_id)
+                        source_obj = DataSource.objects.get(id=src_id)
         else:
             source_name = "(NULL)"
-            source_obj = Source.objects.filter(orig_filename=source_name)
+            source_obj = DataSource.objects.filter(name=source_name)
 
         entities_provided = options["entity"]
         for ent_prov in entities_provided:
@@ -138,13 +136,13 @@ class Command(BaseCommand):
                 #     exit()
                 # else:
                 try:
-                    ent_obj = ent_class.objects.filter(source__in=source_obj)
+                    ent_obj = ent_class.objects.filter(data_source__in=source_obj)
                 except:
-                    print(f"No objects left for source {source_obj.orig_filename}.")
+                    print(f"No objects left for source {source_obj.name}.")
                     exit(0)
 
                 if not source_obj:
-                    ent_obj = ent_class.objects.filter(source__isnull=True)
+                    ent_obj = ent_class.objects.filter(data_source__isnull=True)
 
                 obj_count = len(ent_obj)
 
