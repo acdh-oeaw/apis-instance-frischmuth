@@ -575,6 +575,16 @@ class Expression(
         verbose_name=_("ISBN"),
     )
 
+    # for storing free-form information about a published work's
+    # (print) edition
+    edition = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("Ausgabe (Print-/Druckausgabe)"),
+        help_text=_("Bsp.: 1. Aufl., deutsche Erstausg."),
+    )
+
     issue = models.CharField(
         max_length=30,
         blank=True,
