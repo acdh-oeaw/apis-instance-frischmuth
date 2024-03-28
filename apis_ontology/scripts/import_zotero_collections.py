@@ -619,6 +619,7 @@ def create_entities(item, source):
     relevant_pages = item_data.get("pages", "")
     item_date = item_data.get("date", None)
     languages = clean_and_split_multivalue_string(item_data.get("language", ""), ";")
+    isbn = item_data.get("ISBN", "")
     place_of_publication = item_data.get("place", None)
     publisher = item_data.get("publisher", None)
     creators = item_data.get("creators", [])
@@ -692,6 +693,9 @@ def create_entities(item, source):
         title, subtitle, pub_date, source, relevant_pages, page_count, edition_types
     )
     if created:
+        if isbn:
+            expression.isbn = isbn
+            expression.save()
         if languages:
             expression.language = languages
             expression.save()
