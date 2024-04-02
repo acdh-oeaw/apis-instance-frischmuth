@@ -554,15 +554,14 @@ class Expression(
     publication_date_iso_formatted = models.DateField(
         blank=True,
         null=True,
-        verbose_name=_("Erscheinungsdatum (ISO)"),
-        help_text=_("Format YYYY-MM-DD"),
+        verbose_name=_("Erscheinungsdatum (ISO-Format)"),
         editable=False,
     )
 
     publication_date_manual_input = models.CharField(
         blank=True,
         default="",
-        verbose_name=_("Erscheinungsdatum"),
+        verbose_name=_("Erscheinungsdatum (manuelle Eingabe)"),
         help_text=_(
             "Erlaubte Formatvariationen u.a. 1.1.1920, 12/2010, 1999-12-23,..."
         ),
