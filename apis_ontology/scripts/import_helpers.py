@@ -173,7 +173,7 @@ def create_expression(
         defaults={"data_source": source},
     )
     if pub_date:
-        expression.publication_date = pub_date
+        expression.publication_date_manual_input = pub_date
         expression.save()
 
     return expression, created
