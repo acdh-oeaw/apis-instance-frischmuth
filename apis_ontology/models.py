@@ -559,7 +559,7 @@ class Expression(
         editable=False,
     )
 
-    publication_date = models.CharField(
+    publication_date_manual_input = models.CharField(
         blank=True,
         default="",
         verbose_name=_("Erscheinungsdatum"),
@@ -632,33 +632,37 @@ class Expression(
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.cached_publication_date = self.publication_date
+        self.cached_pub_date_manual = self.publication_date_manual_input
 
     def save(self, *args, **kwargs):
-        if self.publication_date != self.cached_publication_date:
+        if self.publication_date_manual_input != self.cached_pub_date_manual:
             # free-form publication date was changed
-            if not self.publication_date:
+            if not self.publication_date_manual_input:
                 # publication date field was emptied
-                self.publication_date_iso = self.publication_date
+                self.publication_date_iso = self.publication_date_manual_input
             else:
                 parsed_date = parse(
-                    self.publication_date,
+                    self.publication_date_manual_input,
                     languages=[settings.LANGUAGE_CODE],
                     date_formats=settings.DATE_INPUT_FORMATS,
                     settings=settings.DATEPARSER_SETTINGS,
                 )
                 if not parsed_date:
                     # "log" invalid publication date updates in field string
-                    self.publication_date = (
-                        f"{self.publication_date} (unsupported date)"
+                    self.publication_date_manual_input = (
+                        f"{self.publication_date_manual_input} (unsupported date)"
                     )
-                # update ISO date either way: if publication_date is a
-                # recognisable date but wasn't parseable (formatting rules),
-                # we don't want to keep 2 out-of-sync dates around
+                # update ISO date either way:
+                # if the manually input date is a recognisable date but wasn't
+                # parseable (formatting rules), we don't want to keep two
+                # out-of-sync dates around
                 self.publication_date_iso = parsed_date
 
             if "update_fields" in kwargs and (
-                include_fields := {"publication_date", "publication_date_iso"}
+                include_fields := {
+                    "publication_date_manual_input",
+                    "publication_date_iso",
+                }
             ).intersection(update_fields := kwargs.get("update_fields")):
                 kwargs["update_fields"] = set(update_fields) | include_fields
 
