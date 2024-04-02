@@ -86,10 +86,14 @@ class WorkTable(FullTitleMixin, BaseEntityTable):
 class ExpressionTable(FullTitleMixin, BaseEntityTable, tables.Table):
     class Meta(BaseEntityTable.Meta):
         model = Expression
-        fields = ["edition_type", "publication_date_iso", "publication_date_manual_input"]
-        order_by = ("full_title", "publication_date_iso", "edition_type")
+        fields = [
+            "edition_type",
+            "publication_date_iso_formatted",
+            "publication_date_manual_input",
+        ]
+        order_by = ("full_title", "publication_date_iso_formatted", "edition_type")
 
-    publication_date_iso = tables.Column(verbose_name=_("Datum"))
+    publication_date_iso_formatted = tables.Column(verbose_name=_("Datum (ISO)"))
     publication_date_manual_input = tables.Column(verbose_name=_("Datum (manuell)"))
 
 

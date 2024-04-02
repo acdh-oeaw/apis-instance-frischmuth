@@ -551,7 +551,7 @@ class Expression(
         FIRST_EDITION = "first_edition", _("Erstausgabe")
         REFERENCE_EDITION = "reference_edition", _("Referenzausgabe")
 
-    publication_date_iso = models.DateField(
+    publication_date_iso_formatted = models.DateField(
         blank=True,
         null=True,
         verbose_name=_("Erscheinungsdatum (ISO)"),
@@ -639,7 +639,7 @@ class Expression(
             # free-form publication date was changed
             if not self.publication_date_manual_input:
                 # publication date field was emptied
-                self.publication_date_iso = self.publication_date_manual_input
+                self.publication_date_iso_formatted = self.publication_date_manual_input
             else:
                 parsed_date = parse(
                     self.publication_date_manual_input,
@@ -656,12 +656,12 @@ class Expression(
                 # if the manually input date is a recognisable date but wasn't
                 # parseable (formatting rules), we don't want to keep two
                 # out-of-sync dates around
-                self.publication_date_iso = parsed_date
+                self.publication_date_iso_formatted = parsed_date
 
             if "update_fields" in kwargs and (
                 include_fields := {
                     "publication_date_manual_input",
-                    "publication_date_iso",
+                    "publication_date_iso_formatted",
                 }
             ).intersection(update_fields := kwargs.get("update_fields")):
                 kwargs["update_fields"] = set(update_fields) | include_fields
