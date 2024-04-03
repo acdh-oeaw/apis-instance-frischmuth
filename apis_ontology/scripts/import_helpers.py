@@ -2,6 +2,7 @@ import datetime
 import inspect
 import os
 import sys
+import re
 
 from apis_core.apis_relations.models import TempTriple, Property
 from apis_ontology.models import (
@@ -195,6 +196,7 @@ def create_person(person_data: dict, source: DataSource):
     full_name = person_data.get("name", person_data.get("full_name", None))
     first_name = person_data.get("first_name", person_data.get("firstName", None))
     last_name = person_data.get("last_name", person_data.get("lastName", None))
+    fallback_name = ""
 
     if full_name and full_name == "":
         full_name = None
@@ -208,6 +210,9 @@ def create_person(person_data: dict, source: DataSource):
             full_name = f"{first_name} {last_name}"
         elif last_name:
             full_name = last_name
+            if re.match("[a-zA-Z]+\.", last_name):
+                fallback_name = last_name
+                last_name = ""
         elif first_name:
             full_name = first_name
         else:
@@ -224,7 +229,7 @@ def create_person(person_data: dict, source: DataSource):
                 first_name = " ".join(name_parts[:-1])
 
     person, created = Person.objects.get_or_create(
-        # name=full_name,
+        fallback_name=fallback_name,
         forename=first_name,
         surname=last_name,
         defaults={"data_source": source},
