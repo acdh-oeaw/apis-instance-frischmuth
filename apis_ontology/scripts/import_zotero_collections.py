@@ -869,16 +869,18 @@ def create_entities(item, source):
         parent_publication = None
         parent_expression = None
         if series:
-            parent_publication, created = Work.objects.get_or_create(title=series)
+            parent_publication, created = Work.objects.get_or_create(
+                title=series, defaults={"data_source": source}
+            )
             parent_expression, created = Expression.objects.get_or_create(
-                title=series, issue=issue
+                title=series, issue=issue, defaults={"data_source": source}
             )
         if publication_title:
             parent_publication, created = Work.objects.get_or_create(
-                title=publication_title
+                title=publication_title, defaults={"data_source": source}
             )
             parent_expression, created = Expression.objects.get_or_create(
-                title=publication_title, issue=issue
+                title=publication_title, issue=issue, defaults={"data_source": source}
             )
         if parent_publication and parent_expression:
             parent_parent_triple, created = create_triple(
