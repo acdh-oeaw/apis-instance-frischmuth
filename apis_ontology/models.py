@@ -917,6 +917,7 @@ class ResearchPerspective(
     GenericNameMixin,
     AlternativeNameMixin,
     DescriptionMixin,
+    NotesMixin,
     StatusMixin,
     AbstractEntity,
 ):
@@ -944,6 +945,7 @@ class Topic(
     GenericNameMixin,
     AlternativeNameMixin,
     DescriptionMixin,
+    NotesMixin,
     StatusMixin,
     AbstractEntity,
 ):
