@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import logging
 from apis_ontology.scripts.access_sharepoint import import_and_parse_data
-from .import_helpers import create_triple, create_source
+from .import_helpers import create_triple, create_source, work_with_siglum_exists
 from apis_ontology.models import (
     Place,
     Work,
@@ -71,53 +71,59 @@ def parse_entities_dataframe(sheet_name, df, file):
             place_uris = (row["URL_Geonames"], row["URL_Wikipedia"], row["URL_extern"])
             place_uri_objects = []
 
-            for place_uri in place_uris:
-                if place_uri:
-                    place_uri = secure_urls(place_uri)
-                    uri, created = Uri.objects.get_or_create(uri=place_uri)
-                    place_uri_objects.append(uri)
+            if work_with_siglum_exists(related_work_siglum):
+                for place_uri in place_uris:
+                    if place_uri:
+                        place_uri = secure_urls(place_uri)
+                        uri, created = Uri.objects.get_or_create(uri=place_uri)
+                        place_uri_objects.append(uri)
 
-            place_qs = None
-            place = None
+                place_qs = None
+                place = None
 
-            if len(place_uri_objects) > 0:
-                place_qs = Place.objects.filter(
-                    uri__in=[uri.id for uri in place_uri_objects],
-                )
+                if len(place_uri_objects) > 0:
+                    place_qs = Place.objects.filter(
+                        uri__in=[uri.id for uri in place_uri_objects],
+                    )
+                else:
+                    place_qs = Place.objects.filter(name=place_name)
+
+                if place_qs.count() == 0:
+                    place, created = Place.objects.get_or_create(
+                        name=place_name, defaults={"data_source": data_source}
+                    )
+                else:
+                    place = place_qs.first()
+                    alternative_names = list(
+                        filter(None, place.alternative_name.split(";"))
+                    )
+                    if (
+                        place_name
+                        and place_name != place.name
+                        and place_name not in alternative_names
+                    ):
+                        alternative_names.append(place_name)
+                        place.alternative_name = ";".join(alternative_names)
+                        place.save()
+
+                for uri in place_uri_objects:
+                    if not uri.root_object:
+                        uri.root_object = place
+                        uri.save()
+
+                if Work.objects.filter(siglum=related_work_siglum).exists():
+                    work_object = Work.objects.get(siglum=related_work_siglum)
+                    triple, created = create_triple(
+                        entity_subj=work_object,
+                        entity_obj=place,
+                        prop=Property.objects.get(
+                            name_forward=WORK_PLACE_RELATIONTYPES[place_type]
+                        ),
+                    )
+
             else:
-                place_qs = Place.objects.filter(name=place_name)
-
-            if place_qs.count() == 0:
-                place, created = Place.objects.get_or_create(
-                    name=place_name, defaults={"data_source": data_source}
-                )
-            else:
-                place = place_qs.first()
-                alternative_names = list(
-                    filter(None, place.alternative_name.split(";"))
-                )
-                if (
-                    place_name
-                    and place_name != place.name
-                    and place_name not in alternative_names
-                ):
-                    alternative_names.append(place_name)
-                    place.alternative_name = ";".join(alternative_names)
-                    place.save()
-
-            for uri in place_uri_objects:
-                if not uri.root_object:
-                    uri.root_object = place
-                    uri.save()
-
-            if Work.objects.filter(siglum=related_work_siglum).exists():
-                work_object = Work.objects.get(siglum=related_work_siglum)
-                triple, created = create_triple(
-                    entity_subj=work_object,
-                    entity_obj=place,
-                    prop=Property.objects.get(
-                        name_forward=WORK_PLACE_RELATIONTYPES[place_type]
-                    ),
+                print(
+                    f"work with sigle {related_work_siglum} doesn't exist. entity import rejected"
                 )
 
         if sheet_name == "Namen":
@@ -132,69 +138,77 @@ def parse_entities_dataframe(sheet_name, df, file):
             related_work_siglum = row["Sigle"]
             person_uris = (row["URL_Wikipedia"], row["URL_DNB"], row["URL_extern"])
 
-            character = Character.objects.create(
-                fallback_name=character_name,
-                description=character_description,
-                relevancy=character_relevancy,
-                fictionality=character_fictionality_degree,
-                data_source=data_source,
-            )
-
-            if Work.objects.filter(siglum=related_work_siglum).exists():
-                work_object = Work.objects.get(siglum=related_work_siglum)
-
-                create_triple(
-                    entity_subj=work_object,
-                    entity_obj=character,
-                    prop=Property.objects.get(name_forward="features"),
+            if work_with_siglum_exists(related_work_siglum):
+                character = Character.objects.create(
+                    fallback_name=character_name,
+                    description=character_description,
+                    relevancy=character_relevancy,
+                    fictionality=character_fictionality_degree,
+                    data_source=data_source,
                 )
 
-            if character_fictionality in ("R", "M", "M/R"):
-                person_uri_objects = []
-                for person_uri in person_uris:
-                    if person_uri:
-                        uri = secure_urls(person_uri)
-                        uri_obj, uri_created = Uri.objects.get_or_create(uri=uri)
-                        person_uri_objects.append(uri_obj)
+                if Work.objects.filter(siglum=related_work_siglum).exists():
+                    work_object = Work.objects.get(siglum=related_work_siglum)
 
-                person = None
-                person_qs = None
-
-                person_fallback_name = (
-                    character_name if not (person_forename or person_surname) else ""
-                )
-
-                if len(person_uri_objects) > 0:
-                    person_qs = Person.objects.filter(
-                        uri__in=[uri.id for uri in person_uri_objects],
-                    )
-                else:
-                    person_qs = Person.objects.filter(
-                        fallback_name=person_fallback_name,
-                        forename=person_forename,
-                        surname=person_surname,
+                    create_triple(
+                        entity_subj=work_object,
+                        entity_obj=character,
+                        prop=Property.objects.get(name_forward="features"),
                     )
 
-                if person_qs.count() == 0:
-                    person, created = Person.objects.get_or_create(
-                        fallback_name=person_fallback_name,
-                        forename=person_forename,
-                        surname=person_surname,
-                        alternative_name=person_alternative_name,
-                        defaults={"data_source": data_source},
+                if character_fictionality in ("R", "M", "M/R"):
+                    person_uri_objects = []
+                    for person_uri in person_uris:
+                        if person_uri:
+                            uri = secure_urls(person_uri)
+                            uri_obj, uri_created = Uri.objects.get_or_create(uri=uri)
+                            person_uri_objects.append(uri_obj)
+
+                    person = None
+                    person_qs = None
+
+                    person_fallback_name = (
+                        character_name
+                        if not (person_forename or person_surname)
+                        else ""
                     )
-                else:
-                    person = person_qs.first()
 
-                for uri in person_uri_objects:
-                    if not uri.root_object:
-                        uri.root_object = person
-                        uri.save()
+                    if len(person_uri_objects) > 0:
+                        person_qs = Person.objects.filter(
+                            uri__in=[uri.id for uri in person_uri_objects],
+                        )
+                    else:
+                        person_qs = Person.objects.filter(
+                            fallback_name=person_fallback_name,
+                            forename=person_forename,
+                            surname=person_surname,
+                        )
 
-                create_triple(
-                    entity_subj=character,
-                    entity_obj=person,
-                    prop=Property.objects.get(name_forward="is based on"),
+                    if person_qs.count() == 0:
+                        person, created = Person.objects.get_or_create(
+                            fallback_name=person_fallback_name,
+                            forename=person_forename,
+                            surname=person_surname,
+                            alternative_name=person_alternative_name,
+                            defaults={"data_source": data_source},
+                        )
+                    else:
+                        person = person_qs.first()
+
+                    for uri in person_uri_objects:
+                        if not uri.root_object:
+                            uri.root_object = person
+                            uri.save()
+
+                    create_triple(
+                        entity_subj=character,
+                        entity_obj=person,
+                        prop=Property.objects.get(name_forward="is based on"),
+                    )
+
+            else:
+                print(
+                    f"work with sigle {related_work_siglum} doesn't exist. entity import rejected"
                 )
 
         if sheet_name == "Themen":
@@ -202,21 +216,28 @@ def parse_entities_dataframe(sheet_name, df, file):
             related_work_siglum = row["Sigle"]
             topic_alt_name = row["Synonyme"]
             topic_description = row["Anmerkungen"]
-            topic, created = Topic.objects.get_or_create(
-                name=topic_name,
-                defaults={"data_source": data_source},
-            )
-            topic.alternative_name = topic_alt_name
-            topic.description = topic_description
-            topic.save()
 
-            if Work.objects.filter(siglum=related_work_siglum).exists():
-                work_object = Work.objects.get(siglum=related_work_siglum)
+            if work_with_siglum_exists(related_work_siglum):
+                topic, created = Topic.objects.get_or_create(
+                    name=topic_name,
+                    defaults={"data_source": data_source},
+                )
+                topic.alternative_name = topic_alt_name
+                topic.description = topic_description
+                topic.save()
 
-                create_triple(
-                    entity_subj=work_object,
-                    entity_obj=topic,
-                    prop=Property.objects.get(name_forward="is about topic"),
+                if Work.objects.filter(siglum=related_work_siglum).exists():
+                    work_object = Work.objects.get(siglum=related_work_siglum)
+
+                    create_triple(
+                        entity_subj=work_object,
+                        entity_obj=topic,
+                        prop=Property.objects.get(name_forward="is about topic"),
+                    )
+
+            else:
+                print(
+                    f"work with sigle {related_work_siglum} doesn't exist. entity import rejected"
                 )
 
         if sheet_name == "Forschungshinsichten":
@@ -224,20 +245,28 @@ def parse_entities_dataframe(sheet_name, df, file):
             related_work_siglum = row["Sigle"]
             research_perspective_description = row["Anmerkungen"]
 
-            research_perspective, created = ResearchPerspective.objects.get_or_create(
-                name=research_perspective_name,
-                defaults={"data_source": data_source},
-            )
-            research_perspective.description = research_perspective_description
-            research_perspective.save()
+            if work_with_siglum_exists(related_work_siglum):
+                (
+                    research_perspective,
+                    created,
+                ) = ResearchPerspective.objects.get_or_create(
+                    name=research_perspective_name,
+                    defaults={"data_source": data_source},
+                )
+                research_perspective.description = research_perspective_description
+                research_perspective.save()
 
-            if Work.objects.filter(siglum=related_work_siglum).exists():
-                work_object = Work.objects.get(siglum=related_work_siglum)
+                if Work.objects.filter(siglum=related_work_siglum).exists():
+                    work_object = Work.objects.get(siglum=related_work_siglum)
 
-                create_triple(
-                    entity_subj=work_object,
-                    entity_obj=research_perspective,
-                    prop=Property.objects.get(
-                        name_forward="applies research perspective"
-                    ),
+                    create_triple(
+                        entity_subj=work_object,
+                        entity_obj=research_perspective,
+                        prop=Property.objects.get(
+                            name_forward="applies research perspective"
+                        ),
+                    )
+            else:
+                print(
+                    f"work with sigle {related_work_siglum} doesn't exist. entity import rejected"
                 )

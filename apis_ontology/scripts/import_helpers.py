@@ -315,3 +315,7 @@ def get_expressions_by_work(work_id: int):
         i.obj for i in TempTriple.objects.filter(subj__id=work_id, prop=prop)
     ]
     return related_expressions
+
+
+def work_with_siglum_exists(siglum):
+    return Work.objects.filter(siglum=siglum).exists()
