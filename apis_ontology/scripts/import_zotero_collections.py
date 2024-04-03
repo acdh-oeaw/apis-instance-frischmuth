@@ -613,6 +613,7 @@ def create_entities(item, source):
 
     title = item_data["title"]
     siglum = item_data["callNumber"]
+    item_type = item_data["itemType"]
     subtitle = item_data.get("shortTitle", None)
     abstract = item_data.get("abstractNote", None)
     num_pages = item_data.get("numPages", None)
@@ -624,6 +625,9 @@ def create_entities(item, source):
     publisher = item_data.get("publisher", None)
     creators = item_data.get("creators", [])
     item_tags = item_data.get("tags", [])
+    series = item_data.get("series", "")
+    publication_title = item_data.get("publicationTitle", "")
+    issue = item_data.get("seriesNumber", "")
     creators_with_props = []
     edition_types = []
     work_types = []
@@ -859,6 +863,33 @@ def create_entities(item, source):
         if created:
             success.append(
                 f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+            )
+
+    if item_type in ("dictionaryEntry", "newspaperArticle", "journalArticle", "book"):
+        parent_publication = None
+        parent_expression = None
+        if series:
+            parent_publication, created = Work.objects.get_or_create(title=series)
+            parent_expression, created = Expression.objects.get_or_create(
+                title=series, issue=issue
+            )
+        if publication_title:
+            parent_publication, created = Work.objects.get_or_create(
+                title=publication_title
+            )
+            parent_expression, created = Expression.objects.get_or_create(
+                title=publication_title, issue=issue
+            )
+        if parent_publication and parent_expression:
+            parent_parent_triple, created = create_triple(
+                entity_subj=parent_publication,
+                entity_obj=parent_expression,
+                prop=Property.objects.get(name_forward="is realised in"),
+            )
+            parent_child_triple, created = create_triple(
+                entity_subj=expression,
+                entity_obj=parent_expression,
+                prop=Property.objects.get(name_forward="is realised in"),
             )
 
     return success, failure
