@@ -51,6 +51,66 @@ ROOT_URLCONF = "apis_ontology.urls"
 
 WSGI_APPLICATION = "apis_ontology.wsgi.application"
 
+# Custom Django logging
+DJANGO_LOG_HANDLERS = ["apis_ontology.console"]
+
+DJANGO_LOG_HANDLERS = os.getenv(
+    "DJANGO_LOG_HANDLERS", ",".join(DJANGO_LOG_HANDLERS)
+).split(",")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {name} {levelname}: {module}.{funcName}:{lineno} {message}",
+            "style": "{",
+            "datefmt": "%d/%b/%Y %H:%M:%S",  # replicates django.server format
+        },
+        "detailed": {
+            "format": "[{asctime}] {name} {levelname}: {message}",
+            "style": "{",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+        },
+        "concise": {
+            "format": "[{asctime}] {levelname}: {message}",
+            "style": "{",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+        },
+    },
+    "handlers": {
+        "": {
+            "class": "logging.NullHandler",
+        },
+        "apis_ontology.console": {
+            "class": "logging.StreamHandler",
+            "formatter": os.getenv("DJANGO_LOG_FORMATTER", "detailed"),
+        },
+        "imports.file": {
+            "class": "logging.FileHandler",
+            "filename": os.getenv("DJANGO_LOG_FILE", "imports.log"),
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "apis_ontology": {
+            "handlers": ["apis_ontology.console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "WARNING"),
+            "propagate": False,
+        },
+        "apis_ontology.scripts": {
+            "handlers": DJANGO_LOG_HANDLERS,  # defaults to apis_ontology.console
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
+        "apis_ontology.management.commands": {
+            "handlers": DJANGO_LOG_HANDLERS,
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
+    },
+}
+
 # Django Allow CIDR
 # see https://github.com/mozmeao/django-allow-cidr
 # address '10.0.0.0/8' needs to be allowed for service health checks
