@@ -5,6 +5,7 @@ import getpass
 import os
 from pyzotero import zotero, zotero_errors
 from apis_core.apis_relations.models import Property
+from django.db.models import Q
 from apis_ontology.models import Expression, Work
 from .additional_infos import WORK_TYPES, ZOTERO_CREATORS_MAPPING
 from .utils import clean_and_split_multivalue_string
@@ -422,7 +423,13 @@ def get_work_references_fom_tags(tags):
     :return: a list of dictionaries containing both the reference label
              and the siglum of the work being referenced
     """
-    work_references = ["references", "discusses", "mentions", "is part of work"]
+    work_references = [
+        "references",
+        "discusses",
+        "mentions",
+        "is part of work",
+        "is referenced in",
+    ]
     valid_tags = []
 
     applicable_tags = [t.replace("work_", "") for t in tags if t.startswith("work_")]
@@ -730,10 +737,19 @@ def create_entities(item, source):
         if referenced_work:
             success.append(referenced_work)
 
+            ref_prop = Property.objects.filter(
+                Q(name_forward=ref_label) | Q(name_reverse=ref_label)
+            ).first()
+
+            entity_subj = (
+                work if ref_prop.name_forward == ref_label else referenced_work
+            )
+            entity_obj = referenced_work if ref_prop.name_forward == ref_label else work
+
             triple, created = create_triple(
-                entity_subj=work,
-                entity_obj=referenced_work,
-                prop=Property.objects.get(name_forward=ref_label),
+                entity_subj=entity_subj,
+                entity_obj=entity_obj,
+                prop=ref_prop,
             )
             if created:
                 success.append(
