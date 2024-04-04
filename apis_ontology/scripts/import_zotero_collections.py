@@ -621,7 +621,9 @@ def create_entities(item, source):
     item_date = item_data.get("date", None)
     languages = clean_and_split_multivalue_string(item_data.get("language", ""), ";")
     isbn = item_data.get("ISBN", "")
-    place_of_publication = item_data.get("place", None)
+    places_of_publication = clean_and_split_multivalue_string(
+        item_data.get("place", ""), ";"
+    )
     publisher = item_data.get("publisher", None)
     creators = item_data.get("creators", [])
     item_tags = item_data.get("tags", [])
@@ -833,9 +835,8 @@ def create_entities(item, source):
         # get or create Place object for place of publication
         # ATTN. Zotero "place" field can contain multiple places
         # separated by semicolons
-        if place_of_publication:
-            places = place_of_publication.split(";")
-            for p in places:
+        if places_of_publication:
+            for p in places_of_publication:
                 place, created = create_place(p, source)
                 if created:
                     success.append(f"Created place: {place}")
