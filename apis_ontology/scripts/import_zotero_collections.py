@@ -77,7 +77,7 @@ def import_work_collections(zot, coll_id, include_subs=True):
 
     required_subs_raw = os.environ.get("ZOTERO_SUB_COLLECTIONS", False)
     if not required_subs_raw:
-        required_subs = ["tertiaer", "primaer", "sekundaer"]
+        required_subs = ["primaer", "sekundaer", "tertiaer"]
     else:
         required_subs = [k.replace(" ", "") for k in required_subs_raw.split(",")]
 
