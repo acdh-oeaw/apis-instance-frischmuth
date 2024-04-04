@@ -16,6 +16,8 @@ from apis_core.apis_metainfo.models import Uri
 from apis_core.apis_relations.models import Property
 from .utils import secure_urls
 
+logger = logging.getLogger(__name__)
+
 WORK_PLACE_RELATIONTYPES = {
     "E": "mentions",
     "S": "takes place in",
@@ -74,9 +76,14 @@ def parse_entities_dataframe(sheet_name, df, file):
             if work_with_siglum_exists(related_work_siglum):
                 for place_uri in place_uris:
                     if place_uri:
-                        place_uri = secure_urls(place_uri)
-                        uri, created = Uri.objects.get_or_create(uri=place_uri)
-                        place_uri_objects.append(uri)
+                        secure_uri = secure_urls(place_uri)
+                        if secure_uri:
+                            uri, created = Uri.objects.get_or_create(uri=secure_uri)
+                            place_uri_objects.append(uri)
+                        else:
+                            logger.info(
+                                f"Non-valid input for uri. {place_uri} place name: {place_name}"
+                            )
 
                 place_qs = None
                 place = None
@@ -127,8 +134,8 @@ def parse_entities_dataframe(sheet_name, df, file):
                     triple.save()
 
             else:
-                print(
-                    f"work with sigle {related_work_siglum} doesn't exist. entity import rejected"
+                logger.info(
+                    f"work with sigle {related_work_siglum} doesn't exist. place import rejected"
                 )
 
         if sheet_name == "Namen":
@@ -212,8 +219,8 @@ def parse_entities_dataframe(sheet_name, df, file):
                     )
 
             else:
-                print(
-                    f"work with sigle {related_work_siglum} doesn't exist. entity import rejected"
+                logger.info(
+                    f"work with sigle {related_work_siglum} doesn't exist. character import rejected"
                 )
 
         if sheet_name == "Themen":
@@ -241,8 +248,8 @@ def parse_entities_dataframe(sheet_name, df, file):
                     )
 
             else:
-                print(
-                    f"work with sigle {related_work_siglum} doesn't exist. entity import rejected"
+                logger.info(
+                    f"work with sigle {related_work_siglum} doesn't exist. topic import rejected"
                 )
 
         if sheet_name == "Forschungshinsichten":
@@ -272,6 +279,6 @@ def parse_entities_dataframe(sheet_name, df, file):
                         ),
                     )
             else:
-                print(
-                    f"work with sigle {related_work_siglum} doesn't exist. entity import rejected"
+                logger.info(
+                    f"work with sigle {related_work_siglum} doesn't exist. research perspective import rejected"
                 )
