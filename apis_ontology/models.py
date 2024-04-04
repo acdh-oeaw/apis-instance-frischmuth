@@ -1060,6 +1060,11 @@ def update_properties():
         prop.deprecated_name = "expression is part of expression"
         prop.save()
 
+    # fix name_reverse of Binnenverweis relation
+    for prop in Property.objects.filter(name_reverse__in=["is referenced by"]):
+        prop.name_reverse = "is referenced in"
+        prop.save()
+
 
 def construct_properties():
     """
@@ -1100,7 +1105,7 @@ def construct_properties():
     # Binnenverweis
     references = create_properties(
         name_forward="references",
-        name_reverse="is referenced by",
+        name_reverse="is referenced in",
         subjects=[Work],
         objects=[Work],
     )
