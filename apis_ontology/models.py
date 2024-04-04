@@ -584,6 +584,13 @@ class Expression(
         help_text=_("Bsp.: 1. Aufl., deutsche Erstausg."),
     )
 
+    volume = models.CharField(
+        max_length=30,
+        blank=True,
+        default="",
+        verbose_name=_("Band"),
+    )
+
     issue = models.CharField(
         max_length=30,
         blank=True,
