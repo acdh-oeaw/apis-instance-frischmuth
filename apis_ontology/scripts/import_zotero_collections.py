@@ -636,7 +636,9 @@ def create_entities(item, source):
     item_tags = item_data.get("tags", [])
     series = item_data.get("series", "")
     publication_title = item_data.get("publicationTitle", "")
-    issue = item_data.get("seriesNumber", "")
+    issue = item_data.get("seriesNumber", item_data.get("issue", ""))
+    volume = item_data.get("volume", "")
+    edition = item_data.get("edition", "")
     creators_with_props = []
     edition_types = []
     work_types = []
@@ -890,14 +892,22 @@ def create_entities(item, source):
                 title=series, defaults={"data_source": source}
             )
             parent_expression, created = Expression.objects.get_or_create(
-                title=series, issue=issue, defaults={"data_source": source}
+                title=series,
+                issue=issue,
+                volume=volume,
+                edition=edition,
+                defaults={"data_source": source},
             )
         if publication_title:
             parent_publication, created = Work.objects.get_or_create(
                 title=publication_title, defaults={"data_source": source}
             )
             parent_expression, created = Expression.objects.get_or_create(
-                title=publication_title, issue=issue, defaults={"data_source": source}
+                title=publication_title,
+                issue=issue,
+                volume=volume,
+                edition=edition,
+                defaults={"data_source": source},
             )
         if parent_publication and parent_expression:
             parent_parent_triple, created = create_triple(
