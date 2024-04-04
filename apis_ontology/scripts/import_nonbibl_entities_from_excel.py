@@ -120,6 +120,11 @@ def parse_entities_dataframe(sheet_name, df, file):
                             name_forward=WORK_PLACE_RELATIONTYPES[place_type]
                         ),
                     )
+                    place_description_info = (
+                        f": {place_description}" if place_description else ""
+                    )
+                    triple.notes = f"{place_name}{place_description_info}"
+                    triple.save()
 
             else:
                 print(
