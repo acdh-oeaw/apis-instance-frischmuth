@@ -1,8 +1,9 @@
 from django.core.management.base import BaseCommand
 import importlib
-
+import logging
 import getpass
 import os
+import re
 from pyzotero import zotero, zotero_errors
 from apis_core.apis_relations.models import Property
 from django.db.models import Q
@@ -25,6 +26,8 @@ from .import_helpers import (
 
 # Use keys or keywords in environment variable ZOTERO_FILTER_COLLECTIONS
 # to limit Zotero imports to specific collections.
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -717,6 +720,14 @@ def create_entities(item, source):
         if item_note:
             expression.notes = item_note
             expression.save()
+            if re.search("\<.*\>", item_note):
+                logger.info(
+                    f"Expression note contains potential markup. Expression {expression.id}"
+                )
+        if expression.title != work.title or expression.subtitle != work.subtitle:
+            logger.info(
+                f"Expression title or subtitle differs from work title or subtitle. Expression {expression.id}"
+            )
         success.append(expression)
 
     triple, created = create_triple(
@@ -779,6 +790,9 @@ def create_entities(item, source):
                     source=source,
                     pub_date=None,
                     relevant_pages="",
+                )
+                logger.info(
+                    f"No expression found in zotero for referenced work. So basic expression will be created. Expression {expression.id}"
                 )
                 create_triple(
                     entity_subj=referenced_work,
