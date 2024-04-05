@@ -2,6 +2,7 @@
 Helper functions useful for various data import scripts.
 """
 import datetime
+from ..settings import APIS_BASE_URI
 
 
 def secure_urls(url: str):
@@ -85,3 +86,7 @@ def convert_year_only_date(year: str):
 
 def clean_and_split_multivalue_string(str, separator):
     return [val.strip() for val in str.split(separator)]
+
+
+def get_entity_view_url(entity):
+    return f"{APIS_BASE_URI}{entity.get_absolute_url()[1:]}"
