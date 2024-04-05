@@ -59,9 +59,10 @@ def parse_entities_excel(file):
 
 
 def parse_entities_dataframe(sheet_name, df, file):
+    file_name = os.path.basename(file)
     data_source, created = create_source(
         name="NonBiblEntities",
-        file_name=os.path.basename(file),
+        file_name=file_name,
         data_type="xslx",
     )
     for index, row in df.iterrows():
@@ -134,8 +135,13 @@ def parse_entities_dataframe(sheet_name, df, file):
                     triple.save()
 
             else:
+                rejection_cause_message = (
+                    f"Work with sigle {related_work_siglum} doesn't exist."
+                    if related_work_siglum
+                    else "No sigle was provided."
+                )
                 logger.info(
-                    f"work with sigle {related_work_siglum} doesn't exist. place import rejected"
+                    f"{rejection_cause_message} Place import was rejected. File: {file_name}. Sheet: {sheet_name}. Entity name: {place_name}"
                 )
 
         if sheet_name == "Namen":
@@ -219,8 +225,13 @@ def parse_entities_dataframe(sheet_name, df, file):
                     )
 
             else:
+                rejection_cause_message = (
+                    f"Work with sigle {related_work_siglum} doesn't exist."
+                    if related_work_siglum
+                    else "No sigle was provided."
+                )
                 logger.info(
-                    f"work with sigle {related_work_siglum} doesn't exist. character import rejected"
+                    f"{rejection_cause_message} Character/Person import was rejected. File: {file_name}. Sheet: {sheet_name}. Entity name: {character_name}"
                 )
 
         if sheet_name == "Themen":
@@ -248,8 +259,13 @@ def parse_entities_dataframe(sheet_name, df, file):
                     )
 
             else:
+                rejection_cause_message = (
+                    f"Work with sigle {related_work_siglum} doesn't exist."
+                    if related_work_siglum
+                    else "No sigle was provided."
+                )
                 logger.info(
-                    f"work with sigle {related_work_siglum} doesn't exist. topic import rejected"
+                    f"{rejection_cause_message} Topic import was rejected. File: {file_name}. Sheet: {sheet_name}. Entity name: {topic_name}"
                 )
 
         if sheet_name == "Forschungshinsichten":
@@ -279,6 +295,11 @@ def parse_entities_dataframe(sheet_name, df, file):
                         ),
                     )
             else:
+                rejection_cause_message = (
+                    f"Work with sigle {related_work_siglum} doesn't exist."
+                    if related_work_siglum
+                    else "No sigle was provided."
+                )
                 logger.info(
-                    f"work with sigle {related_work_siglum} doesn't exist. research perspective import rejected"
+                    f"{rejection_cause_message} ResearchPerspective import was rejected. File: {file_name}. Sheet: {sheet_name}. Entity name: {research_perspective_name}"
                 )
