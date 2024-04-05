@@ -772,6 +772,7 @@ def create_entities(item, source):
         else:
             ref_err = f"Referenced work {ref_siglum} does not exist."
             failure.append(ref_err)
+            logger.info(f"Referenced work {ref_siglum} does not exist.")
 
     for r in expr_refs:
         ref_siglum = r["ref_siglum"]
