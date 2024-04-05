@@ -9,7 +9,7 @@ from apis_core.apis_relations.models import Property
 from django.db.models import Q
 from apis_ontology.models import Expression, Work
 from .additional_infos import WORK_TYPES, ZOTERO_CREATORS_MAPPING
-from .utils import clean_and_split_multivalue_string
+from .utils import clean_and_split_multivalue_string, get_entity_view_url
 from .import_helpers import (
     create_triple,
     create_source,
@@ -722,11 +722,11 @@ def create_entities(item, source):
             expression.save()
             if re.search("\<.*\>", item_note):
                 logger.info(
-                    f"Expression note contains potential markup. Expression {expression.id}"
+                    f"Expression note contains potential markup. Expression {get_entity_view_url(expression)}"
                 )
         if expression.title != work.title or expression.subtitle != work.subtitle:
             logger.info(
-                f"Expression title or subtitle differs from work title or subtitle. Expression {expression.id}"
+                f"Expression title or subtitle differs from work title or subtitle. Expression {get_entity_view_url(expression)}"
             )
         success.append(expression)
 
@@ -793,7 +793,7 @@ def create_entities(item, source):
                     relevant_pages="",
                 )
                 logger.info(
-                    f"No expression found in zotero for referenced work. So basic expression will be created. Expression {expression.id}"
+                    f"No expression found in zotero for referenced work. So basic expression has been created. Expression {get_entity_view_url(expression)}"
                 )
                 create_triple(
                     entity_subj=referenced_work,
