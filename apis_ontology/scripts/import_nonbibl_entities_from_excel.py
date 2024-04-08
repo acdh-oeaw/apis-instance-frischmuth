@@ -238,7 +238,6 @@ def parse_entities_dataframe(sheet_name, df, file):
             topic_name = row["Thema"]
             related_work_siglum = row["Sigle"]
             topic_alt_name = row["Synonyme"]
-            topic_description = row["Anmerkungen"]
 
             if work_with_siglum_exists(related_work_siglum):
                 topic, created = Topic.objects.get_or_create(
@@ -246,7 +245,6 @@ def parse_entities_dataframe(sheet_name, df, file):
                     defaults={"data_source": data_source},
                 )
                 topic.alternative_name = topic_alt_name
-                topic.description = topic_description
                 topic.save()
 
                 if Work.objects.filter(siglum=related_work_siglum).exists():
@@ -271,7 +269,6 @@ def parse_entities_dataframe(sheet_name, df, file):
         if sheet_name == "Forschungshinsichten":
             research_perspective_name = row["Thema"]
             related_work_siglum = row["Sigle"]
-            research_perspective_description = row["Anmerkungen"]
 
             if work_with_siglum_exists(related_work_siglum):
                 (
@@ -281,8 +278,6 @@ def parse_entities_dataframe(sheet_name, df, file):
                     name=research_perspective_name,
                     defaults={"data_source": data_source},
                 )
-                research_perspective.description = research_perspective_description
-                research_perspective.save()
 
                 if Work.objects.filter(siglum=related_work_siglum).exists():
                     work_object = Work.objects.get(siglum=related_work_siglum)
