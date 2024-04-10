@@ -1,4 +1,3 @@
-import reversion
 from apis_core.apis_entities.models import AbstractEntity
 from apis_core.apis_relations.models import Property
 from dateparser import parse
@@ -10,7 +9,6 @@ from multiselectfield import MultiSelectField
 import re
 
 
-@reversion.register
 class StatusMixin(models.Model):
     class ProgressStates(models.TextChoices):
         CREATED = "created", _("neu angelegt")
@@ -52,7 +50,6 @@ class NotesMixin(models.Model):
         abstract = True
 
 
-@reversion.register
 class AlternativeNameMixin(models.Model):
     """
     Mixin for "alternative_name" field shared between entities.
@@ -87,7 +84,6 @@ class GenericNameMixin(models.Model):
         return self.name
 
 
-@reversion.register
 class DescriptionMixin(models.Model):
     """
     Mixin for "description" field shared between entities.
@@ -103,7 +99,6 @@ class DescriptionMixin(models.Model):
         abstract = True
 
 
-@reversion.register
 class PersonNameMixin(AlternativeNameMixin, models.Model):
     """
     Mixin for name fields shared between person-like entities.
@@ -161,7 +156,6 @@ class PersonNameMixin(AlternativeNameMixin, models.Model):
         return full_name
 
 
-@reversion.register
 class TitlesMixin(models.Model):
     """
     Mixin for fields shared between work-like entities.
@@ -224,7 +218,6 @@ class LanguageMixin(models.Model):
         abstract = True
 
 
-@reversion.register
 class DataSource(models.Model):
     """
     Holds (meta) information about data sources.
@@ -287,7 +280,6 @@ class DataSource(models.Model):
         verbose_name_plural = _("datenquellen")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class Work(TitlesMixin, LanguageMixin, NotesMixin, StatusMixin, AbstractEntity):
     """
     The abstract notion of an intellectual creation, irrespective
@@ -503,7 +495,6 @@ class Work(TitlesMixin, LanguageMixin, NotesMixin, StatusMixin, AbstractEntity):
         verbose_name_plural = _("werke")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class WorkType(
     GenericNameMixin,
     AlternativeNameMixin,
@@ -533,7 +524,6 @@ class WorkType(
         verbose_name_plural = _("werktypen")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class Expression(
     TitlesMixin,
     DescriptionMixin,
@@ -675,7 +665,6 @@ class Expression(
         super().save(*args, **kwargs)
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class Archive(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     An institution or organisation where physical objects are
@@ -711,7 +700,6 @@ class Archive(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         verbose_name_plural = _("archive")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class PhysicalObject(GenericNameMixin, DescriptionMixin, AbstractEntity):
     """
     A physical object pertaining to a Work.
@@ -746,7 +734,6 @@ class PhysicalObject(GenericNameMixin, DescriptionMixin, AbstractEntity):
         verbose_name_plural = _("vorlassobjekte")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class Person(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     Any natural person.
@@ -766,7 +753,6 @@ class Person(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         verbose_name_plural = _("personen")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class Organisation(
     GenericNameMixin,
     AlternativeNameMixin,
@@ -802,7 +788,6 @@ class Organisation(
         verbose_name_plural = _("körperschaften")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class Character(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     A real or fictitious person who appears in or is mentioned in a Work.
@@ -854,7 +839,6 @@ class Character(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         verbose_name_plural = _("figuren")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class MetaCharacter(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     A composite entity to refer to related characters across works.
@@ -879,7 +863,6 @@ class MetaCharacter(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEnt
         verbose_name_plural = _("metafiguren")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class Place(
     GenericNameMixin,
     AlternativeNameMixin,
@@ -919,7 +902,6 @@ class Place(
         verbose_name_plural = _("orte")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class ResearchPerspective(
     GenericNameMixin,
     AlternativeNameMixin,
@@ -947,7 +929,6 @@ class ResearchPerspective(
         verbose_name_plural = _("forschungshinsichten")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class Topic(
     GenericNameMixin,
     AlternativeNameMixin,
@@ -975,7 +956,6 @@ class Topic(
         verbose_name_plural = _("themen")
 
 
-@reversion.register(follow=["rootobject_ptr"])
 class Interpretatem(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
     """
     A conceptual object representing a specific (interpretative/scholarly)
