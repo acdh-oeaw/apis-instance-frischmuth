@@ -22,7 +22,7 @@ from apis_ontology.api.views import WorkPreviewViewSet
 
 router = routers.DefaultRouter()
 
-router.register(r"work-preview", WorkPreviewViewSet)
+router.register(r"work-preview", WorkPreviewViewSet, basename="work-preview")
 
 urlpatterns += [
     path("accounts/", include("django.contrib.auth.urls")),
