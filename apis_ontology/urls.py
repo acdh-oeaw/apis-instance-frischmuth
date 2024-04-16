@@ -18,13 +18,13 @@ from apis_acdhch_default_settings.urls import urlpatterns
 from django.urls import include, path
 from rest_framework import routers
 
-from apis_ontology.api import views
+from apis_ontology.api.views import WorkPreviewViewSet
 
 router = routers.DefaultRouter()
 
-router.register(r"work-preview", views.WorkPreviewViewSet)
+router.register(r"work-preview", WorkPreviewViewSet)
 
 urlpatterns += [
     path("accounts/", include("django.contrib.auth.urls")),
-    path("api/", include(router.urls)),
+    path("api/", include((router.urls, "apis_ontology"))),
 ]
