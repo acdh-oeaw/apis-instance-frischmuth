@@ -26,9 +26,13 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
     search has been cleared).
     """
 
-    queryset = (
-        Work.objects.all().filter(siglum__isnull=False).order_by("title", "subtitle")
-    )
     serializer_class = WorkPreviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = WorkPreviewPagination
+
+    def get_queryset(self):
+        return (
+            Work.objects.all()
+            .filter(siglum__isnull=False)
+            .order_by("title", "subtitle")
+        )
