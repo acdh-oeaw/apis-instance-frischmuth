@@ -4,10 +4,13 @@ Views for custom API.
 I.e. project-specific endpoints (not APIS built-in API).
 """
 
+from django.contrib.postgres.expressions import ArraySubquery
+from django.db.models import OuterRef
+from django.db.models.functions import JSONObject
 from rest_framework import permissions, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 
-from apis_ontology.models import Work
+from apis_ontology.models import Expression, Work
 from .serializers import WorkPreviewSerializer
 
 
@@ -31,8 +34,21 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = WorkPreviewPagination
 
     def get_queryset(self):
-        return (
-            Work.objects.all()
-            .filter(siglum__isnull=False)
-            .order_by("title", "subtitle")
+        related_expressions = Expression.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+            triple_set_from_obj__prop__name_reverse__in=["realises"],
         )
+
+        works = Work.objects.annotate(
+            expression_data=ArraySubquery(
+                related_expressions.values(
+                    json=JSONObject(
+                        edition="edition",
+                        edition_type="edition_type",
+                        publication_date="publication_date_iso_formatted",
+                    )
+                )
+            )
+        ).order_by("title", "subtitle")
+
+        return works
