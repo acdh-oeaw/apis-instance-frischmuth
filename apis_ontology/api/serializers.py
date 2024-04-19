@@ -23,6 +23,8 @@ class ExpressionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expression
         fields = [
+            "title",
+            "subtitle",
             "edition",
             "edition_type",
             "publication_date",
