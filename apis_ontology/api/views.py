@@ -50,6 +50,8 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                 expression_data=ArraySubquery(
                     related_expressions.values(
                         json=JSONObject(
+                            title="title",
+                            subtitle="subtitle",
                             edition="edition",
                             edition_type="edition_type",
                             publication_date="publication_date_iso_formatted",
