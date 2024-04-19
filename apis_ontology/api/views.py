@@ -62,6 +62,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                     work_types.values(
                         json=JSONObject(
                             name="name",
+                            name_plural="name_plural",
                         )
                     )
                 )
