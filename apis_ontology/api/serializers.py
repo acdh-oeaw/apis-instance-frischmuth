@@ -22,6 +22,7 @@ class ExpressionSerializer(serializers.ModelSerializer):
 
 class WorkPreviewSerializer(serializers.ModelSerializer):
     expression_data = ExpressionSerializer(required=False, many=True)
+    work_type = serializers.CharField()
 
     class Meta:
         model = Work
@@ -29,4 +30,5 @@ class WorkPreviewSerializer(serializers.ModelSerializer):
             "title",
             "subtitle",
             "expression_data",
+            "work_type",
         ]
