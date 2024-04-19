@@ -8,7 +8,7 @@ from rest_framework import serializers
 from apis_ontology.models import Expression, Work
 
 
-class ExpressionSerializer(serializers.HyperlinkedModelSerializer):
+class ExpressionSerializer(serializers.ModelSerializer):
     publication_date = serializers.CharField()
 
     class Meta:
@@ -20,7 +20,7 @@ class ExpressionSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class WorkPreviewSerializer(serializers.HyperlinkedModelSerializer):
+class WorkPreviewSerializer(serializers.ModelSerializer):
     expression_data = ExpressionSerializer(required=False, many=True)
 
     class Meta:
