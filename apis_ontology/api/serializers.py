@@ -27,6 +27,7 @@ class WorkPreviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Work
         fields = [
+            "id",
             "title",
             "subtitle",
             "expression_data",
