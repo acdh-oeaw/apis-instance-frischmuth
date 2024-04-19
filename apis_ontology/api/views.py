@@ -55,17 +55,15 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                             publication_date="publication_date_iso_formatted",
                         )
                     )
-                )
-            )
-            .annotate(
+                ),
                 work_type=Subquery(
                     work_types.values(
                         json=JSONObject(
                             name="name",
                             name_plural="name_plural",
                         )
-                    )
-                )
+                    ),
+                ),
             )
             .order_by("title", "subtitle")
         )
