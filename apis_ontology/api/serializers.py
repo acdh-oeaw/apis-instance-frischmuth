@@ -5,7 +5,16 @@ I.e. project-specific endpoints (not APIS built-in API).
 """
 from rest_framework import serializers
 
-from apis_ontology.models import Expression, Work
+from apis_ontology.models import Expression, Work, WorkType
+
+
+class WorkTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkType
+        fields = [
+            "name",
+            "name_plural",
+        ]
 
 
 class ExpressionSerializer(serializers.ModelSerializer):
@@ -22,7 +31,7 @@ class ExpressionSerializer(serializers.ModelSerializer):
 
 class WorkPreviewSerializer(serializers.ModelSerializer):
     expression_data = ExpressionSerializer(required=False, many=True)
-    work_type = serializers.DictField()
+    work_type = WorkTypeSerializer(required=False)
 
     class Meta:
         model = Work
