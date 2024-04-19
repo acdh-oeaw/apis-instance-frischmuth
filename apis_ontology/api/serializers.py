@@ -22,7 +22,7 @@ class ExpressionSerializer(serializers.ModelSerializer):
 
 class WorkPreviewSerializer(serializers.ModelSerializer):
     expression_data = ExpressionSerializer(required=False, many=True)
-    work_type = serializers.CharField()
+    work_type = serializers.DictField()
 
     class Meta:
         model = Work

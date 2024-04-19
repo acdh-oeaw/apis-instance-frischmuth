@@ -57,7 +57,15 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                     )
                 )
             )
-            .annotate(work_type=Subquery(work_types.values("name")))
+            .annotate(
+                work_type=Subquery(
+                    work_types.values(
+                        json=JSONObject(
+                            name="name",
+                        )
+                    )
+                )
+            )
             .order_by("title", "subtitle")
         )
 
