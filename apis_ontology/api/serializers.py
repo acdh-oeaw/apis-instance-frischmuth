@@ -20,6 +20,7 @@ class WorkTypeSerializer(serializers.ModelSerializer):
 class ExpressionSerializer(serializers.ModelSerializer):
     publication_date = serializers.DateField()
     publisher = serializers.CharField()
+    place_of_publication = serializers.ListField()
 
     class Meta:
         model = Expression
@@ -31,6 +32,7 @@ class ExpressionSerializer(serializers.ModelSerializer):
             "language",
             "publication_date",
             "publisher",
+            "place_of_publication",
         ]
 
 
