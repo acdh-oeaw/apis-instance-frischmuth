@@ -19,6 +19,7 @@ class WorkTypeSerializer(serializers.ModelSerializer):
 
 class ExpressionSerializer(serializers.ModelSerializer):
     publication_date = serializers.CharField()
+    publisher = serializers.CharField()
 
     class Meta:
         model = Expression
@@ -28,6 +29,7 @@ class ExpressionSerializer(serializers.ModelSerializer):
             "edition",
             "edition_type",
             "publication_date",
+            "publisher",
         ]
 
 

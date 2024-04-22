@@ -10,7 +10,7 @@ from django.db.models.functions import JSONObject
 from rest_framework import permissions, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 
-from apis_ontology.models import Expression, Work, WorkType
+from apis_ontology.models import Expression, Organisation, Work, WorkType
 from .serializers import WorkPreviewSerializer
 
 
@@ -39,9 +39,16 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             triple_set_from_obj__prop__name_forward__in=["has type"],
         )
 
+        expression_publisher = Organisation.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+            triple_set_from_subj__prop__name_reverse__in=["has publisher"],
+        )
+
         related_expressions = Expression.objects.filter(
             triple_set_from_obj__subj_id=OuterRef("pk"),
             triple_set_from_obj__prop__name_reverse__in=["realises"],
+        ).annotate(
+            publisher=Subquery(expression_publisher.values("name")),
         )
 
         works = (
@@ -55,6 +62,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                             edition="edition",
                             edition_type="edition_type",
                             publication_date="publication_date_iso_formatted",
+                            publisher="publisher",
                         )
                     )
                 ),
