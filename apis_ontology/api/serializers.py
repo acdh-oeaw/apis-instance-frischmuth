@@ -28,6 +28,7 @@ class ExpressionSerializer(serializers.ModelSerializer):
             "subtitle",
             "edition",
             "edition_type",
+            "language",
             "publication_date",
             "publisher",
         ]
@@ -41,6 +42,7 @@ class WorkPreviewSerializer(serializers.ModelSerializer):
         model = Work
         fields = [
             "id",
+            "siglum",
             "title",
             "subtitle",
             "expression_data",

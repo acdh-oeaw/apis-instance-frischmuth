@@ -61,6 +61,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                             subtitle="subtitle",
                             edition="edition",
                             edition_type="edition_type",
+                            language="language",
                             publication_date="publication_date_iso_formatted",
                             publisher="publisher",
                         )
