@@ -229,8 +229,6 @@ REDMINE_ID = ""
 
 MAIN_TEXT_NAME = ""
 
-APIS_RELATIONS_FILTER_EXCLUDE.append("annotation")
-
 APIS_DEFAULT_COLLECTION = "manual"
 
 APIS_LIST_VIEWS_ALLOWED = False  # toggle for making list views public
