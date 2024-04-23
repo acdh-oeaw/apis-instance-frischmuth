@@ -16,13 +16,13 @@ six = "*"
 
 [[package]]
 name = "apis-acdhch-default-settings"
-version = "0.1.24"
+version = "1.0.0"
 description = "Default settings for APIS instances at the ACDH-CH"
 optional = false
-python-versions = ">=3.11,<4.0"
+python-versions = "<4.0,>=3.11"
 files = [
-    {file = "apis_acdhch_default_settings-0.1.24-py3-none-any.whl", hash = "sha256:1aa4c6ce4c78481c697e837bdcde8d1f177f53c900600734bb2f95b2a9d9ea5e"},
-    {file = "apis_acdhch_default_settings-0.1.24.tar.gz", hash = "sha256:13573db308736659c79f6820533e9bb8b483fdb00f718dcd939179dd2623cd46"},
+    {file = "apis_acdhch_default_settings-1.0.0-py3-none-any.whl", hash = "sha256:d6495187f746bb86d6532ad90b1e217e9a116f11b2a93a36460b712f3b759591"},
+    {file = "apis_acdhch_default_settings-1.0.0.tar.gz", hash = "sha256:28275de60bc896912b7c2d40fd355e60fea397b0fe1b6c57ba95cc0fe546d388"},
 ]
 
 [package.dependencies]
@@ -35,7 +35,7 @@ whitenoise = ">=5.2.0,<6.0.0"
 
 [[package]]
 name = "apis-core"
-version = "0.15.0"
+version = "0.17.3"
 description = "Base package for the APIS framework"
 optional = false
 python-versions = "^3.11"
@@ -44,15 +44,15 @@ develop = false
 
 [package.dependencies]
 apis-override-select2js = "^0.1.0"
-crispy-bootstrap4 = "^2023.1"
-Django = "^4.1"
+crispy-bootstrap4 = ">=2023.1,<2025.0"
+Django = ">=4.1,<6.0"
 django-admin-csvexport = "^2.2"
-django-autocomplete-light = "~3.9.4"
+django-autocomplete-light = ">=3.9.4,<3.12.0"
 django-crispy-forms = "^2"
 django-crum = "^0.7.9"
-django-filter = "^23.5"
+django-filter = ">=23.5,<25.0"
 django-model-utils = "^4.1.1"
-django-reversion = "^5.0"
+django-simple-history = "^3.5.0"
 django-tables2 = "^2.3.3"
 djangorestframework = "^3.14.0"
 djangorestframework-csv = ">=2.1,<4.0"
@@ -66,8 +66,8 @@ tablib = "^3.5.0"
 [package.source]
 type = "git"
 url = "https://github.com/acdh-oeaw/apis-core-rdf"
-reference = "kk/fix/rootobject_field_rename_leftovers"
-resolved_reference = "8f1fe4cf0b2548bb0eaf71bb9566889e60613596"
+reference = "v0.17.3"
+resolved_reference = "d0c081b1cfbd3bfff24227f848af29e7a7159338"
 
 [[package]]
 name = "apis-override-select2js"
@@ -615,18 +615,18 @@ files = [
 django = ">=1.4"
 
 [[package]]
-name = "django-reversion"
-version = "5.0.12"
-description = "An extension to the Django web framework that provides version control for model instances."
+name = "django-simple-history"
+version = "3.5.0"
+description = "Store model history and view/revert changes from admin site."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "django-reversion-5.0.12.tar.gz", hash = "sha256:c047cc99a9f1ba4aae6db89c3ac243478d6de98ec8a60c7073fcc875d89c5cdb"},
-    {file = "django_reversion-5.0.12-py3-none-any.whl", hash = "sha256:5884e9f77f55c341b3f0a8d3b0af000f060530653776997267c8b1e5349d8fee"},
+    {file = "django-simple-history-3.5.0.tar.gz", hash = "sha256:eef2943d7c846270f11c8136f38a3ba00de2bebd7b1b89037de5d9b148ed677a"},
+    {file = "django_simple_history-3.5.0-py3-none-any.whl", hash = "sha256:0030b3bb5ed219d6453320213e75cfa00dab7a381946124df9411729101c8874"},
 ]
 
 [package.dependencies]
-django = ">=3.2"
+asgiref = ">=3.6"
 
 [[package]]
 name = "django-tables2"
@@ -1846,4 +1846,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "538607e0643a43dac775f37d8e774cbdf98f541785cbc43319490f5c5fb329dc"
+content-hash = "c3555908dc07f8b45052e2fba92f33b07242f5477d5017b02d3f8dc67b334cbd"
