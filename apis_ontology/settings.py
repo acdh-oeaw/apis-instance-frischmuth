@@ -45,6 +45,20 @@ ALLOWED_HOSTS = re.sub(
     os.environ.get("ALLOWED_HOSTS", ",".join(ALLOWED_HOSTS)),
 ).split(",")
 
+
+# Add CORS headers to responses
+# see https://github.com/adamchainz/django-cors-headers
+INSTALLED_APPS += ["corsheaders"]
+MIDDLEWARE = ["corsheaders.middleware.CorsMiddleware"] + MIDDLEWARE
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https:\/\/(\w|[-.])*frischmuth(\w|[-.])*\.oeaw\.ac\.at$",
+    r"^http:\/\/localhost:\d{2,4}$",
+    r"^http:\/\/127\.0\.0\.1:\d{2,4}$",
+]
+CORS_URLS_REGEX = r"^/(apis/)*api/.*$"
+
+
 # Application definition
 
 ROOT_URLCONF = "apis_ontology.urls"
