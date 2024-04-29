@@ -8,7 +8,7 @@ from rest_framework import serializers
 from apis_ontology.models import Expression, Work, WorkType
 
 
-class WorkTypeSerializer(serializers.ModelSerializer):
+class WorkTypeDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkType
         fields = [
@@ -17,7 +17,7 @@ class WorkTypeSerializer(serializers.ModelSerializer):
         ]
 
 
-class ExpressionSerializer(serializers.ModelSerializer):
+class ExpressionDataSerializer(serializers.ModelSerializer):
     publication_date = serializers.DateField(required=False, allow_null=True)
     publisher = serializers.CharField(required=False, allow_null=True)
     place_of_publication = serializers.ListField(
@@ -39,8 +39,8 @@ class ExpressionSerializer(serializers.ModelSerializer):
 
 
 class WorkPreviewSerializer(serializers.ModelSerializer):
-    expression_data = ExpressionSerializer(required=False, many=True)
-    work_type = WorkTypeSerializer(required=False)
+    expression_data = ExpressionDataSerializer(required=False, many=True)
+    work_type = WorkTypeDataSerializer(required=False)
 
     class Meta:
         model = Work
