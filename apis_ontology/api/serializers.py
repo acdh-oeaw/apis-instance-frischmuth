@@ -18,9 +18,10 @@ class WorkTypeSerializer(serializers.ModelSerializer):
 
 
 class ExpressionSerializer(serializers.ModelSerializer):
-    publication_date = serializers.DateField()
-    publisher = serializers.CharField()
-    place_of_publication = serializers.ListField()
+    publication_date = serializers.DateField(required=False, allow_null=True)
+    publisher = serializers.CharField(required=False, allow_null=True)
+    place_of_publication = serializers.ListField(required=False, allow_empty=True
+    )
 
     class Meta:
         model = Expression
@@ -34,10 +35,6 @@ class ExpressionSerializer(serializers.ModelSerializer):
             "publisher",
             "place_of_publication",
         ]
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        return {k: v for k, v in data.items() if v is not None}
 
 
 class WorkPreviewSerializer(serializers.ModelSerializer):
@@ -54,7 +51,3 @@ class WorkPreviewSerializer(serializers.ModelSerializer):
             "expression_data",
             "work_type",
         ]
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        return {k: v for k, v in data.items() if v is not None}
