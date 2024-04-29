@@ -35,6 +35,10 @@ class ExpressionSerializer(serializers.ModelSerializer):
             "place_of_publication",
         ]
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        return {k: v for k, v in data.items() if v is not None}
+
 
 class WorkPreviewSerializer(serializers.ModelSerializer):
     expression_data = ExpressionSerializer(required=False, many=True)
@@ -50,3 +54,7 @@ class WorkPreviewSerializer(serializers.ModelSerializer):
             "expression_data",
             "work_type",
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        return {k: v for k, v in data.items() if v is not None}
