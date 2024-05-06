@@ -48,7 +48,7 @@ ALLOWED_HOSTS = re.sub(
 
 # Add CORS headers to responses
 # see https://github.com/adamchainz/django-cors-headers
-INSTALLED_APPS += ["corsheaders"]
+INSTALLED_APPS += ["corsheaders", "apis_core.history"]
 MIDDLEWARE = ["corsheaders.middleware.CorsMiddleware"] + MIDDLEWARE
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
