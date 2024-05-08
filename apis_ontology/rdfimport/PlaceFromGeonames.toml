@@ -1,5 +1,6 @@
 ####################################################
-# Create an E53_Place from a geonames RDF endpoint #
+# Create an apis_ontology Place object from an RDF endpoint.
+# Source: Geonames, https://sws.geonames.org
 ####################################################
 superclass = "apis_ontology.models.Place"
 # the second regex is for the test data
