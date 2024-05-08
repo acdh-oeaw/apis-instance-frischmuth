@@ -1,5 +1,6 @@
 ######################################################
-# Create an E21_Person from a d-nb.info RDF endpoint #
+# Create an apis_ontology Person object from an RDF endpoint.
+# Source: DNB, https://d-nb.info
 ######################################################
 superclass = "apis_ontology.models.Person"
 regex = "https://d-nb.info.*"

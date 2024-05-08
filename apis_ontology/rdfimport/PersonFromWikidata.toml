@@ -1,6 +1,6 @@
 ##############################################
-# Create an entity `apis_ontology.Person`
-# from a wikidata RDF endpoint
+# Create an apis_ontology Person object from an RDF endpoint.
+# Source: Wikidata, http://www.wikidata.org
 ##############################################
 superclass = "apis_ontology.models.Person"
 regex = "http://www.wikidata.org.*"

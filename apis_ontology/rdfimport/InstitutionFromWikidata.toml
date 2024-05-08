@@ -1,6 +1,6 @@
 #########################################
-# Create an `apis_ontology.Institution` #
-# from a wikidata RDF endpoint          #
+# Create an apis_ontology Organisation object from an RDF endpoint.
+# Source: Wikidata, http://www.wikidata.org
 #########################################
 superclass = "apis_ontology.models.Organisation"
 regex = "http://www.wikidata.org.*"
