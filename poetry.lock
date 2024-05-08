@@ -35,7 +35,7 @@ whitenoise = ">=5.2.0,<6.0.0"
 
 [[package]]
 name = "apis-core"
-version = "0.17.3"
+version = "0.18.0"
 description = "Base package for the APIS framework"
 optional = false
 python-versions = "^3.11"
@@ -66,8 +66,8 @@ tablib = "^3.5.0"
 [package.source]
 type = "git"
 url = "https://github.com/acdh-oeaw/apis-core-rdf"
-reference = "v0.17.3"
-resolved_reference = "d0c081b1cfbd3bfff24227f848af29e7a7159338"
+reference = "v0.18.0"
+resolved_reference = "fcadf02c1301a13051eb84b3114d4a441e705cd0"
 
 [[package]]
 name = "apis-override-select2js"
@@ -1861,4 +1861,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "6f20d3a27ed0dde6e384e87250877aba9769ccb101e45c28913344fd3f400668"
+content-hash = "f0e097139f2b90d3480b1cbe518ada5e2d5f0d415cdea590f759edd05542aeb3"
