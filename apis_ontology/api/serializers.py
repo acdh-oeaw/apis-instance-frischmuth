@@ -40,7 +40,7 @@ class ExpressionDataSerializer(serializers.ModelSerializer):
 
 class WorkPreviewSerializer(serializers.ModelSerializer):
     expression_data = ExpressionDataSerializer(required=False, many=True)
-    work_type = WorkTypeDataSerializer(required=False)
+    work_type = WorkTypeDataSerializer(required=False, allow_null=True)
 
     class Meta:
         model = Work
