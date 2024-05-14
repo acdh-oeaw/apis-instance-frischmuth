@@ -8,7 +8,7 @@ from django.contrib.postgres.expressions import ArraySubquery, Subquery
 from django.db.models import OuterRef
 from django.db.models.functions import JSONObject
 from rest_framework import permissions, viewsets
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import LimitOffsetPagination, Response
 
 from apis_ontology.models import Expression, Organisation, Place, Work, WorkType
 from .serializers import WorkPreviewSerializer
@@ -17,6 +17,39 @@ from .serializers import WorkPreviewSerializer
 class WorkPreviewPagination(LimitOffsetPagination):
     default_limit = 20
     max_limit = 100
+
+    def get_paginated_response(self, data):
+        response = super(WorkPreviewPagination, self).get_paginated_response(data)
+        response.data.update(
+            {
+                self.limit_query_param: self.limit,
+                self.offset_query_param: self.offset,
+            }
+        )
+        return Response(dict(sorted(response.data.items())))
+
+    def get_paginated_response_schema(self, schema):
+        res_schema = super(WorkPreviewPagination, self).get_paginated_response_schema(
+            schema
+        )
+        props = res_schema["properties"]
+        new_props = {
+            self.limit_query_param: {
+                "type": "integer",
+                "nullable": True,
+                "example": 100,
+            },
+            self.offset_query_param: {
+                "type": "integer",
+                "nullable": True,
+                "example": 300,
+            },
+        }
+
+        props.update(new_props)
+        res_schema["properties"] = dict(sorted(props.items()))
+
+        return res_schema
 
 
 class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
