@@ -1405,3 +1405,12 @@ def construct_properties():
         subjects=[Person, Organisation],
         objects=[Work, Expression],
     )
+
+    # P198 holds or supports
+    # see https://remogrillo.github.io/cidoc-crm_periodic_table/?code=P198
+    create_properties(
+        name_forward="holds or supports",
+        name_reverse="is held or supported by",
+        subjects=[PhysicalObject],
+        objects=[PhysicalObject],
+    )
