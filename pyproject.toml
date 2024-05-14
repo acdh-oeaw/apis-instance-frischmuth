@@ -34,5 +34,13 @@ ruff = ">=0.2.1,<0.5.0"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.djlint]
+indent=2
+profile="django"
+extension="html"
+blank_line_before_tag="block,if"
+blank_line_after_tag="endif,endblock"
+format_js=false
+
 [tool.ruff]
 lint.ignore = ["E501", "F403"]
