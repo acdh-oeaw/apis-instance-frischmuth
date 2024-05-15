@@ -1,4 +1,3 @@
-import itertools
 from django.core.management.base import BaseCommand
 from apis_ontology.models import DataSource
 from apis_core.utils.caching import (
@@ -70,7 +69,6 @@ class Command(BaseCommand):
         entities = []
         entities_failed = []
 
-        all_sources = DataSource.objects.all()
         all_entities = get_all_entity_class_names()
         entity_names = [m for m in all_entities]
 
@@ -137,7 +135,7 @@ class Command(BaseCommand):
                 # else:
                 try:
                     ent_obj = ent_class.objects.filter(data_source__in=source_obj)
-                except:
+                except Exception:
                     print(f"No objects left for source {source_obj.name}.")
                     exit(0)
 

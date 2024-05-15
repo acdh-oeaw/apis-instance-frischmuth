@@ -132,13 +132,13 @@ def zotero_login():
 
     try:
         zot.key_info()
-    except zotero_errors.UserNotAuthorised as e:
+    except zotero_errors.UserNotAuthorised:
         print(
             f"Zotero login not possible: "
             f"{zot.request.text} ({zot.request.status_code})"
         )
         exit(1)
-    except zotero_errors.HTTPError as e:
+    except zotero_errors.HTTPError:
         print(
             f"Zotero login not possible: "
             f"{zot.request.text} ({zot.request.status_code})"
@@ -585,7 +585,7 @@ def get_collections(zot, filter_collections=True, sub_collections=True):
                         try:
                             key_match = zot.collection(k)
                             active.append(key_match)
-                        except Exception as e:
+                        except Exception:
                             print(f"Collection with key {k} not found.")
 
         if not active:

@@ -1,5 +1,4 @@
 import os
-import numpy as np
 import pandas as pd
 import logging
 from apis_ontology.scripts.access_sharepoint import import_and_parse_data
