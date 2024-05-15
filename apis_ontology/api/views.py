@@ -107,7 +107,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                         )
                     )
                 ),
-                work_type=Subquery(
+                work_type=ArraySubquery(
                     work_types.values(
                         json=JSONObject(
                             name="name",
