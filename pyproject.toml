@@ -45,3 +45,6 @@ format_js=false
 
 [tool.ruff]
 lint.ignore = ["E501", "F403"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/settings.py" = ["F405"]
