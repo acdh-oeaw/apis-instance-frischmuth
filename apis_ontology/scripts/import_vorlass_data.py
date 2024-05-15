@@ -13,7 +13,7 @@ from apis_ontology.models import (
     WorkType,
     StatusMixin,
 )
-from .additional_infos import WORK_TYPES, WORKTYPE_MAPPINGS
+from .additional_infos import WORK_TYPES
 from .import_helpers import create_triple, create_source
 from apis_ontology.scripts.access_sharepoint import import_and_parse_data
 
@@ -63,7 +63,7 @@ def parse_vorlass_xml(title_siglum_dict, vorlass_excel_source):
     ]
 
     with open(
-        f"./vorlass_data_frischmuth/04_derived_custom/Frischmuth_Vorlass_FNI-FRISCHMUTH_import-data.xml",
+        "./vorlass_data_frischmuth/04_derived_custom/Frischmuth_Vorlass_FNI-FRISCHMUTH_import-data.xml",
         "r",
         encoding="utf-8",
     ) as file_obj:

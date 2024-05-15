@@ -16,7 +16,6 @@ from apis_ontology.models import (
     WorkType,
     Topic,
 )
-from .utils import create_import_date_string, convert_year_only_date
 
 
 def create_triple(entity_subj, entity_obj, prop):
@@ -122,7 +121,7 @@ def get_work(siglum: str):
         work = Work.objects.get(
             siglum=siglum,
         )
-    except Exception as e:
+    except Exception:
         pass
 
     return work
@@ -138,7 +137,7 @@ def get_type(title: str):
         work_type = WorkType.objects.get(
             name=title,
         )
-    except Exception as e:
+    except Exception:
         pass
 
     return work_type
@@ -217,7 +216,7 @@ def create_person(person_data: dict, source: DataSource):
             full_name = first_name
         else:
             # TODO log as error instead of exiting program
-            f"Missing name to look up or create Person, exiting."
+            "Missing name to look up or create Person, exiting."
             exit(1)
     else:
         # rudimentary way of determining first name and last name from

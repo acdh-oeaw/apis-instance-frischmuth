@@ -306,8 +306,9 @@ class Work(TitlesMixin, LanguageMixin, NotesMixin, StatusMixin, AbstractEntity):
 
     class FigureSpeech(models.TextChoices):
         DIRECT_QUOTE = "direct_quotation", _("direkt zitierend")
-        DIRECT_FIGURE_SPEECH = "direct_figure_speech", _(
-            "autonome, direkte Figurenrede"
+        DIRECT_FIGURE_SPEECH = (
+            "direct_figure_speech",
+            _("autonome, direkte Figurenrede"),
         )
         DIRECT_SPEECH = "direct_speech", _("direkte Rede")
         INDIRECT_SPEECH = "indirect_speech", _("indirekte Rede")
@@ -324,11 +325,13 @@ class Work(TitlesMixin, LanguageMixin, NotesMixin, StatusMixin, AbstractEntity):
 
     class Focalization(models.TextChoices):
         ZERO_FOCALIZATION = "zero", _("Nullfokalisierung")
-        INTERNAL_FOCALIZATION_VARIABLE = "internal_variable", _(
-            "interne Fokalisierung – variabel"
+        INTERNAL_FOCALIZATION_VARIABLE = (
+            "internal_variable",
+            _("interne Fokalisierung – variabel"),
         )
-        INTERNAL_FOCALIZATION_FIXED = "internal_fixed", _(
-            "interne Fokalisierung – fixiert"
+        INTERNAL_FOCALIZATION_FIXED = (
+            "internal_fixed",
+            _("interne Fokalisierung – fixiert"),
         )
         EXTERNAL_FOCALIZATION = "external", _("externe Fokalisierung")
 
@@ -351,17 +354,21 @@ class Work(TitlesMixin, LanguageMixin, NotesMixin, StatusMixin, AbstractEntity):
 
     class NarrativeVoice(models.TextChoices):
         HETERODIEGETIC = "heterodiegetic", _("heterodiegetisches Erzählen")
-        HOMODIEGETIC_UNINVOLVED_EYEWITNESS = "homodiegetic_uninvolved", _(
-            "homodiegetisches Erzählen – unbeteiligter Beobachter:in"
+        HOMODIEGETIC_UNINVOLVED_EYEWITNESS = (
+            "homodiegetic_uninvolved",
+            _("homodiegetisches Erzählen – unbeteiligter Beobachter:in"),
         )  # a.k.a. alterodiegetic
-        HOMODIEGETIC_WITNESS_PARTICIPANT = "homodiegetic_participant", _(
-            "homodiegetisches Erzählen – beteiligter Beobachter:in"
+        HOMODIEGETIC_WITNESS_PARTICIPANT = (
+            "homodiegetic_participant",
+            _("homodiegetisches Erzählen – beteiligter Beobachter:in"),
         )  # a.k.a. alterodiegetic
-        HOMODIEGETIC_MINOR_CHARACTER = "homodiegetic_character", _(
-            "homodiegetisches Erzählen – Nebenfigur"
+        HOMODIEGETIC_MINOR_CHARACTER = (
+            "homodiegetic_character",
+            _("homodiegetisches Erzählen – Nebenfigur"),
         )  # a.k.a. alterodiegetic
-        HOMODIEGETIC_PROTAGONIST = "homodiegetic_protagonist", _(
-            "homodiegetisches Erzählen – Hauptfigur"
+        HOMODIEGETIC_PROTAGONIST = (
+            "homodiegetic_protagonist",
+            _("homodiegetisches Erzählen – Hauptfigur"),
         )  # a.k.a. autodiegetic
 
     siglum = models.CharField(

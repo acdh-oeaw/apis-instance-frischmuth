@@ -6,7 +6,6 @@
 
 import os
 import sharepy
-import pandas as pd
 import getpass
 from pathlib import Path
 from urllib.parse import quote
@@ -59,7 +58,7 @@ def sharepoint_connect():
     try:
         s = sharepy.connect(sp_site, username=sp_user, password=sp_pass)
         s.save()
-    except Exception as e:
+    except Exception:
         print("Cannot connect to SharePoint!")
         exit(1)
 
@@ -205,9 +204,9 @@ def fetch_file_data(s, sp_fname, sp_file_url):
     :return: the requested file
     """
     sp_group = os.environ.get("SP_GROUP")
-    sp_dir = os.environ.get("SP_DIRECTORY")
+    # sp_dir = os.environ.get("SP_DIRECTORY")
 
-    source_file_by_name = f"https://{s.site}/sites/{sp_group}/_api/web/GetFolderByServerRelativeUrl('{sp_dir}')/Files('{sp_fname}')/$value"
+    # source_file_by_name = f"https://{s.site}/sites/{sp_group}/_api/web/GetFolderByServerRelativeUrl('{sp_dir}')/Files('{sp_fname}')/$value"
     source_file_by_url = f"https://{s.site}/sites/{sp_group}/_api/web/GetFileByServerRelativeUrl('{sp_file_url}')/$value"
 
     return source_file_by_url
