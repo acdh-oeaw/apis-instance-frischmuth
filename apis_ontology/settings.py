@@ -56,7 +56,7 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^http:\/\/localhost:\d{2,4}$",
     r"^http:\/\/127\.0\.0\.1:\d{2,4}$",
 ]
-# CORS_URLS_REGEX = r"^/(apis/)*api/.*$"
+CORS_URLS_REGEX = r"^/(apis/)*api/.*$"
 
 
 # Application definition
