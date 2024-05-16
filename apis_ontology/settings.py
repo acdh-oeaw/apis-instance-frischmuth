@@ -37,6 +37,8 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "frischmuth-dev.acdh-dev.oeaw.ac.at",
+    "frischmuth-frontend.acdh-ch-dev.oeaw.ac.at",
+    "frischmuth-frontend-dev.acdh-ch-dev.oeaw.ac.at",
 ]
 
 ALLOWED_HOSTS = re.sub(
