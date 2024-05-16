@@ -55,6 +55,7 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https:\/\/(\w|[-.])*frischmuth(\w|[-.])*\.oeaw\.ac\.at$",
     r"^http:\/\/localhost:\d{2,4}$",
     r"^http:\/\/127\.0\.0\.1:\d{2,4}$",
+    r"^https?:\/\/[\w\-]+.(acdh-dev|acdh|acdh-ch-dev).oeaw\.ac\.at$",
 ]
 CORS_URLS_REGEX = r"^/(apis/)*api/.*$"
 
