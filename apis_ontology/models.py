@@ -1048,6 +1048,9 @@ def update_properties():
         prop.name_reverse = "is referenced in"
         prop.save()
 
+    # delete work_is_part_of_expression
+    Property.objects.filter(name_forward="work is part of expression").delete()
+
 
 def construct_properties():
     """
@@ -1124,14 +1127,6 @@ def construct_properties():
         name_forward="expression is part of expression",
         name_reverse="expression has part expression",
         subjects=[Expression],
-        objects=[Expression],
-    )
-
-    # work_is_part_of_expression
-    create_properties(
-        name_forward="work is part of expression",
-        name_reverse="expression has part work",
-        subjects=[Work],
         objects=[Expression],
     )
 
