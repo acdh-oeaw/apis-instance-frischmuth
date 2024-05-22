@@ -70,8 +70,8 @@ def parse_vorlass_xml(title_siglum_dict, vorlass_excel_source):
         "r",
         encoding="utf-8",
     ) as file_obj:
-        element = ET.parse(file_obj)
-        items = element.findall("item")
+        tree = ET.parse(file_obj)
+        items = tree.findall(".//tei:bibl", ns)
 
         vorlass_xml_source, created = create_source(
             name="VorlassSourceXML",
@@ -80,13 +80,26 @@ def parse_vorlass_xml(title_siglum_dict, vorlass_excel_source):
         )
 
         for workelem in items:
-            title = workelem.attrib.get("title")
-            notes = "docx pointer: " + workelem.attrib.get("category")
+            title = get_text_by_elementpath(workelem, "./tei:title[@type='main']", ns)
+            notes = "docx pointer: " + get_text_by_elementpath(
+                workelem, "./tei:note[@type='category']", ns
+            )
 
-            if workelem.attrib.get("category") != workelem.attrib.get("title"):
-                notes = notes + " --- " + workelem.attrib.get("unmodified_title")
             if (
-                workelem.attrib.get("category").split(" --- ")[0]
+                get_text_by_elementpath(workelem, "./tei:note[@type='category']", ns)
+                != title
+            ):
+                notes = (
+                    notes
+                    + " --- "
+                    + get_text_by_elementpath(
+                        workelem, "./tei:note[@type='unmodified_title']", ns
+                    )
+                )
+            if (
+                get_text_by_elementpath(
+                    workelem, "./tei:note[@type='category']", ns
+                ).split(" --- ")[0]
                 in ("Werke", "Sammlungen")
                 and title + notes in title_siglum_dict
             ):
