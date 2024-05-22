@@ -103,24 +103,11 @@ def parse_vorlass_xml(title_siglum_dict, vorlass_excel_source):
                 in ("Werke", "Sammlungen")
                 and title + notes in title_siglum_dict
             ):
-                siglum = title_siglum_dict[workelem.attrib.get("title") + notes][
-                    "Sigle"
-                ]
-                work_type = title_siglum_dict[workelem.attrib.get("title") + notes][
-                    "Werktyp"
-                ]
-                status = get_status(
-                    title_siglum_dict[workelem.attrib.get("title") + notes]["status"]
-                )
-                fixed_title = title_siglum_dict[workelem.attrib.get("title") + notes][
-                    "Titel"
-                ]
-                subtitle = (
-                    title_siglum_dict[workelem.attrib.get("title") + notes][
-                        "Untertitel"
-                    ]
-                    or ""
-                )
+                siglum = title_siglum_dict[title + notes]["Sigle"]
+                work_type = title_siglum_dict[title + notes]["Werktyp"]
+                status = get_status(title_siglum_dict[title + notes]["status"])
+                fixed_title = title_siglum_dict[title + notes]["Titel"]
+                subtitle = title_siglum_dict[title + notes]["Untertitel"] or ""
 
                 work, created = Work.objects.get_or_create(
                     title=fixed_title,
