@@ -111,10 +111,10 @@ def parse_vorlass_xml(title_siglum_dict, vorlass_excel_source):
 
                 work, created = Work.objects.get_or_create(
                     title=fixed_title,
-                    # notes=notes,
                     siglum=siglum,
                     progress_status=status,
                     subtitle=subtitle,
+                    notes=workelem.attrib.get("corresp", ""),
                     defaults={"data_source": vorlass_excel_source},
                 )
                 create_triple(
