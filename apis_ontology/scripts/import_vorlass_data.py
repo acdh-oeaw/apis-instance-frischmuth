@@ -66,7 +66,7 @@ def parse_vorlass_xml(title_siglum_dict, vorlass_excel_source):
     ]
 
     with open(
-        "./vorlass_data_frischmuth/04_derived_custom/Frischmuth_Vorlass_FNI-FRISCHMUTH_import-data.xml",
+        "./vorlass_data_frischmuth/06_final_tei_for_apis_import/Frischmuth_Vorlass_FNI-FRISCHMUTH_tei.xml",
         "r",
         encoding="utf-8",
     ) as file_obj:
