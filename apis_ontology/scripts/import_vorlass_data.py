@@ -19,6 +19,9 @@ from apis_ontology.scripts.access_sharepoint import import_and_parse_data
 
 fname = os.path.basename(__file__)
 
+ns = {"tei": "http://www.tei-c.org/ns/1.0"}
+
+ET.register_namespace("tei", ns["tei"])
 
 def run():
     import_and_parse_data(parse_sigle_excel)
