@@ -139,6 +139,22 @@ def parse_vorlass_xml(title_siglum_dict, vorlass_excel_source):
                         prop=Property.objects.get(name_forward="has type"),
                     )
 
+                for physical_object in workelem.findall(
+                    "./tei:note[@type='objects']/tei:listObject/tei:object", ns
+                ):
+                    create_physical_object(
+                        physical_object, ns, work, archive, vorlass_xml_source
+                    )
+
+            else:
+                for physical_object in workelem.findall(
+                    "./tei:note[@type='objects']/tei:listObject/tei:object", ns
+                ):
+                    create_physical_object(
+                        physical_object, ns, work, archive, vorlass_xml_source, None
+                    )
+
+
 def get_text_by_elementpath(element, path, ns):
     """Helper function to get a cleaned string from an xml-element (as used in the auxiliary files)"""
     # strip because import data isn't clean (leading, trailing spaces)
