@@ -139,6 +139,17 @@ def parse_vorlass_xml(title_siglum_dict, vorlass_excel_source):
                         prop=Property.objects.get(name_forward="has type"),
                     )
 
+def get_text_by_elementpath(element, path, ns):
+    """Helper function to get a cleaned string from an xml-element (as used in the auxiliary files)"""
+    # strip because import data isn't clean (leading, trailing spaces)
+    node_text = ""
+    if element and element.find(path, ns) is not None:
+        node_text = " ".join(
+            " ".join(element.find(path, ns).text.strip().splitlines()).split()
+        )
+    return node_text
+
+
 def create_physical_object(
     element, ns, related_work, archive, data_source, physical_object_parent=None
 ):
