@@ -139,45 +139,40 @@ def parse_vorlass_xml(title_siglum_dict, vorlass_excel_source):
                         prop=Property.objects.get(name_forward="has type"),
                     )
 
-                for holding in workelem.findall("holding"):
-                    description = get_text_by_elementpath(holding, "description")
-                    pho = PhysicalObject.objects.create(
-                        name=description[:60],
-                        description=description,
-                        vorlass_doc_reference=notes.replace("docx pointer: ", "")[:255],
-                        # notes=notes,
-                        data_source=vorlass_xml_source,
-                    )
-                    create_triple(
-                        entity_subj=pho,
-                        entity_obj=work,
-                        prop=Property.objects.get(name_forward="relates to"),
-                    )
-                    create_triple(
-                        entity_subj=archive,
-                        entity_obj=pho,
-                        prop=Property.objects.get(name_forward="holds"),
-                    )
+def create_physical_object(
+    element, ns, related_work, archive, data_source, physical_object_parent=None
+):
+    name = get_text_by_elementpath(element, "./tei:objectIdentifier/tei:objectName", ns)
+    description = get_text_by_elementpath(element, "./tei:physDesc/tei:p", ns)
+    docx_reference = get_text_by_elementpath(
+        element, "./tei:note[@type='docx_anchor']", ns
+    )
 
-            else:
-                for holding in workelem.findall("holding"):
-                    description = get_text_by_elementpath(holding, "description")
-                    pho = PhysicalObject.objects.create(
-                        name=description[:60],
-                        description=description,
-                        vorlass_doc_reference=notes.replace("docx pointer: ", "")[:255],
-                        # notes=notes,
-                        data_source=vorlass_xml_source,
-                    )
-                    create_triple(
-                        entity_subj=archive,
-                        entity_obj=pho,
-                        prop=Property.objects.get(name_forward="holds"),
-                    )
+    pho = PhysicalObject.objects.create(
+        name=name,
+        description=description,
+        vorlass_doc_reference=docx_reference,
+        data_source=data_source,
+    )
+    create_triple(
+        entity_subj=pho,
+        entity_obj=related_work,
+        prop=Property.objects.get(name_forward="relates to"),
+    )
+    create_triple(
+        entity_subj=archive,
+        entity_obj=pho,
+        prop=Property.objects.get(name_forward="holds"),
+    )
+    if physical_object_parent:
+        create_triple(
+            entity_subj=physical_object_parent,
+            entity_obj=pho,
+            prop=Property.objects.get(name_forward="holds or supports"),
+        )
 
-
-def get_text_by_elementpath(element, element_child_name):
-    """Helper function to get a cleaned string from an xml-element (as used in the auxiliary files)"""
-    # strip because import data isn't clean (leading, trailing spaces)
-    if element.find(element_child_name).text:
-        return element.find(element_child_name).text.strip()
+    if element.find("./tei:note[@type='objects']/tei:listObject", ns):
+        for el in element.findall(
+            "./tei:note[@type='objects']/tei:listObject//tei:object", ns
+        ):
+            create_physical_object(el, ns, related_work, archive, data_source, pho)
