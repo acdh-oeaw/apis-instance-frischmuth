@@ -516,6 +516,13 @@ class WorkType(
         verbose_name=_("Pluralform"),
     )
 
+    icon_id = models.CharField(
+        max_length=50,
+        blank=True,
+        default="",
+        verbose_name=_("Icon-Kennzeichnung"),
+    )
+
     data_source = models.ForeignKey(
         DataSource,
         on_delete=models.SET_NULL,
