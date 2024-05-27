@@ -1,5 +1,6 @@
 from apis_core.apis_entities.models import AbstractEntity
 from apis_core.apis_relations.models import Property
+from apis_core.history.models import VersionMixin
 from dateparser import parse
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -218,7 +219,7 @@ class LanguageMixin(models.Model):
         abstract = True
 
 
-class DataSource(models.Model):
+class DataSource(VersionMixin, models.Model):
     """
     Holds (meta) information about data sources.
     Used to identify e.g. imports from Zotero or Excel.
@@ -280,7 +281,9 @@ class DataSource(models.Model):
         verbose_name_plural = _("datenquellen")
 
 
-class Work(TitlesMixin, LanguageMixin, NotesMixin, StatusMixin, AbstractEntity):
+class Work(
+    VersionMixin, TitlesMixin, LanguageMixin, NotesMixin, StatusMixin, AbstractEntity
+):
     """
     The abstract notion of an intellectual creation, irrespective
     of its exact transmitted version, language or other form.
@@ -503,6 +506,7 @@ class Work(TitlesMixin, LanguageMixin, NotesMixin, StatusMixin, AbstractEntity):
 
 
 class WorkType(
+    VersionMixin,
     GenericNameMixin,
     AlternativeNameMixin,
     DescriptionMixin,
@@ -539,6 +543,7 @@ class WorkType(
 
 
 class Expression(
+    VersionMixin,
     TitlesMixin,
     DescriptionMixin,
     LanguageMixin,
@@ -679,7 +684,9 @@ class Expression(
         super().save(*args, **kwargs)
 
 
-class Archive(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class Archive(
+    VersionMixin, GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+):
     """
     An institution or organisation where physical objects are
     stored and cared for.
@@ -714,7 +721,7 @@ class Archive(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         verbose_name_plural = _("archive")
 
 
-class PhysicalObject(GenericNameMixin, DescriptionMixin, AbstractEntity):
+class PhysicalObject(VersionMixin, GenericNameMixin, DescriptionMixin, AbstractEntity):
     """
     A physical object pertaining to a Work.
 
@@ -748,7 +755,9 @@ class PhysicalObject(GenericNameMixin, DescriptionMixin, AbstractEntity):
         verbose_name_plural = _("vorlassobjekte")
 
 
-class Person(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class Person(
+    VersionMixin, PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+):
     """
     Any natural person.
     """
@@ -768,6 +777,7 @@ class Person(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
 
 
 class Organisation(
+    VersionMixin,
     GenericNameMixin,
     AlternativeNameMixin,
     DescriptionMixin,
@@ -802,7 +812,9 @@ class Organisation(
         verbose_name_plural = _("körperschaften")
 
 
-class Character(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class Character(
+    VersionMixin, PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+):
     """
     A real or fictitious person who appears in or is mentioned in a Work.
 
@@ -853,7 +865,9 @@ class Character(PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
         verbose_name_plural = _("figuren")
 
 
-class MetaCharacter(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class MetaCharacter(
+    VersionMixin, GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+):
     """
     A composite entity to refer to related characters across works.
 
@@ -878,6 +892,7 @@ class MetaCharacter(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEnt
 
 
 class Place(
+    VersionMixin,
     GenericNameMixin,
     AlternativeNameMixin,
     DescriptionMixin,
@@ -917,6 +932,7 @@ class Place(
 
 
 class ResearchPerspective(
+    VersionMixin,
     GenericNameMixin,
     AlternativeNameMixin,
     DescriptionMixin,
@@ -944,6 +960,7 @@ class ResearchPerspective(
 
 
 class Topic(
+    VersionMixin,
     GenericNameMixin,
     AlternativeNameMixin,
     DescriptionMixin,
@@ -970,7 +987,9 @@ class Topic(
         verbose_name_plural = _("themen")
 
 
-class Interpretatem(GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity):
+class Interpretatem(
+    VersionMixin, GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+):
     """
     A conceptual object representing a specific (interpretative/scholarly)
     view on one or more Works.
