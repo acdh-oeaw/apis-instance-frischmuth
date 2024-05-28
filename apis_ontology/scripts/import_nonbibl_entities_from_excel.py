@@ -66,7 +66,7 @@ def parse_entities_dataframe(sheet_name, df, file):
     )
     for index, row in df.iterrows():
         if sheet_name == "Orte":
-            place_name = row["ORT"]
+            place_name = row["Name_im_Werk"]
             related_work_siglum = row["Sigle"]
             place_type = row["Kategorie"]
             place_description = row["Beschreibung"]
@@ -145,10 +145,10 @@ def parse_entities_dataframe(sheet_name, df, file):
 
         if sheet_name == "Namen":
             character_name = row["Name"]
-            person_forename = row["Vorname"]
-            person_surname = row["Nachname"]
+            forename = row["Vorname"]
+            surname = row["Nachname"]
             person_alternative_name = row["alternativeName"]
-            character_description = row["Beschreibung"]
+            description = row["Beschreibung"]
             character_relevancy = RELEVANCIES.get(row["Rolle"], "")
             character_fictionality = row["Kategorie"]
             character_fictionality_degree = FICTIONALITY_DEGREES[character_fictionality]
@@ -158,7 +158,6 @@ def parse_entities_dataframe(sheet_name, df, file):
             if work_with_siglum_exists(related_work_siglum):
                 character = Character.objects.create(
                     fallback_name=character_name,
-                    description=character_description,
                     relevancy=character_relevancy,
                     fictionality=character_fictionality_degree,
                     data_source=data_source,
@@ -186,7 +185,7 @@ def parse_entities_dataframe(sheet_name, df, file):
 
                     person_fallback_name = (
                         character_name
-                        if not (person_forename or person_surname)
+                        if not (forename or surname)
                         else ""
                     )
 
@@ -197,16 +196,17 @@ def parse_entities_dataframe(sheet_name, df, file):
                     else:
                         person_qs = Person.objects.filter(
                             fallback_name=person_fallback_name,
-                            forename=person_forename,
-                            surname=person_surname,
+                            forename=forename,
+                            surname=surname,
                         )
 
                     if person_qs.count() == 0:
                         person, created = Person.objects.get_or_create(
                             fallback_name=person_fallback_name,
-                            forename=person_forename,
-                            surname=person_surname,
+                            forename=forename,
+                            surname=surname,
                             alternative_name=person_alternative_name,
+                            description=description,
                             defaults={"data_source": data_source},
                         )
                     else:
@@ -222,6 +222,11 @@ def parse_entities_dataframe(sheet_name, df, file):
                         entity_obj=person,
                         prop=Property.objects.get(name_forward="is based on"),
                     )
+                else:
+                    character.description = description
+                    character.forename = forename
+                    character.surname = surname
+                    character.save()
 
             else:
                 rejection_cause_message = (
