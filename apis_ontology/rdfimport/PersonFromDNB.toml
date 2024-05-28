@@ -25,40 +25,14 @@ WHERE {
 }
 """
 [[attributes]]
-# profession
+# first_name
 sparql = """
 PREFIX gndo: <https://d-nb.info/standards/elementset/gnd#>
-SELECT (GROUP_CONCAT(?professionlist) AS ?profession)
+SELECT ?fallback_name
 WHERE {
-  ?subject gndo:professionOrOccupation ?profession_seq.
-  ?profession_seq ?seq ?professionlist
-}
-GROUP BY ?subject
-"""
-[[attributes]]
-# date_of_birth
-sparql = """
-PREFIX gndo: <https://d-nb.info/standards/elementset/gnd#>
-SELECT ?start_date_written
-WHERE {
-  ?subject gndo:dateOfBirth ?start_date_written .
-}
-"""
-[[attributes]]
-# date_of_death
-sparql = """
-PREFIX gndo: <https://d-nb.info/standards/elementset/gnd#>
-SELECT ?end_date_written
-WHERE {
-  ?subject gndo:dateOfDeath ?end_date_written .
-}
-"""
-[[attributes]]
-# place_of_birth
-sparql = """
-PREFIX gndo: <https://d-nb.info/standards/elementset/gnd#>
-SELECT ?place_of_birth
-WHERE {
-  ?subject gndo:placeOfBirth ?place_of_birth
+  OPTIONAL{?subject gndo:preferredNameForThePerson ?fallback_name1} .
+  OPTIONAL{?subject gndo:preferredNameForTheSubjectHeading ?fallback_name2} .
+  OPTIONAL{?subject gndo:preferredNameForTheCorporateBody ?fallback_name3} .
+  BIND(COALESCE(?fallback_name1, ?fallback_name2, ?fallback_name3) as ?fallback_name)
 }
 """

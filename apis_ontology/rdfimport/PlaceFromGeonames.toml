@@ -9,9 +9,20 @@ regex = "https://sws.geonames.org.*"
 #FILTER (LANGMATCHES(LANG(?prefName), "de") || LANGMATCHES(LANG(?prefName), "en") || LANG(?prefName) = "")
 sparql = """
 PREFIX gn: <http://www.geonames.org/ontology#>
-SELECT ?label
-WHERE
-{
+SELECT ?name
+WHERE {
+  OPTIONAL {
+    ?subject gn:name ?gnname_de .
+    FILTER(LANGMATCHES(LANG(?gnname_de), "de"))
+  }
+  OPTIONAL {
+   ?subject gn:officialName ?officialName_de
+    FILTER(LANGMATCHES(LANG(?officialName_de), "de"))
+  }
+  OPTIONAL {
+    ?subject gn:alternateName ?alternateName_de
+    FILTER(LANGMATCHES(LANG(?alternateName_de), "de"))
+  }
   OPTIONAL {
     ?subject gn:name ?gnname .
   }
@@ -21,16 +32,7 @@ WHERE
   OPTIONAL {
     ?subject gn:alternateName ?alternateName
   }
-  BIND(COALESCE(?gnname, ?officialName, ?alternateName) AS ?label)
-}
-"""
-[[attributes]]
-# kind
-sparql = """
-PREFIX gn: <http://www.geonames.org/ontology#>
-SELECT ?kind
-WHERE {
-  ?subject gn:featureCode ?kind
+  BIND(COALESCE(?gnname_de, ?officialName_de, ?alternateName_de, ?gnname, ?officialName, ?alternateName) AS ?name)
 }
 """
 [[attributes]]
@@ -51,14 +53,5 @@ SELECT ?longitude
 WHERE {
   ?subject wgs84_pos:lat ?latitude.
   ?subject wgs84_pos:long ?longitude
-}
-"""
-[[attributes]]
-# parent
-sparql = """
-PREFIX gn: <http://www.geonames.org/ontology#>
-SELECT ?parent
-WHERE {
-  ?subject gn:parentCountry ?parent
 }
 """
