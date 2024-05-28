@@ -70,7 +70,8 @@ def parse_entities_dataframe(sheet_name, df, file):
             related_work_siglum = row["Sigle"]
             place_type = row["Kategorie"]
             place_description = row["Beschreibung"]
-            place_uris = (row["URL_Geonames"], row["URL_Wikipedia"], row["URL_extern"])
+            place_uri_geoname = row["URL_Geonames"]
+            place_uris = (row["URL_Wikipedia"], row["URL_extern"])
             place_uri_objects = []
 
             if work_with_siglum_exists(related_work_siglum):
@@ -88,30 +89,35 @@ def parse_entities_dataframe(sheet_name, df, file):
                 place_qs = None
                 place = None
 
-                if len(place_uri_objects) > 0:
-                    place_qs = Place.objects.filter(
-                        uri__in=[uri.id for uri in place_uri_objects],
-                    )
-                else:
-                    place_qs = Place.objects.filter(name=place_name)
+                if place_uri_geoname and "geonames.org" in place_uri_geoname:
+                    secure_geoname_uri = secure_urls(place_uri_geoname)
+                    place = Place.get_or_create_uri(secure_geoname_uri)
 
-                if place_qs.count() == 0:
-                    place, created = Place.objects.get_or_create(
-                        name=place_name, defaults={"data_source": data_source}
-                    )
                 else:
-                    place = place_qs.first()
-                    alternative_names = list(
-                        filter(None, place.alternative_name.split(";"))
-                    )
-                    if (
-                        place_name
-                        and place_name != place.name
-                        and place_name not in alternative_names
-                    ):
-                        alternative_names.append(place_name)
-                        place.alternative_name = ";".join(alternative_names)
-                        place.save()
+                    if len(place_uri_objects) > 0:
+                        place_qs = Place.objects.filter(
+                            uri__in=[uri.id for uri in place_uri_objects],
+                        )
+                    else:
+                        place_qs = Place.objects.filter(name=place_name)
+
+                    if place_qs.count() == 0:
+                        place, created = Place.objects.get_or_create(
+                            name=place_name, defaults={"data_source": data_source}
+                        )
+                    else:
+                        place = place_qs.first()
+                        alternative_names = list(
+                            filter(None, place.alternative_name.split(";"))
+                        )
+                        if (
+                            place_name
+                            and place_name != place.name
+                            and place_name not in alternative_names
+                        ):
+                            alternative_names.append(place_name)
+                            place.alternative_name = ";".join(alternative_names)
+                            place.save()
 
                 for uri in place_uri_objects:
                     if not uri.root_object:
@@ -153,7 +159,8 @@ def parse_entities_dataframe(sheet_name, df, file):
             character_fictionality = row["Kategorie"]
             character_fictionality_degree = FICTIONALITY_DEGREES[character_fictionality]
             related_work_siglum = row["Sigle"]
-            person_uris = (row["URL_Wikipedia"], row["URL_DNB"], row["URL_extern"])
+            person_dnb_uri = row["URL_DNB"]
+            person_uris = (row["URL_Wikipedia"], row["URL_extern"])
 
             if work_with_siglum_exists(related_work_siglum):
                 character = Character.objects.create(
@@ -183,32 +190,51 @@ def parse_entities_dataframe(sheet_name, df, file):
                     person = None
                     person_qs = None
 
-                    person_fallback_name = (
-                        character_name if not (forename or surname) else ""
-                    )
+                    if person_dnb_uri:
+                        secure_dnb_uri = secure_urls(person_dnb_uri)
+                        try:
+                            person = Person.get_or_create_uri(secure_dnb_uri)
+                        except:
+                            logger.info(
+                                f"Could not create person from uri {secure_dnb_uri}. File: {file_name}. Sheet: {sheet_name}. Entity name: {character_name}"
+                            )
 
-                    if len(person_uri_objects) > 0:
-                        person_qs = Person.objects.filter(
-                            uri__in=[uri.id for uri in person_uri_objects],
-                        )
+                            person, created = Person.objects.get_or_create(
+                                fallback_name=character_name,
+                                forename=forename,
+                                surname=surname,
+                                defaults={"data_source": data_source},
+                            )
+
                     else:
-                        person_qs = Person.objects.filter(
-                            fallback_name=person_fallback_name,
-                            forename=forename,
-                            surname=surname,
+                        person_fallback_name = (
+                            character_name if not (forename or surname) else ""
                         )
 
-                    if person_qs.count() == 0:
-                        person, created = Person.objects.get_or_create(
-                            fallback_name=person_fallback_name,
-                            forename=forename,
-                            surname=surname,
-                            alternative_name=person_alternative_name,
-                            description=description,
-                            defaults={"data_source": data_source},
-                        )
-                    else:
-                        person = person_qs.first()
+                        if len(person_uri_objects) > 0:
+                            person_qs = Person.objects.filter(
+                                uri__in=[uri.id for uri in person_uri_objects],
+                            )
+                        else:
+                            person_qs = Person.objects.filter(
+                                fallback_name=person_fallback_name,
+                                forename=forename,
+                                surname=surname,
+                            )
+
+                        if person_qs.count() == 0:
+                            person, created = Person.objects.get_or_create(
+                                fallback_name=person_fallback_name,
+                                forename=forename,
+                                surname=surname,
+                                defaults={"data_source": data_source},
+                            )
+                        else:
+                            person = person_qs.first()
+
+                    person.alternative_name = person_alternative_name
+                    person.description = description
+                    person.save()
 
                     for uri in person_uri_objects:
                         if not uri.root_object:
