@@ -13,6 +13,7 @@ from apis_ontology.models import (
 )
 from apis_core.apis_metainfo.models import Uri
 from apis_core.apis_relations.models import Property
+from django.core.exceptions import ImproperlyConfigured
 from .utils import secure_urls
 
 logger = logging.getLogger(__name__)
@@ -194,7 +195,7 @@ def parse_entities_dataframe(sheet_name, df, file):
                         secure_dnb_uri = secure_urls(person_dnb_uri)
                         try:
                             person = Person.get_or_create_uri(secure_dnb_uri)
-                        except:
+                        except ImproperlyConfigured:
                             logger.info(
                                 f"Could not create person from uri {secure_dnb_uri}. File: {file_name}. Sheet: {sheet_name}. Entity name: {character_name}"
                             )
