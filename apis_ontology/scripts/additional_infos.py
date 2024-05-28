@@ -384,6 +384,41 @@ WORK_TYPES = {
         "parent_key": None,
         "previous_english_key": "main_category_correspondence",
     },
+    "artworks": {
+        "hierarchy_level": 1,
+        "german_label": "Kunstwerk",
+        "german_label_plural": "Kunstwerke",
+        "parent_key": None,
+        "previous_english_key": None,
+    },
+    "music": {
+        "hierarchy_level": 1,
+        "german_label": "Musik",
+        "german_label_plural": "",
+        "parent_key": None,
+        "previous_english_key": None,
+    },
+    "reference_books": {
+        "hierarchy_level": 1,
+        "german_label": "Nachschlagewerk",
+        "german_label_plural": "Nachschlagewerke",
+        "parent_key": None,
+        "previous_english_key": None,
+    },
+    "partial_prints": {
+        "hierarchy_level": 1,
+        "german_label": "Vorabdruck",
+        "german_label_plural": "Vorabdrucke",
+        "parent_key": None,
+        "previous_english_key": None,
+    },
+    "religious_texts": {
+        "hierarchy_level": 1,
+        "german_label": "religiöser Text",
+        "german_label_plural": "religiöse Texte",
+        "parent_key": None,
+        "previous_english_key": None,
+    },
 }
 
 WORKTYPE_MAPPINGS = {
