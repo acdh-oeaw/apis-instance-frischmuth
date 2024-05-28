@@ -4,6 +4,7 @@ from apis_core.history.models import VersionMixin
 from dateparser import parse
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.core.validators import validate_slug
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from multiselectfield import MultiSelectField
@@ -518,6 +519,15 @@ class WorkType(
         blank=True,
         default="",
         verbose_name=_("Pluralform"),
+    )
+
+    string_identifier = models.CharField(
+        max_length=50,
+        blank=True,
+        default="",
+        validators=[validate_slug],
+        verbose_name=_("englischsprachiger Identifier"),
+        help_text=_("Zeichenfolge aus Buchstaben und Unterstrichen"),
     )
 
     icon_id = models.CharField(
