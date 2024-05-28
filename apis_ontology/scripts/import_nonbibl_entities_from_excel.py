@@ -184,9 +184,7 @@ def parse_entities_dataframe(sheet_name, df, file):
                     person_qs = None
 
                     person_fallback_name = (
-                        character_name
-                        if not (forename or surname)
-                        else ""
+                        character_name if not (forename or surname) else ""
                     )
 
                     if len(person_uri_objects) > 0:
