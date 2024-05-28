@@ -1,5 +1,6 @@
 from apis_core.apis_entities.models import AbstractEntity
 from apis_core.apis_relations.models import Property
+from apis_core.utils.helpers import create_object_from_uri
 from apis_core.history.models import VersionMixin
 from dateparser import parse
 from django.conf import settings
@@ -785,6 +786,10 @@ class Person(
     class Meta:
         verbose_name_plural = _("personen")
 
+    @classmethod
+    def get_or_create_uri(cls, uri):
+        return create_object_from_uri(uri, cls) or cls.objects.get(pk=uri)
+
 
 class Organisation(
     VersionMixin,
@@ -939,6 +944,10 @@ class Place(
     class Meta:
         verbose_name = _("ort")
         verbose_name_plural = _("orte")
+
+    @classmethod
+    def get_or_create_uri(cls, uri):
+        return create_object_from_uri(uri, cls) or cls.objects.get(pk=uri)
 
 
 class ResearchPerspective(
