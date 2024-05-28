@@ -673,7 +673,7 @@ def create_entities(item, source):
 
     pub_date = item_date
     if num_pages:
-        pages = int(num_pages)
+        pages = int(re.sub("[^0-9]", "", num_pages))
         if pages > 0:
             page_count = pages
 
