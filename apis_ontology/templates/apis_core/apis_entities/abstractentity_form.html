@@ -1,7 +1,8 @@
 {% extends "apis_core/apis_entities/abstractentity_form.html" %}
+
 {% block scriptHeader %}
-    {{ block.super }}
-    <script type="text/javascript">
+  {{ block.super }}
+  <script type="text/javascript">
 function showmap(element) {
   $('.popover').remove();
   var rect = element.getBoundingClientRect();
@@ -23,17 +24,19 @@ function showmap(element) {
 function delmap(element) {
   $('.popover').remove();
 }
-    </script>
-    <style>
+  </script>
+  <style>
 #popovermap {
   width: 500px;
   height: 500px;
 }
-    </style>
+  </style>
 {% endblock %}
+
 {% block col-one %}
-    {{ block.super }}
+  {{ block.super }}
 {% endblock col-one %}
+
 {% block scripts %}
-    {{ block.super }}
+  {{ block.super }}
 {% endblock scripts %}
