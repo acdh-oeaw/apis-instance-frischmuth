@@ -7,6 +7,7 @@ from apis_core.utils.autocomplete import (
     TypeSenseAutocompleteAdapter,
 )
 
+
 logger = logging.getLogger(__name__)
 
 

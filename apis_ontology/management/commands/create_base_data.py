@@ -1,9 +1,12 @@
 import os
-from django.core.management.base import BaseCommand
+
 from apis_core.apis_relations.models import Property
+from django.core.management.base import BaseCommand
+
 from apis_ontology.models import Archive, Person, WorkType
 from apis_ontology.scripts.additional_infos import ARCHIVES, PERSONS, WORK_TYPES
-from apis_ontology.scripts.import_helpers import create_triple, create_source
+from apis_ontology.scripts.import_helpers import create_source, create_triple
+
 
 fname = os.path.basename(__file__)
 data_source, created = create_source(

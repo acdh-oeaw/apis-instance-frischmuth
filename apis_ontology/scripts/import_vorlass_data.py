@@ -1,27 +1,31 @@
 import os
+from xml.etree import ElementTree as ETree
+
 import numpy as np
 import pandas as pd
-import xml.etree.ElementTree as ET
 
 # from django.core.validators import URLValidator
 from apis_core.apis_relations.models import Property
+
 from apis_ontology.models import (
-    Person,
-    Work,
     Archive,
+    Person,
     PhysicalObject,
-    WorkType,
     StatusMixin,
+    Work,
+    WorkType,
 )
-from .additional_infos import WORK_TYPES
-from .import_helpers import create_triple, create_source
 from apis_ontology.scripts.access_sharepoint import import_and_parse_data
+
+from .additional_infos import WORK_TYPES
+from .import_helpers import create_source, create_triple
+
 
 fname = os.path.basename(__file__)
 
 ns = {"tei": "http://www.tei-c.org/ns/1.0"}
 
-ET.register_namespace("tei", ns["tei"])
+ETree.register_namespace("tei", ns["tei"])
 
 
 def run():
@@ -71,7 +75,7 @@ def parse_vorlass_xml(title_siglum_dict, vorlass_excel_source):
         "r",
         encoding="utf-8",
     ) as file_obj:
-        tree = ET.parse(file_obj)
+        tree = ETree.parse(file_obj)
         items = tree.findall(".//tei:bibl", ns)
 
         vorlass_xml_source, created = create_source(

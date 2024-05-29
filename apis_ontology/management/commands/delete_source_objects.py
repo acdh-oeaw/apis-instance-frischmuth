@@ -1,9 +1,10 @@
-from django.core.management.base import BaseCommand
-from apis_ontology.models import DataSource
 from apis_core.utils.caching import (
     get_all_entity_class_names,
     get_entity_class_of_name,
 )
+from django.core.management.base import BaseCommand
+
+from apis_ontology.models import DataSource
 
 
 class Command(BaseCommand):

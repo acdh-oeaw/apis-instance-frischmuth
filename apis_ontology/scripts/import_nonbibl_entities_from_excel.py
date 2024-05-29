@@ -1,20 +1,24 @@
-import os
-import pandas as pd
 import logging
-from apis_ontology.scripts.access_sharepoint import import_and_parse_data
-from .import_helpers import create_triple, create_source, work_with_siglum_exists
-from apis_ontology.models import (
-    Place,
-    Work,
-    Topic,
-    ResearchPerspective,
-    Character,
-    Person,
-)
+import os
+
+import pandas as pd
 from apis_core.apis_metainfo.models import Uri
 from apis_core.apis_relations.models import Property
 from django.core.exceptions import ImproperlyConfigured
+
+from apis_ontology.models import (
+    Character,
+    Person,
+    Place,
+    ResearchPerspective,
+    Topic,
+    Work,
+)
+from apis_ontology.scripts.access_sharepoint import import_and_parse_data
+
+from .import_helpers import create_source, create_triple, work_with_siglum_exists
 from .utils import secure_urls
+
 
 logger = logging.getLogger(__name__)
 

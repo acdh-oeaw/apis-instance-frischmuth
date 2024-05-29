@@ -1,28 +1,32 @@
-from django.core.management.base import BaseCommand
+import getpass
 import importlib
 import logging
-import getpass
 import os
 import re
-from pyzotero import zotero, zotero_errors
+
 from apis_core.apis_relations.models import Property
+from django.core.management.base import BaseCommand
 from django.db.models import Q
+from pyzotero import zotero, zotero_errors
+
 from apis_ontology.models import Expression, Work
+
 from .additional_infos import WORK_TYPES, ZOTERO_CREATORS_MAPPING
-from .utils import clean_and_split_multivalue_string, get_entity_view_url
 from .import_helpers import (
-    create_triple,
-    create_source,
-    create_work,
-    get_work,
-    get_type,
     create_expression,
-    create_person,
     create_organisation,
+    create_person,
     create_place,
+    create_source,
     create_topic,
+    create_triple,
+    create_work,
     get_expressions_by_work,
+    get_type,
+    get_work,
 )
+from .utils import clean_and_split_multivalue_string, get_entity_view_url
+
 
 # Use keys or keywords in environment variable ZOTERO_FILTER_COLLECTIONS
 # to limit Zotero imports to specific collections.
@@ -720,7 +724,7 @@ def create_entities(item, source):
         if item_note:
             expression.notes = item_note
             expression.save()
-            if re.search("\<.*\>", item_note):
+            if re.search(r"\<.*\>", item_note):
                 logger.info(
                     f"Expression note contains potential markup. Expression {get_entity_view_url(expression)}"
                 )
