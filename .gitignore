@@ -3,7 +3,7 @@
 .idea/
 .python-version
 
-# ----- settings
+# ----- Settings files
 .env*
 **local**
 
@@ -11,5 +11,8 @@
 .*.pyc
 __pycache__/
 
-# ----- for local development purposes
-apis_core
+# ----- For local development purposes
+/apis_core
+
+# Logging
+*.log
