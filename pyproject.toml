@@ -43,8 +43,12 @@ blank_line_before_tag="block,if"
 blank_line_after_tag="endif,endblock"
 format_js=false
 
-[tool.ruff]
-lint.ignore = ["E501", "F403"]
+[tool.ruff.lint]
+select = ["F", "E", "W", "I", "N"]
+# Ignore (some) selected rules based on Ruff recommendation:
+# https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+ignore = ["E501", "F403", "W191", "E111", "E114", "E117"]
 
 [tool.ruff.lint.per-file-ignores]
 "**/settings.py" = ["F405"]
+"**/migrations/*" = ["I001"]
