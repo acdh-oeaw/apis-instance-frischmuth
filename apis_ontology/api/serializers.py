@@ -64,7 +64,7 @@ class ExpressionDataSerializer(serializers.ModelSerializer):
     def get_language(self, obj):
         language_str = obj.get("language", None)
         languages = list(filter(None, language_str.split(",")))
-        return get_choices_labels(languages, Expression.Languages_ISO_639_3)
+        return get_choices_labels(languages, Expression.LanguagesIso6393)
 
 
 class WorkPreviewSerializer(serializers.ModelSerializer):

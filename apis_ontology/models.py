@@ -1,7 +1,9 @@
+import re
+
 from apis_core.apis_entities.models import AbstractEntity
 from apis_core.apis_relations.models import Property
-from apis_core.utils.helpers import create_object_from_uri
 from apis_core.history.models import VersionMixin
+from apis_core.utils.helpers import create_object_from_uri
 from dateparser import parse
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -9,7 +11,6 @@ from django.core.validators import validate_slug
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from multiselectfield import MultiSelectField
-import re
 
 
 class StatusMixin(models.Model):
@@ -199,7 +200,7 @@ class TitlesMixin(models.Model):
 
 
 class LanguageMixin(models.Model):
-    class Languages_ISO_639_3(models.TextChoices):
+    class LanguagesIso6393(models.TextChoices):
         """
         A selection of ISO 639-3 language codes
         relevant to the project.
@@ -211,7 +212,7 @@ class LanguageMixin(models.Model):
 
     language = MultiSelectField(
         max_length=255,
-        choices=Languages_ISO_639_3.choices,
+        choices=LanguagesIso6393.choices,
         blank=True,
         default="",
         verbose_name=_("Sprache"),
@@ -1366,7 +1367,8 @@ def construct_properties():
         objects=[Work, Expression],
     )
 
-    # is_stage_designer / Bühnenbildner*in (Kontext: Theater; vgl. Szenenbildner*in)
+    # is_stage_designer / Bühnenbildner*in
+    # (Kontext: Theater; vgl. Szenenbildner*in)
     create_properties(
         name_forward="is stage designer for",
         name_reverse="has stage designer",
@@ -1438,7 +1440,8 @@ def construct_properties():
         objects=[Work, Expression],
     )
 
-    # is_production_designer / Szenenbilder*in (Kontext: Film; vgl. Bühnenbildner*in)
+    # is_production_designer / Szenenbilder*in
+    # (Kontext: Film; vgl. Bühnenbildner*in)
     create_properties(
         name_forward="is production designer of",
         name_reverse="has production designer",

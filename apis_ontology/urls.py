@@ -21,6 +21,7 @@ from rest_framework import routers
 
 from apis_ontology.api.views import WorkPreviewViewSet
 
+
 router = routers.DefaultRouter()
 
 router.register(r"work-preview", WorkPreviewViewSet, basename="work-preview")

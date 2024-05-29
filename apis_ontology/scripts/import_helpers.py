@@ -1,10 +1,11 @@
 import datetime
 import inspect
 import os
-import sys
 import re
+import sys
 
-from apis_core.apis_relations.models import TempTriple, Property
+from apis_core.apis_relations.models import Property, TempTriple
+
 from apis_ontology.models import (
     Archive,
     DataSource,
@@ -12,9 +13,9 @@ from apis_ontology.models import (
     Organisation,
     Person,
     Place,
+    Topic,
     Work,
     WorkType,
-    Topic,
 )
 
 
@@ -209,7 +210,7 @@ def create_person(person_data: dict, source: DataSource):
             full_name = f"{first_name} {last_name}"
         elif last_name:
             full_name = last_name
-            if re.match("[a-zA-Z]+\.", last_name):
+            if re.match(r"[a-zA-Z]+\.", last_name):
                 fallback_name = last_name
                 last_name = ""
         elif first_name:

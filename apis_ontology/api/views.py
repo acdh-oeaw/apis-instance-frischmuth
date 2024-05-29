@@ -11,6 +11,7 @@ from rest_framework import permissions, viewsets
 from rest_framework.pagination import LimitOffsetPagination, Response
 
 from apis_ontology.models import Expression, Organisation, Place, Work, WorkType
+
 from .serializers import WorkPreviewSerializer
 
 

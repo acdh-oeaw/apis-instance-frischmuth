@@ -4,11 +4,12 @@
 # SP_USER, SP_PASSWORD, SP_SITE, SP_GROUP, SP_DIRECTORY
 # to be set.
 
-import os
-import sharepy
 import getpass
+import os
 from pathlib import Path
 from urllib.parse import quote
+
+import sharepy
 
 
 def import_and_parse_data(parse_data):
