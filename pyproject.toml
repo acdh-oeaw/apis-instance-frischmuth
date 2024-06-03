@@ -43,6 +43,9 @@ blank_line_before_tag="block,if"
 blank_line_after_tag="endif,endblock"
 format_js=false
 
+[tool.ruff]
+src = ["apis_ontology"]
+
 [tool.ruff.lint]
 select = ["F", "E", "W", "I", "N"]
 # Ignore (some) selected rules based on Ruff recommendation:
@@ -50,6 +53,7 @@ select = ["F", "E", "W", "I", "N"]
 ignore = ["E501", "F403", "W191", "E111", "E114", "E117"]
 
 [tool.ruff.lint.isort]
+known-first-party = ["apis_ontology"]
 lines-after-imports = 2
 
 [tool.ruff.lint.per-file-ignores]
