@@ -1,3 +1,4 @@
+import logging
 import re
 
 from apis_core.apis_entities.models import AbstractEntity
@@ -11,6 +12,9 @@ from django.core.validators import validate_slug
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from multiselectfield import MultiSelectField
+
+
+logger = logging.getLogger(__name__)
 
 
 class StatusMixin(models.Model):
