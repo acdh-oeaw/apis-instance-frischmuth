@@ -1,0 +1,8 @@
+{% load apisgeneric %}
+
+{% block content %}
+  {% block autocomplete-result %}
+    {% url "apis_core:generic:detail" result|contenttype result.id as url_path %}
+    {{ result }}, <a href="{{ url_path }}">ID {{ result.id }}</a>
+  {% endblock autocomplete-result %}
+{% endblock content %}

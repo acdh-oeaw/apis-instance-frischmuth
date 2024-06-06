@@ -1,0 +1,15 @@
+{% block content %}
+  {% block autocomplete-result %}
+    {% firstof result.id result.document.id as result_id %}
+    {% firstof result.label result.document.label as result_label %}
+
+    {% if result.highlight.label.snippet %}
+      {{ result.highlight.label.snippet|truncatechars:100|safe }}
+    {% else %}
+      {{ result_label }}
+    {% endif %}
+
+    {% if result_id %}{{ result_id|urlize }}{% endif %}
+
+  {% endblock autocomplete-result %}
+{% endblock content %}
