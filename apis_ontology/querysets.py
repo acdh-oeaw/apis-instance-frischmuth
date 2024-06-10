@@ -35,14 +35,16 @@ class PersonExternalAutocomplete(ExternalAutocomplete):
     adapters = [
         TypeSenseAutocompleteAdapter(
             collections="prosnet-wikidata-person-index",
+            template="apis_ontology/generic_external_autocomplete_result.html",
             token=os.getenv("TYPESENSE_TOKEN", None),
             server=os.getenv("TYPESENSE_SERVER", None),
         ),
         LobidAutocompleteAdapter(
+            template="apis_ontology/generic_external_autocomplete_result.html",
             params={
                 "filter": "type:Person",
                 "format": "json:preferredName,professionOrOccupation",
-            }
+            },
         ),
     ]
 
@@ -51,10 +53,12 @@ class InstitutionExternalAutocomplete(ExternalAutocomplete):
     adapters = [
         TypeSenseAutocompleteAdapter(
             collections="prosnet-wikidata-organization-index",
+            template="apis_ontology/generic_external_autocomplete_result.html",
             token=os.getenv("TYPESENSE_TOKEN", None),
             server=os.getenv("TYPESENSE_SERVER", None),
         ),
         LobidAutocompleteAdapter(
-            params={"filter": "type:CorporateBody", "format": "json:preferredName"}
+            template="apis_ontology/generic_external_autocomplete_result.html",
+            params={"filter": "type:CorporateBody", "format": "json:preferredName"},
         ),
     ]

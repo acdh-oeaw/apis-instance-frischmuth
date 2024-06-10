@@ -1,16 +1,9 @@
-{% if result.document.coordinates %}
-<a data-latitude="{{ result.document.coordinates.0 }}"
-   data-longitude="{{ result.document.coordinates.1 }}"
-   title="Map"
-   onmouseenter="showmap(this);"
-   onmouseout="delmap(this);"><span class="material-symbols-outlined material-symbols-align">location_on</span>
-</a>
-{% endif %}
+{% extends "apis_ontology/generic_external_autocomplete_result.html" %}
 
-{% if result.highlight.label.snippet %}
-  {{ result.highlight.label.snippet|safe }}
-{% else %}
-  {{ result.document.label }}
-{% endif %}
+{% block content %}
+  {% include "apis_ontology/partials/place_map_icon.html" with latitude=result.document.coordinates.0 longitude=result.document.coordinates.1 %}
 
-{% if result.document.id %}{{ result.document.id|urlize }}{% endif %}
+  {% block autocomplete-result %}
+    {{ block.super }}
+  {% endblock autocomplete-result %}
+{% endblock content %}
