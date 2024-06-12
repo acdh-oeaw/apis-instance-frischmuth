@@ -18,19 +18,6 @@ def remove_quotes(token):
     return token.strip('"')
 
 
-def trigram_search_filter_person(queryset, fields, value):
-    return trigram_search_filter(
-        queryset,
-        [
-            "forename",
-            "surname",
-            "fallback_name",
-            "alternative_name",
-        ],
-        value,
-    )
-
-
 def trigram_search_filter(queryset, fields, value):
     tokens = PATTERN.split(value)
     tokens = list(filter(str.strip, tokens))
@@ -47,13 +34,26 @@ def trigram_search_filter(queryset, fields, value):
     )
 
 
-class PersonFilterSet(AbstractEntityFilterSet):
-    search = django_filters.CharFilter(
-        method=trigram_search_filter_person,
-        label=_("Suche"),
-        help_text=_("Suche in allen Namensfeldern von Personen"),
-    )
-
+class GenericSearchFilterSet(AbstractEntityFilterSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.filters.move_to_end("search", False)
+        if "search" in self.filters:
+            self.filters.move_to_end("search", False)
+
+
+class PersonNameMixinFilterSet(GenericSearchFilterSet):
+    search = django_filters.CharFilter(
+        field_name=[
+            "surname",
+            "forename",
+            "fallback_name",
+            "alternative_name",
+        ],
+        help_text=_("Suche in allen Namensfeldern"),
+        label=_("Suche: Namen"),
+        method=trigram_search_filter,
+    )
+
+
+class PersonFilterSet(PersonNameMixinFilterSet):
+    pass
