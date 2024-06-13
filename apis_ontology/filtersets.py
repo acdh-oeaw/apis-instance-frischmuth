@@ -1,5 +1,6 @@
 import logging
 import re
+from unicodedata import combining, normalize
 
 import django_filters
 from apis_core.apis_entities.filtersets import AbstractEntityFilterSet
@@ -19,6 +20,16 @@ def remove_quotes(token):
     return token.strip('"')
 
 
+def remove_diacritics(token):
+    """
+    Remove diacritics from strings by merging them into their preceding
+    unicode characters.
+    See https://stackoverflow.com/a/517974/
+    """
+    normalized = normalize("NFKD", token)
+    return "".join([c for c in normalized if not combining(c)])
+
+
 def trigram_unaccent_search_filter(queryset, fields, value):
     tokens = PATTERN.split(value)
     tokens = list(filter(str.strip, tokens))
@@ -26,7 +37,9 @@ def trigram_unaccent_search_filter(queryset, fields, value):
     trig_vector_list = []
     for token in tokens:
         for field in fields:
-            trig_vector_list.append(TrigramWordSimilarity(token, Unaccent(field)))
+            trig_vector_list.append(
+                TrigramWordSimilarity(remove_diacritics(token), Unaccent(field))
+            )
     trig_vector = Greatest(*trig_vector_list, None)
     return (
         queryset.annotate(similarity=trig_vector)
