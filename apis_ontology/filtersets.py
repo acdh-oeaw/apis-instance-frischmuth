@@ -3,6 +3,7 @@ import re
 
 import django_filters
 from apis_core.apis_entities.filtersets import AbstractEntityFilterSet
+from django.contrib.postgres.lookups import Unaccent
 from django.contrib.postgres.search import TrigramWordSimilarity
 from django.db.models.functions import Greatest
 from django.utils.translation import gettext_lazy as _
@@ -18,14 +19,14 @@ def remove_quotes(token):
     return token.strip('"')
 
 
-def trigram_search_filter(queryset, fields, value):
+def trigram_unaccent_search_filter(queryset, fields, value):
     tokens = PATTERN.split(value)
     tokens = list(filter(str.strip, tokens))
     tokens = set(list(map(remove_quotes, tokens)) + [value])
     trig_vector_list = []
     for token in tokens:
         for field in fields:
-            trig_vector_list.append(TrigramWordSimilarity(token, field))
+            trig_vector_list.append(TrigramWordSimilarity(token, Unaccent(field)))
     trig_vector = Greatest(*trig_vector_list, None)
     return (
         queryset.annotate(similarity=trig_vector)
@@ -51,7 +52,7 @@ class PersonNameMixinFilterSet(GenericSearchFilterSet):
         ],
         help_text=_("Suche in allen Namensfeldern"),
         label=_("Suche: Namen"),
-        method=trigram_search_filter,
+        method=trigram_unaccent_search_filter,
     )
 
 
@@ -63,7 +64,7 @@ class TitlesMixinFilterSet(GenericSearchFilterSet):
         ],
         help_text=_("Suche in allen Titelfeldern"),
         label=_("Suche: Titel"),
-        method=trigram_search_filter,
+        method=trigram_unaccent_search_filter,
     )
 
 
@@ -75,7 +76,7 @@ class AlternativeNameMixinFilterSet(GenericSearchFilterSet):
         ],
         help_text=_("Suche in allen Namensfeldern"),
         label=_("Suche: Namen"),
-        method=trigram_search_filter,
+        method=trigram_unaccent_search_filter,
     )
 
 
@@ -96,7 +97,7 @@ class WorkFilterSet(TitlesMixinFilterSet):
         ],
         help_text=_("Suche in allen Titelfeldern und Siglum"),
         label=_("Suche: Titel, Siglum"),
-        method=trigram_search_filter,
+        method=trigram_unaccent_search_filter,
     )
 
 
@@ -129,5 +130,5 @@ class WorkTypeFilterSet(AlternativeNameMixinFilterSet):
         ],
         help_text=_("Suche in allen Namensfeldern"),
         label=_("Suche: Namen"),
-        method=trigram_search_filter,
+        method=trigram_unaccent_search_filter,
     )
