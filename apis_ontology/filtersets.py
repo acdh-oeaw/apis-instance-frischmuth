@@ -55,5 +55,79 @@ class PersonNameMixinFilterSet(GenericSearchFilterSet):
     )
 
 
+class TitlesMixinFilterSet(GenericSearchFilterSet):
+    search = django_filters.CharFilter(
+        field_name=[
+            "title",
+            "subtitle",
+        ],
+        help_text=_("Suche in allen Titelfeldern"),
+        label=_("Suche: Titel"),
+        method=trigram_search_filter,
+    )
+
+
+class AlternativeNameMixinFilterSet(GenericSearchFilterSet):
+    search = django_filters.CharFilter(
+        field_name=[
+            "name",
+            "alternative_name",
+        ],
+        help_text=_("Suche in allen Namensfeldern"),
+        label=_("Suche: Namen"),
+        method=trigram_search_filter,
+    )
+
+
 class PersonFilterSet(PersonNameMixinFilterSet):
     pass
+
+
+class CharacterFilterSet(PersonNameMixinFilterSet):
+    pass
+
+
+class WorkFilterSet(TitlesMixinFilterSet):
+    search = django_filters.CharFilter(
+        field_name=[
+            "title",
+            "subtitle",
+            "siglum",
+        ],
+        help_text=_("Suche in allen Titelfeldern und Siglum"),
+        label=_("Suche: Titel, Siglum"),
+        method=trigram_search_filter,
+    )
+
+
+class ExpressionFilterSet(TitlesMixinFilterSet):
+    pass
+
+
+class OrganisationFilterSet(AlternativeNameMixinFilterSet):
+    pass
+
+
+class PlaceFilterSet(AlternativeNameMixinFilterSet):
+    pass
+
+
+class ResearchPerspectiveFilterSet(AlternativeNameMixinFilterSet):
+    pass
+
+
+class TopicFilterSet(AlternativeNameMixinFilterSet):
+    pass
+
+
+class WorkTypeFilterSet(AlternativeNameMixinFilterSet):
+    search = django_filters.CharFilter(
+        field_name=[
+            "name",
+            "name_plural",
+            "alternative_name",
+        ],
+        help_text=_("Suche in allen Namensfeldern"),
+        label=_("Suche: Namen"),
+        method=trigram_search_filter,
+    )
