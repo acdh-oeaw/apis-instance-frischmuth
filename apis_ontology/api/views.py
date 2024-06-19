@@ -7,10 +7,12 @@ I.e. project-specific endpoints (not APIS built-in API).
 from django.contrib.postgres.expressions import ArraySubquery, Subquery
 from django.db.models import OuterRef
 from django.db.models.functions import JSONObject
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import pagination, permissions, viewsets
 
 from apis_ontology.models import Expression, Organisation, Place, Work, WorkType
 
+from .filters import WorkPreviewSearchFilter
 from .serializers import WorkPreviewSerializer
 
 
@@ -65,6 +67,8 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = WorkPreviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = WorkPreviewPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = WorkPreviewSearchFilter
 
     def get_queryset(self):
         work_types = WorkType.objects.filter(
