@@ -29,10 +29,36 @@ def remove_diacritics(token):
     return "".join([c for c in normalized if not combining(c)])
 
 
-def trigram_search_filter(queryset, fields, value):
-    tokens = PATTERN.split(value)
+def tokenize_search_string(search_string, diacritics=True):
+    """
+    :param search_string: user-provided search string
+    :param diacritics: whether to retain or remove diacritics from search
+                       string(s) during tokenization; defaults to keeping them
+    :return a list of strings
+    """
+    tokens = PATTERN.split(search_string)
     tokens = list(filter(str.strip, tokens))
-    tokens = set(list(map(remove_quotes, tokens)) + [value])
+    tokens = set(list(map(remove_quotes, tokens)) + [search_string])
+    if not diacritics:
+        tokens = map(remove_diacritics, tokens)
+    return tokens
+
+
+def trigram_search_filter(queryset, fields, value):
+    """
+    Look up a list of search terms in given fields of a model
+    using trigram word similarity lookups.
+
+    Note that this function currently does not check the passed fields'
+    type, but trigram lookups only work on string-based fields (CharField,
+    TextField).
+
+    :param queryset: initial queryset
+    :param fields: model fields which should be looked up
+    :param value: user-provided search string
+    :return: a queryset
+    """
+    tokens = tokenize_search_string(value)
     trig_vector_list = []
     for token in tokens:
         for field in fields:
