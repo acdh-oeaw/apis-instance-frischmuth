@@ -4,6 +4,7 @@ from unicodedata import combining, normalize
 
 import django_filters
 from apis_core.apis_entities.filtersets import AbstractEntityFilterSet
+from django.contrib.postgres.lookups import Unaccent
 from django.contrib.postgres.search import TrigramWordSimilarity
 from django.db.models.functions import Greatest
 from django.utils.translation import gettext_lazy as _
@@ -44,7 +45,7 @@ def tokenize_search_string(search_string, diacritics=True):
     return tokens
 
 
-def trigram_search_filter(queryset, fields, value):
+def trigram_search_filter(queryset, fields, tokens):
     """
     Look up a list of search terms in given fields of a model
     using trigram word similarity lookups.
@@ -55,10 +56,9 @@ def trigram_search_filter(queryset, fields, value):
 
     :param queryset: initial queryset
     :param fields: model fields which should be looked up
-    :param value: user-provided search string
+    :param tokens: a list of search strings
     :return: a queryset
     """
-    tokens = tokenize_search_string(value)
     trig_vector_list = []
     for token in tokens:
         for field in fields:
@@ -69,6 +69,34 @@ def trigram_search_filter(queryset, fields, value):
         .filter(similarity__gt=0.4)
         .order_by("-similarity")
     )
+
+
+def fuzzy_search_trigram(queryset, fields, value):
+    """
+    Search across model fields using trigram search.
+
+    :param queryset: input queryset
+    :param fields: model fields which should be looked up
+    :param value: user-provided search string
+    :return: a queryset
+    """
+    tokens = tokenize_search_string(value)
+    return trigram_search_filter(queryset, fields, tokens)
+
+
+def fuzzy_search_unaccent_trigram(queryset, fields, value):
+    """
+    Search across model fields using trigram search with unaccent
+    lookups and with diacritics removed from search strings.
+
+    :param queryset: input queryset
+    :param fields: model fields which should be looked up
+    :param value: user-provided search string
+    :return: a queryset
+    """
+    fields = [Unaccent(f) for f in fields]
+    tokens = tokenize_search_string(value, diacritics=False)
+    return trigram_search_filter(queryset, fields, tokens)
 
 
 class GenericSearchFilterSet(AbstractEntityFilterSet):
@@ -88,7 +116,7 @@ class PersonNameMixinFilterSet(GenericSearchFilterSet):
         ],
         help_text=_("Suche in allen Namensfeldern"),
         label=_("Suche: Namen"),
-        method=trigram_search_filter,
+        method=fuzzy_search_unaccent_trigram,
     )
 
 
@@ -100,7 +128,7 @@ class TitlesMixinFilterSet(GenericSearchFilterSet):
         ],
         help_text=_("Suche in allen Titelfeldern"),
         label=_("Suche: Titel"),
-        method=trigram_search_filter,
+        method=fuzzy_search_unaccent_trigram,
     )
 
 
@@ -112,7 +140,7 @@ class AlternativeNameMixinFilterSet(GenericSearchFilterSet):
         ],
         help_text=_("Suche in allen Namensfeldern"),
         label=_("Suche: Namen"),
-        method=trigram_search_filter,
+        method=fuzzy_search_unaccent_trigram,
     )
 
 
@@ -133,7 +161,7 @@ class WorkFilterSet(TitlesMixinFilterSet):
         ],
         help_text=_("Suche in allen Titelfeldern und Siglum"),
         label=_("Suche: Titel, Siglum"),
-        method=trigram_search_filter,
+        method=fuzzy_search_unaccent_trigram,
     )
 
 
@@ -166,5 +194,5 @@ class WorkTypeFilterSet(AlternativeNameMixinFilterSet):
         ],
         help_text=_("Suche in allen Namensfeldern"),
         label=_("Suche: Namen"),
-        method=trigram_search_filter,
+        method=fuzzy_search_unaccent_trigram,
     )
