@@ -16,11 +16,13 @@ logger = logging.getLogger(__name__)
 
 
 class WorkPreviewSearchFilter(django_filters.FilterSet):
-    search = django_filters.CharFilter(
+    text_filter = django_filters.CharFilter(
         field_name=[
             "title",
             "subtitle",
         ],
-        label=_("Suche"),
+        label=_(
+            "String to find in work titles and subtitles using fuzzy search (unaccent-ed trigram word similarity)."
+        ),
         method=fuzzy_search_unaccent_trigram,
     )
