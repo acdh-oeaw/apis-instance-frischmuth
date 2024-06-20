@@ -56,12 +56,12 @@ class ExpressionDataSerializer(serializers.ModelSerializer):
             "place_of_publication",
         ]
 
-    def get_edition_type(self, obj):
+    def get_edition_type(self, obj) -> list["str"]:
         edition_type_str = obj.get("edition_type", None)
         edition_types = list(filter(None, edition_type_str.split(",")))
         return get_choices_labels(edition_types, Expression.EditionTypes)
 
-    def get_language(self, obj):
+    def get_language(self, obj) -> list["str"]:
         language_str = obj.get("language", None)
         languages = list(filter(None, language_str.split(",")))
         return get_choices_labels(languages, Expression.LanguagesIso6393)
