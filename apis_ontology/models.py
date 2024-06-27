@@ -213,6 +213,7 @@ class LanguageMixin(models.Model):
         DE = "deu", _("Deutsch")
         EN = "eng", _("Englisch")
         FR = "fra", _("Französisch")
+        IT = "ita", _("Italienisch")
 
     language = MultiSelectField(
         max_length=255,
