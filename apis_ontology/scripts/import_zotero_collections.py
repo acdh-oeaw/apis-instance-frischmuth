@@ -720,6 +720,15 @@ def create_entities(item, source):
                 logger.info(
                     f"Expression note contains potential markup. Expression {get_entity_view_url(expression)}"
                 )
+        if item_type == "artwork":
+            artwork_fields = ("artworkMedium", "artworkSize", "archive")
+            description = [
+                item_data.get(artwork_field, "").strip()
+                for artwork_field in artwork_fields
+                if item_data.get(artwork_field, "").strip()
+            ]
+            expression.description = "; ".join(description)
+            expression.save()
         if expression.title != work.title or expression.subtitle != work.subtitle:
             logger.info(
                 f"Expression title or subtitle differs from work title or subtitle. Expression {get_entity_view_url(expression)}"
