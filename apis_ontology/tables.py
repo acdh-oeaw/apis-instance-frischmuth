@@ -1,3 +1,5 @@
+import logging
+
 import django_tables2 as tables
 from apis_core.apis_entities.tables import AbstractEntityTable
 from django.utils.translation import gettext_lazy as _
@@ -18,6 +20,9 @@ from .models import (
     Work,
     WorkType,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class GenericEditLinkColumn(tables.Column):
