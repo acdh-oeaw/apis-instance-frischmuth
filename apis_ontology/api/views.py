@@ -20,15 +20,48 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
     default_limit = 20
     max_limit = 100
 
+    def paginate_queryset(self, queryset, request, view=None):
+        self.facets = self.calculate_facets(queryset)
+        return super().paginate_queryset(queryset, request, view)
+
     def get_paginated_response(self, data):
         response = super(WorkPreviewPagination, self).get_paginated_response(data)
         response.data.update(
             {
                 self.limit_query_param: self.limit,
                 self.offset_query_param: self.offset,
+                "facets": self.facets,
             }
         )
         return pagination.Response(dict(sorted(response.data.items())))
+
+    def get_facet_data(self, field, queryset):
+        # Implement facet data calculation
+        res = {}
+        # Count occurrences
+        for item in queryset.all():
+            attr_value = getattr(item, field)
+            # given that we use array fields there can be list of lists in annotations
+            if attr_value and isinstance(attr_value[0], list):
+                flattened_list = [x for sublist in attr_value for x in sublist]
+            else:
+                flattened_list = attr_value
+            # Count occurrences
+            for k in flattened_list:
+                if k in res:
+                    res[k] += 1
+                else:
+                    res[k] = 1
+        return [{"key": k, "count": v} for k, v in res.items()]
+
+    def calculate_facets(self, queryset):
+        # Implement facet calculation
+        res = {}
+        for field in queryset.query.annotations.keys():
+            if field.startswith("facet_"):
+                res[field.replace("facet_", "")] = self.get_facet_data(field, queryset)
+
+        return res
 
     def get_paginated_response_schema(self, schema):
         res_schema = super(WorkPreviewPagination, self).get_paginated_response_schema(
@@ -45,6 +78,24 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                 "type": "integer",
                 "nullable": True,
                 "example": 300,
+            },
+            "facets": {
+                "properties": {
+                    "languages": {
+                        "type": "array",
+                        "nullable": True,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "key": {"type": "string"},
+                                "count": {"type": "integer"},
+                            },
+                        },
+                        "example": [{"key": "eng", "count": 100}],
+                    },
+                },
+                "type": "object",
+                "nullable": True,
             },
         }
 
@@ -112,11 +163,17 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             )
         )
 
+        facet_languages = Expression.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+            triple_set_from_obj__prop__name_reverse__in=["realises"],
+        ).values("language")
+
         works = (
             Work.objects.all()
             .annotate(
                 expression_data=ArraySubquery(related_expressions),
                 work_type=ArraySubquery(work_types),
+                facet_languages=ArraySubquery(facet_languages),
             )
             .order_by("title", "subtitle")
         )
