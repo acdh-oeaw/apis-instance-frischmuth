@@ -81,7 +81,7 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
             },
             "facets": {
                 "properties": {
-                    "languages": {
+                    "language": {
                         "type": "array",
                         "nullable": True,
                         "items": {
