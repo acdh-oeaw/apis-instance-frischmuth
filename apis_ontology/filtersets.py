@@ -226,6 +226,10 @@ class WorkFilterSet(TitlesMixinFilterSet):
         }
 
 
+class VersionWorkFilterSet(WorkFilterSet):
+    pass
+
+
 class ExpressionFilterSet(TitlesMixinFilterSet):
     pass
 
