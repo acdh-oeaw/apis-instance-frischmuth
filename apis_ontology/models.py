@@ -433,7 +433,8 @@ class Work(
         choices=TemporalOrder.choices,
         blank=True,
         default="",
-        verbose_name=_("Erzählordnung"),
+        verbose_name=_("Erzählordnung (deprecated)"),
+        editable=False,
     )
 
     temporal_duration = models.CharField(
@@ -441,7 +442,8 @@ class Work(
         choices=TemporalDuration.choices,
         blank=True,
         default="",
-        verbose_name=_("Dauer"),
+        verbose_name=_("Dauer (deprecated)"),
+        editable=False,
     )
 
     temporal_frequency = models.CharField(
@@ -449,7 +451,8 @@ class Work(
         choices=TemporalFrequency.choices,
         blank=True,
         default="",
-        verbose_name=_("Frequenz"),
+        verbose_name=_("Frequenz (deprecated)"),
+        editable=False,
     )
 
     figure_speech = models.CharField(
@@ -457,7 +460,8 @@ class Work(
         choices=FigureSpeech.choices,
         blank=True,
         default="",
-        verbose_name=_("Figurenrede"),
+        verbose_name=_("Figurenrede (deprecated)"),
+        editable=False,
     )
 
     representation_of_thought = models.CharField(
@@ -465,7 +469,8 @@ class Work(
         choices=RepresentationOfThought.choices,
         blank=True,
         default="",
-        verbose_name=_("Darstellung von Gedanken"),
+        verbose_name=_("Darstellung von Gedanken (deprecated)"),
+        editable=False,
     )
 
     focalization = models.CharField(
@@ -473,7 +478,8 @@ class Work(
         choices=Focalization.choices,
         blank=True,
         default="",
-        verbose_name=_("Fokalisierung"),
+        verbose_name=_("Fokalisierung (deprecated)"),
+        editable=False,
     )
 
     narrative_situation = models.CharField(
@@ -481,7 +487,8 @@ class Work(
         choices=NarrativeSituation.choices,
         blank=True,
         default="",
-        verbose_name=_("Erzählperspektive"),
+        verbose_name=_("Erzählperspektive (deprecated)"),
+        editable=False,
     )
 
     narrative_chronology = models.CharField(
@@ -489,7 +496,8 @@ class Work(
         choices=NarrativeChronology.choices,
         blank=True,
         default="",
-        verbose_name=_("Zeitpunkt des Erzählens"),
+        verbose_name=_("Zeitpunkt des Erzählens (deprecated)"),
+        editable=False,
     )
 
     narrative_level = models.CharField(
@@ -497,7 +505,8 @@ class Work(
         choices=NarrativeLevel.choices,
         blank=True,
         default="",
-        verbose_name=_("Ort des Erzählens"),
+        verbose_name=_("Ort des Erzählens (deprecated)"),
+        editable=False,
     )
 
     narrative_voice = models.CharField(
@@ -505,7 +514,8 @@ class Work(
         choices=NarrativeVoice.choices,
         blank=True,
         default="",
-        verbose_name=_("Stellung des:der Erzähler:in zum Geschehen"),
+        verbose_name=_("Stellung des:der Erzähler:in zum Geschehen (deprecated)"),
+        editable=False,
     )
 
     class Meta:
