@@ -70,7 +70,7 @@ def trigram_search_filter(queryset, fields, tokens):
     trig_vector = Greatest(*trig_vector_list, None)
     return (
         queryset.annotate(similarity=trig_vector)
-        .filter(similarity__gt=0.4)
+        .filter(similarity__gt=0.7)
         .order_by("-similarity")
     )
 
