@@ -26,3 +26,8 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
         ),
         method=fuzzy_search_unaccent_trigram,
     )
+    facet_language = django_filters.CharFilter(
+        field_name="triple_set_from_subj__obj__expression__language",
+        label=_("Language of the expression."),
+        lookup_expr="contains",
+    )
