@@ -4,10 +4,14 @@ from unicodedata import combining, normalize
 
 import django_filters
 from apis_core.apis_entities.filtersets import AbstractEntityFilterSet
+from django import forms
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.lookups import Unaccent
 from django.contrib.postgres.search import TrigramWordSimilarity
 from django.db.models.functions import Greatest
 from django.utils.translation import gettext_lazy as _
+
+from .models import Work
 
 
 PATTERN = re.compile(r"""((?:[^ "']|"[^"]*"|'[^']*')+)""")
@@ -163,6 +167,63 @@ class WorkFilterSet(TitlesMixinFilterSet):
         label=_("Suche: Titel, Siglum"),
         method=fuzzy_search_unaccent_trigram,
     )
+
+    analysis_temporal_order = django_filters.MultipleChoiceFilter(
+        choices=Work.TemporalOrder.choices,
+        lookup_expr="icontains",
+    )
+    analysis_temporal_duration = django_filters.MultipleChoiceFilter(
+        choices=Work.TemporalDuration.choices,
+        lookup_expr="icontains",
+    )
+    analysis_temporal_frequency = django_filters.MultipleChoiceFilter(
+        choices=Work.TemporalFrequency.choices,
+        lookup_expr="icontains",
+    )
+    analysis_figure_speech = django_filters.MultipleChoiceFilter(
+        choices=Work.FigureSpeech.choices,
+        lookup_expr="icontains",
+    )
+    analysis_representation_of_thought = django_filters.MultipleChoiceFilter(
+        choices=Work.RepresentationOfThought.choices,
+        lookup_expr="icontains",
+    )
+    analysis_focalization = django_filters.MultipleChoiceFilter(
+        choices=Work.Focalization.choices,
+        lookup_expr="icontains",
+    )
+    analysis_narrative_situation = django_filters.MultipleChoiceFilter(
+        choices=Work.NarrativeSituation.choices,
+        lookup_expr="icontains",
+    )
+    analysis_narrative_chronology = django_filters.MultipleChoiceFilter(
+        choices=Work.NarrativeChronology.choices,
+        lookup_expr="icontains",
+    )
+    analysis_narrative_level = django_filters.MultipleChoiceFilter(
+        choices=Work.NarrativeLevel.choices,
+        lookup_expr="icontains",
+    )
+    analysis_narrative_voice = django_filters.MultipleChoiceFilter(
+        choices=Work.NarrativeVoice.choices,
+        lookup_expr="icontains",
+    )
+
+    class Meta(TitlesMixinFilterSet.Meta):
+        fields = {
+            "analysis_temporal_order": ["icontains"],
+        }
+        filter_overrides = {
+            ArrayField: {
+                "filter_class": django_filters.MultipleChoiceFilter,
+                # "extra" attribute not working for fields with choices, see:
+                # https://github.com/carltongibson/django-filter/issues/1475
+                "extra": lambda f: {
+                    "lookup_expr": "icontains",
+                    "widget": forms.SelectMultiple,
+                },
+            },
+        }
 
 
 class ExpressionFilterSet(TitlesMixinFilterSet):
