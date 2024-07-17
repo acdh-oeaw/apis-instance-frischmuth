@@ -173,7 +173,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             .annotate(
                 expression_data=ArraySubquery(related_expressions),
                 work_type=ArraySubquery(work_types),
-                facet_languages=ArraySubquery(facet_languages),
+                facet_language=ArraySubquery(facet_languages),
             )
             .order_by("title", "subtitle")
         )
