@@ -8,6 +8,7 @@ from apis_core.utils.helpers import create_object_from_uri
 from dateparser import parse
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import validate_slug
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -516,6 +517,106 @@ class Work(
         default="",
         verbose_name=_("Stellung des:der Erzähler:in zum Geschehen (deprecated)"),
         editable=False,
+    )
+
+    analysis_temporal_order = ArrayField(
+        models.CharField(
+            max_length=255,
+            choices=TemporalOrder.choices,
+        ),
+        blank=True,
+        default=list,
+        verbose_name=_("Erzählordnung"),
+    )
+
+    analysis_temporal_duration = ArrayField(
+        models.CharField(
+            max_length=255,
+            choices=TemporalDuration.choices,
+        ),
+        blank=True,
+        default=list,
+        verbose_name=_("Dauer"),
+    )
+
+    analysis_temporal_frequency = ArrayField(
+        models.CharField(
+            max_length=255,
+            choices=TemporalFrequency.choices,
+        ),
+        blank=True,
+        default=list,
+        verbose_name=_("Frequenz"),
+    )
+
+    analysis_figure_speech = ArrayField(
+        models.CharField(
+            max_length=255,
+            choices=FigureSpeech.choices,
+        ),
+        blank=True,
+        default=list,
+        verbose_name=_("Figurenrede"),
+    )
+
+    analysis_representation_of_thought = ArrayField(
+        models.CharField(
+            max_length=255,
+            choices=RepresentationOfThought.choices,
+        ),
+        blank=True,
+        default=list,
+        verbose_name=_("Darstellung von Gedanken"),
+    )
+
+    analysis_focalization = ArrayField(
+        models.CharField(
+            max_length=255,
+            choices=Focalization.choices,
+        ),
+        blank=True,
+        default=list,
+        verbose_name=_("Fokalisierung"),
+    )
+
+    analysis_narrative_situation = ArrayField(
+        models.CharField(
+            max_length=255,
+            choices=NarrativeSituation.choices,
+        ),
+        blank=True,
+        default=list,
+        verbose_name=_("Erzählperspektive"),
+    )
+
+    analysis_narrative_chronology = ArrayField(
+        models.CharField(
+            max_length=255,
+            choices=NarrativeChronology.choices,
+        ),
+        blank=True,
+        default=list,
+        verbose_name=_("Zeitpunkt des Erzählens"),
+    )
+
+    analysis_narrative_level = ArrayField(
+        models.CharField(
+            max_length=255,
+            choices=NarrativeLevel.choices,
+        ),
+        blank=True,
+        default=list,
+        verbose_name=_("Ort des Erzählens"),
+    )
+
+    analysis_narrative_voice = ArrayField(
+        models.CharField(
+            max_length=255,
+            choices=NarrativeVoice.choices,
+        ),
+        blank=True,
+        default=list,
+        verbose_name=_("Stellung des:der Erzähler:in zum Geschehen"),
     )
 
     class Meta:
