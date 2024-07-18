@@ -60,11 +60,16 @@ class WorkForm(GenericModelForm):
         choices=Work.NarrativeVoice.choices,
         label=Work._meta.get_field("analysis_narrative_voice").verbose_name,
     )
+    language = forms.MultipleChoiceField(
+        required=False,
+        choices=Expression.LanguagesIso6393.choices,
+        label=Expression._meta.get_field("language").verbose_name,
+    )
 
 
 class ExpressionForm(GenericModelForm):
-    language_new = forms.MultipleChoiceField(
+    language = forms.MultipleChoiceField(
         required=False,
         choices=Expression.LanguagesIso6393.choices,
-        label=Expression._meta.get_field("language_new").verbose_name,
+        label=Expression._meta.get_field("language").verbose_name,
     )
