@@ -168,6 +168,11 @@ class WorkFilterSet(TitlesMixinFilterSet):
         method=fuzzy_search_unaccent_trigram,
     )
 
+    language = django_filters.MultipleChoiceFilter(
+        choices=LanguageMixin.LanguagesIso6393.choices,
+        lookup_expr="icontains",
+    )
+
     analysis_temporal_order = django_filters.MultipleChoiceFilter(
         choices=Work.TemporalOrder.choices,
         lookup_expr="icontains",
