@@ -9,11 +9,22 @@ from django.db.models import OuterRef
 from django.db.models.functions import JSONObject
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import pagination, permissions, viewsets
+from rest_framework.mixins import RetrieveModelMixin
 
-from apis_ontology.models import Expression, Organisation, Place, Work, WorkType
+from apis_ontology.models import (
+    Character,
+    Expression,
+    Organisation,
+    Person,
+    PhysicalObject,
+    Place,
+    Topic,
+    Work,
+    WorkType,
+)
 
 from .filters import WorkPreviewSearchFilter
-from .serializers import WorkPreviewSerializer
+from .serializers import WorkDetailSerializer, WorkPreviewSerializer
 
 
 class WorkPreviewPagination(pagination.LimitOffsetPagination):
@@ -179,4 +190,151 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             .order_by("title", "subtitle")
         )
 
+        return works
+
+
+class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
+    """API endpoint which returns full Work objects.
+
+    The full result set is meant to populate the detail view of the
+    "Work" page on the Vue.js frontend.
+    """
+
+    serializer_class = WorkDetailSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+
+    def get_queryset(self):
+        work_types = WorkType.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+            triple_set_from_obj__prop__name_forward__in=["has type"],
+        ).values(
+            json=JSONObject(
+                name="name",
+                name_plural="name_plural",
+            )
+        )
+
+        expression_publisher = Organisation.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+            triple_set_from_subj__prop__name_reverse__in=["has publisher"],
+        ).values(json=JSONObject(id="id", name="name"))
+
+        expression_place = Place.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+            triple_set_from_obj__prop__name_forward__in=["is published in"],
+        ).values(json=JSONObject(id="id", name="name"))
+
+        related_expressions = (
+            Expression.objects.filter(
+                triple_set_from_obj__subj_id=OuterRef("pk"),
+                triple_set_from_obj__prop__name_reverse__in=["realises"],
+            ).annotate(
+                publisher=Subquery(expression_publisher),
+                place=Subquery(expression_place),
+            )
+        ).values(
+            json=JSONObject(
+                title="title",
+                subtitle="subtitle",
+                edition="edition",
+                edition_type="edition_type",
+                language="language",
+                publication_date="publication_date_iso_formatted",
+                publisher="publisher",
+                place_of_publication="place",
+            )
+        )
+
+        related_characters = Character.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+            triple_set_from_obj__prop__name_forward__in=["features"],
+        ).values(
+            json=JSONObject(
+                id="id",
+                forename="forename",
+                surname="surname",
+                fallback_name="fallback_name",
+                relevancy="relevancy",
+                fictionality="fictionality",
+            )
+        )
+
+        related_physical_objects = PhysicalObject.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+            triple_set_from_subj__prop__name_forward__in=["relates to"],
+        ).values(
+            json=JSONObject(
+                id="id",
+                name="name",
+                description="description",
+                vorlass_doc_reference="vorlass_doc_reference",
+            )
+        )
+
+        topics = Topic.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+            triple_set_from_obj__prop__name_forward__in=["is about topic"],
+        ).values(
+            json=JSONObject(
+                id="id",
+                name="name",
+                alternative_name="alternative_name",
+                description="description",
+                notes="notes",
+            )
+        )
+
+        related_persons = Person.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+            triple_set_from_subj__prop__name_forward__in=[
+                "is author of",
+                "is editor of",
+            ],
+        ).values(
+            json=JSONObject(
+                id="id",
+                forename="forename",
+                surname="surname",
+                fallback_name="fallback_name",
+                relation_type="triple_set_from_subj__prop__name_reverse",
+            )
+        )
+
+        forward_work_relations = Work.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+        ).values(
+            json=JSONObject(
+                id="id",
+                title="title",
+                subtitle="subtitle",
+                relation_type="triple_set_from_obj__prop__name_forward",
+            )
+        )
+
+        reverse_work_relations = Work.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+        ).values(
+            json=JSONObject(
+                id="id",
+                title="title",
+                subtitle="subtitle",
+                relation_type="triple_set_from_subj__prop__name_reverse",
+            )
+        )
+
+        works = (
+            Work.objects.all()
+            .annotate(
+                expression_data=ArraySubquery(related_expressions),
+                work_type=ArraySubquery(work_types),
+                character_data=ArraySubquery(related_characters),
+                related_physical_objects=ArraySubquery(related_physical_objects),
+                related_topics=ArraySubquery(topics),
+                related_persons=ArraySubquery(related_persons),
+                forward_work_relations=ArraySubquery(forward_work_relations),
+                reverse_work_relations=ArraySubquery(reverse_work_relations),
+            )
+            .order_by("title", "subtitle")
+        )
         return works
