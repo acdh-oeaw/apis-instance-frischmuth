@@ -11,7 +11,7 @@ from django.contrib.postgres.search import TrigramWordSimilarity
 from django.db.models.functions import Greatest
 from django.utils.translation import gettext_lazy as _
 
-from .models import Work
+from .models import LanguageMixin, Work
 
 
 PATTERN = re.compile(r"""((?:[^ "']|"[^"]*"|'[^']*')+)""")
@@ -231,6 +231,29 @@ class VersionWorkFilterSet(WorkFilterSet):
 
 
 class ExpressionFilterSet(TitlesMixinFilterSet):
+    language = django_filters.MultipleChoiceFilter(
+        choices=LanguageMixin.LanguagesIso6393.choices,
+        lookup_expr="icontains",
+    )
+
+    class Meta(TitlesMixinFilterSet.Meta):
+        fields = {
+            "language": ["icontains"],
+        }
+        filter_overrides = {
+            ArrayField: {
+                "filter_class": django_filters.MultipleChoiceFilter,
+                # "extra" attribute not working for fields with choices, see:
+                # https://github.com/carltongibson/django-filter/issues/1475
+                "extra": lambda f: {
+                    "lookup_expr": "icontains",
+                    "widget": forms.SelectMultiple,
+                },
+            },
+        }
+
+
+class VersionExpressionFilterSet(ExpressionFilterSet):
     pass
 
 

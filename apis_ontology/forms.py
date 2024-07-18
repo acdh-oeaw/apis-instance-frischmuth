@@ -3,7 +3,7 @@ import logging
 from apis_core.generic.forms import GenericModelForm
 from django import forms
 
-from .models import Work
+from .models import Expression, Work
 
 
 logger = logging.getLogger(__name__)
@@ -59,4 +59,12 @@ class WorkForm(GenericModelForm):
         required=False,
         choices=Work.NarrativeVoice.choices,
         label=Work._meta.get_field("analysis_narrative_voice").verbose_name,
+    )
+
+
+class ExpressionForm(GenericModelForm):
+    language_new = forms.MultipleChoiceField(
+        required=False,
+        choices=Expression.LanguagesIso6393.choices,
+        label=Expression._meta.get_field("language_new").verbose_name,
     )
