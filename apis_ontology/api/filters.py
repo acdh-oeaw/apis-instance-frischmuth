@@ -10,6 +10,7 @@ import django_filters
 from django.utils.translation import gettext_lazy as _
 
 from apis_ontology.filtersets import fuzzy_search_unaccent_trigram
+from apis_ontology.models import Expression
 
 
 logger = logging.getLogger(__name__)
@@ -26,8 +27,9 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
         ),
         method=fuzzy_search_unaccent_trigram,
     )
-    facet_language = django_filters.CharFilter(
-        field_name="triple_set_from_subj__obj__expression__language",
+    facet_language = django_filters.MultipleChoiceFilter(
+        field_name="facet_language",
         label=_("Language of the expression."),
-        lookup_expr="contains",
+        lookup_expr="icontains",
+        choices=Expression.LanguagesIso6393.choices,
     )

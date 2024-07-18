@@ -211,16 +211,15 @@ class LanguageMixin(models.Model):
         relevant to the project.
         """
 
-        DE = "deu", _("Deutsch")
-        EN = "eng", _("Englisch")
-        FR = "fra", _("Französisch")
-        IT = "ita", _("Italienisch")
+        DE = "Deutsch", _("Deutsch")
+        EN = "Englisch", _("Englisch")
+        FR = "Französisch", _("Französisch")
+        IT = "Italienisch", _("Italienisch")
 
-    language = MultiSelectField(
-        max_length=255,
-        choices=LanguagesIso6393.choices,
+    language = ArrayField(
+        base_field=models.CharField(max_length=255),
+        default=list,
         blank=True,
-        default="",
         verbose_name=_("Sprache"),
     )
 

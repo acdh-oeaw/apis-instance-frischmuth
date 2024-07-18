@@ -37,11 +37,9 @@ class WorkTypeDataSerializer(serializers.ModelSerializer):
 class ExpressionDataSerializer(serializers.ModelSerializer):
     publication_date = serializers.DateField(required=False, allow_null=True)
     publisher = serializers.CharField(required=False, allow_null=True)
-    place_of_publication = serializers.ListField(
-        child=serializers.CharField(allow_blank=True), required=False, allow_empty=True
-    )
+    place_of_publication = serializers.ListField(required=False, allow_empty=True)
     edition_type = serializers.SerializerMethodField()
-    language = serializers.SerializerMethodField()
+    language = serializers.ListField(required=False, allow_empty=True)
 
     class Meta:
         model = Expression
@@ -60,11 +58,6 @@ class ExpressionDataSerializer(serializers.ModelSerializer):
         edition_type_str = obj.get("edition_type", None)
         edition_types = list(filter(None, edition_type_str.split(",")))
         return get_choices_labels(edition_types, Expression.EditionTypes)
-
-    def get_language(self, obj) -> list["str"]:
-        language_str = obj.get("language", None)
-        languages = list(filter(None, language_str.split(",")))
-        return get_choices_labels(languages, Expression.LanguagesIso6393)
 
 
 class WorkPreviewSerializer(serializers.ModelSerializer):
