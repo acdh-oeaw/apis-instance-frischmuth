@@ -4,9 +4,19 @@ Serializers for custom API.
 I.e. project-specific endpoints (not APIS built-in API).
 """
 
+from typing import TypedDict
+
 from rest_framework import serializers
 
-from apis_ontology.models import Expression, Work, WorkType
+from apis_ontology.models import (
+    Character,
+    Expression,
+    Person,
+    PhysicalObject,
+    Topic,
+    Work,
+    WorkType,
+)
 
 
 def get_choices_labels(values: list, text_choices):
@@ -74,3 +84,63 @@ class WorkPreviewSerializer(serializers.ModelSerializer):
             "expression_data",
             "work_type",
         ]
+
+
+class RelatedWorksDict(TypedDict):
+    id: int
+    title: str
+    subtitle: str | None
+    relation_type: str
+
+
+class CharacterDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Character
+        fields = "__all__"
+
+
+class PhysicalObjectDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhysicalObject
+        fields = "__all__"
+
+
+class TopicDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Topic
+        fields = "__all__"
+
+
+class PersonDataSerializer(serializers.ModelSerializer):
+    relation_type = serializers.CharField(required=False, allow_null=True)
+
+    class Meta:
+        model = Person
+        fields = "__all__"
+
+
+class WorkDetailSerializer(serializers.ModelSerializer):
+    work_type = WorkTypeDataSerializer(required=False, allow_empty=True, many=True)
+    expression_data = ExpressionDataSerializer(
+        required=False, allow_empty=True, many=True
+    )
+    related_works = serializers.SerializerMethodField()
+    characters = CharacterDataSerializer(
+        required=False, allow_empty=True, many=True, source="character_data"
+    )
+    physical_objects = PhysicalObjectDataSerializer(
+        required=False, allow_empty=True, many=True, source="related_physical_objects"
+    )
+    topics = TopicDataSerializer(
+        required=False, allow_empty=True, many=True, source="related_topics"
+    )
+    persons = PersonDataSerializer(
+        required=False, allow_empty=True, many=True, source="related_persons"
+    )
+
+    class Meta:
+        model = Work
+        fields = "__all__"
+
+    def get_related_works(self, obj) -> list[RelatedWorksDict]:
+        return list(obj.forward_work_relations) + list(obj.reverse_work_relations)
