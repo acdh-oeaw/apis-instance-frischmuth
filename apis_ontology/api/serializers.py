@@ -81,7 +81,9 @@ class SimpleDetailSerializer(serializers.Serializer):
 
 class ExpressionDataDetailSerializer(ExpressionDataSerializer):
     publisher = SimpleDetailSerializer(required=False, allow_null=True)
-    place_of_publication = SimpleDetailSerializer(required=False, allow_null=True)
+    place_of_publication = SimpleDetailSerializer(
+        required=False, allow_null=True, many=True
+    )
 
 
 class WorkPreviewSerializer(serializers.ModelSerializer):
