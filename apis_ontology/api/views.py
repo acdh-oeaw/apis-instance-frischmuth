@@ -180,12 +180,18 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             language__len__gt=0,
         ).values("language")
 
+        facet_topic = Topic.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+            triple_set_from_obj__prop__name_forward__in=["is about topic"],
+        ).values_list("name")
+
         works = (
             Work.objects.all()
             .annotate(
                 expression_data=ArraySubquery(related_expressions),
                 work_type=ArraySubquery(work_types),
                 facet_language=ArraySubquery(facet_languages),
+                facet_topic=ArraySubquery(facet_topic),
             )
             .order_by("title", "subtitle")
         )
