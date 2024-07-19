@@ -237,7 +237,7 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
                 triple_set_from_obj__prop__name_reverse__in=["realises"],
             ).annotate(
                 publisher=Subquery(expression_publisher),
-                place=Subquery(expression_place),
+                place=ArraySubquery(expression_place),
             )
         ).values(
             json=JSONObject(
