@@ -70,6 +70,16 @@ class ExpressionDataSerializer(serializers.ModelSerializer):
         return get_choices_labels(edition_types, Expression.EditionTypes)
 
 
+class SimpleDetailSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+
+
+class ExpressionDataDetailSerializer(ExpressionDataSerializer):
+    publisher = SimpleDetailSerializer(required=False, allow_null=True)
+    place_of_publication = SimpleDetailSerializer(required=False, allow_null=True)
+
+
 class WorkPreviewSerializer(serializers.ModelSerializer):
     expression_data = ExpressionDataSerializer(required=False, many=True)
     work_type = WorkTypeDataSerializer(required=False, allow_empty=True, many=True)
@@ -121,7 +131,7 @@ class PersonDataSerializer(serializers.ModelSerializer):
 
 class WorkDetailSerializer(serializers.ModelSerializer):
     work_type = WorkTypeDataSerializer(required=False, allow_empty=True, many=True)
-    expression_data = ExpressionDataSerializer(
+    expression_data = ExpressionDataDetailSerializer(
         required=False, allow_empty=True, many=True
     )
     related_works = serializers.SerializerMethodField()
