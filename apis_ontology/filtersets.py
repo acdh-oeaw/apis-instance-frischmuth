@@ -173,50 +173,50 @@ class WorkFilterSet(TitlesMixinFilterSet):
         lookup_expr="icontains",
     )
 
-    analysis_temporal_order = django_filters.MultipleChoiceFilter(
+    temporal_order = django_filters.MultipleChoiceFilter(
         choices=Work.TemporalOrder.choices,
         lookup_expr="icontains",
     )
-    analysis_temporal_duration = django_filters.MultipleChoiceFilter(
+    temporal_duration = django_filters.MultipleChoiceFilter(
         choices=Work.TemporalDuration.choices,
         lookup_expr="icontains",
     )
-    analysis_temporal_frequency = django_filters.MultipleChoiceFilter(
+    temporal_frequency = django_filters.MultipleChoiceFilter(
         choices=Work.TemporalFrequency.choices,
         lookup_expr="icontains",
     )
-    analysis_figure_speech = django_filters.MultipleChoiceFilter(
+    figure_speech = django_filters.MultipleChoiceFilter(
         choices=Work.FigureSpeech.choices,
         lookup_expr="icontains",
     )
-    analysis_representation_of_thought = django_filters.MultipleChoiceFilter(
+    representation_of_thought = django_filters.MultipleChoiceFilter(
         choices=Work.RepresentationOfThought.choices,
         lookup_expr="icontains",
     )
-    analysis_focalization = django_filters.MultipleChoiceFilter(
+    focalization = django_filters.MultipleChoiceFilter(
         choices=Work.Focalization.choices,
         lookup_expr="icontains",
     )
-    analysis_narrative_situation = django_filters.MultipleChoiceFilter(
+    narrative_situation = django_filters.MultipleChoiceFilter(
         choices=Work.NarrativeSituation.choices,
         lookup_expr="icontains",
     )
-    analysis_narrative_chronology = django_filters.MultipleChoiceFilter(
+    narrative_chronology = django_filters.MultipleChoiceFilter(
         choices=Work.NarrativeChronology.choices,
         lookup_expr="icontains",
     )
-    analysis_narrative_level = django_filters.MultipleChoiceFilter(
+    narrative_level = django_filters.MultipleChoiceFilter(
         choices=Work.NarrativeLevel.choices,
         lookup_expr="icontains",
     )
-    analysis_narrative_voice = django_filters.MultipleChoiceFilter(
+    narrative_voice = django_filters.MultipleChoiceFilter(
         choices=Work.NarrativeVoice.choices,
         lookup_expr="icontains",
     )
 
     class Meta(TitlesMixinFilterSet.Meta):
         fields = {
-            "analysis_temporal_order": ["icontains"],
+            "temporal_order": ["icontains"],
         }
         filter_overrides = {
             ArrayField: {
