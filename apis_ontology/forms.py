@@ -10,55 +10,55 @@ logger = logging.getLogger(__name__)
 
 
 class WorkForm(GenericModelForm):
-    analysis_temporal_order = forms.MultipleChoiceField(
+    temporal_order = forms.MultipleChoiceField(
         required=False,
         choices=Work.TemporalOrder.choices,
-        label=Work._meta.get_field("analysis_temporal_order").verbose_name,
+        label=Work._meta.get_field("temporal_order").verbose_name,
     )
-    analysis_temporal_duration = forms.MultipleChoiceField(
+    temporal_duration = forms.MultipleChoiceField(
         required=False,
         choices=Work.TemporalDuration.choices,
-        label=Work._meta.get_field("analysis_temporal_duration").verbose_name,
+        label=Work._meta.get_field("temporal_duration").verbose_name,
     )
-    analysis_temporal_frequency = forms.MultipleChoiceField(
+    temporal_frequency = forms.MultipleChoiceField(
         required=False,
         choices=Work.TemporalFrequency.choices,
-        label=Work._meta.get_field("analysis_temporal_frequency").verbose_name,
+        label=Work._meta.get_field("temporal_frequency").verbose_name,
     )
-    analysis_figure_speech = forms.MultipleChoiceField(
+    figure_speech = forms.MultipleChoiceField(
         required=False,
         choices=Work.FigureSpeech.choices,
-        label=Work._meta.get_field("analysis_figure_speech").verbose_name,
+        label=Work._meta.get_field("figure_speech").verbose_name,
     )
-    analysis_representation_of_thought = forms.MultipleChoiceField(
+    representation_of_thought = forms.MultipleChoiceField(
         required=False,
         choices=Work.RepresentationOfThought.choices,
-        label=Work._meta.get_field("analysis_representation_of_thought").verbose_name,
+        label=Work._meta.get_field("representation_of_thought").verbose_name,
     )
-    analysis_focalization = forms.MultipleChoiceField(
+    focalization = forms.MultipleChoiceField(
         required=False,
         choices=Work.Focalization.choices,
-        label=Work._meta.get_field("analysis_focalization").verbose_name,
+        label=Work._meta.get_field("focalization").verbose_name,
     )
-    analysis_narrative_situation = forms.MultipleChoiceField(
+    narrative_situation = forms.MultipleChoiceField(
         required=False,
         choices=Work.NarrativeSituation.choices,
-        label=Work._meta.get_field("analysis_narrative_situation").verbose_name,
+        label=Work._meta.get_field("narrative_situation").verbose_name,
     )
-    analysis_narrative_chronology = forms.MultipleChoiceField(
+    narrative_chronology = forms.MultipleChoiceField(
         required=False,
         choices=Work.NarrativeChronology.choices,
-        label=Work._meta.get_field("analysis_narrative_chronology").verbose_name,
+        label=Work._meta.get_field("narrative_chronology").verbose_name,
     )
-    analysis_narrative_level = forms.MultipleChoiceField(
+    narrative_level = forms.MultipleChoiceField(
         required=False,
         choices=Work.NarrativeLevel.choices,
-        label=Work._meta.get_field("analysis_narrative_level").verbose_name,
+        label=Work._meta.get_field("narrative_level").verbose_name,
     )
-    analysis_narrative_voice = forms.MultipleChoiceField(
+    narrative_voice = forms.MultipleChoiceField(
         required=False,
         choices=Work.NarrativeVoice.choices,
-        label=Work._meta.get_field("analysis_narrative_voice").verbose_name,
+        label=Work._meta.get_field("narrative_voice").verbose_name,
     )
     language = forms.MultipleChoiceField(
         required=False,

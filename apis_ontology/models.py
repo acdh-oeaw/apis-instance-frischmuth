@@ -427,8 +427,8 @@ class Work(
         verbose_name=_("Datenquelle"),
     )
 
-    #  fields relating to narrative analysis / Erzähltextanalyse
-    analysis_temporal_order = ArrayField(
+    # fields relating to narrative analysis / Erzähltextanalyse
+    temporal_order = ArrayField(
         models.CharField(
             max_length=255,
             choices=TemporalOrder.choices,
@@ -438,7 +438,7 @@ class Work(
         verbose_name=_("Erzählordnung"),
     )
 
-    analysis_temporal_duration = ArrayField(
+    temporal_duration = ArrayField(
         models.CharField(
             max_length=255,
             choices=TemporalDuration.choices,
@@ -448,7 +448,7 @@ class Work(
         verbose_name=_("Dauer"),
     )
 
-    analysis_temporal_frequency = ArrayField(
+    temporal_frequency = ArrayField(
         models.CharField(
             max_length=255,
             choices=TemporalFrequency.choices,
@@ -458,7 +458,7 @@ class Work(
         verbose_name=_("Frequenz"),
     )
 
-    analysis_figure_speech = ArrayField(
+    figure_speech = ArrayField(
         models.CharField(
             max_length=255,
             choices=FigureSpeech.choices,
@@ -468,7 +468,7 @@ class Work(
         verbose_name=_("Figurenrede"),
     )
 
-    analysis_representation_of_thought = ArrayField(
+    representation_of_thought = ArrayField(
         models.CharField(
             max_length=255,
             choices=RepresentationOfThought.choices,
@@ -478,7 +478,7 @@ class Work(
         verbose_name=_("Darstellung von Gedanken"),
     )
 
-    analysis_focalization = ArrayField(
+    focalization = ArrayField(
         models.CharField(
             max_length=255,
             choices=Focalization.choices,
@@ -488,7 +488,7 @@ class Work(
         verbose_name=_("Fokalisierung"),
     )
 
-    analysis_narrative_situation = ArrayField(
+    narrative_situation = ArrayField(
         models.CharField(
             max_length=255,
             choices=NarrativeSituation.choices,
@@ -498,7 +498,7 @@ class Work(
         verbose_name=_("Erzählperspektive"),
     )
 
-    analysis_narrative_chronology = ArrayField(
+    narrative_chronology = ArrayField(
         models.CharField(
             max_length=255,
             choices=NarrativeChronology.choices,
@@ -508,7 +508,7 @@ class Work(
         verbose_name=_("Zeitpunkt des Erzählens"),
     )
 
-    analysis_narrative_level = ArrayField(
+    narrative_level = ArrayField(
         models.CharField(
             max_length=255,
             choices=NarrativeLevel.choices,
@@ -518,7 +518,7 @@ class Work(
         verbose_name=_("Ort des Erzählens"),
     )
 
-    analysis_narrative_voice = ArrayField(
+    narrative_voice = ArrayField(
         models.CharField(
             max_length=255,
             choices=NarrativeVoice.choices,
