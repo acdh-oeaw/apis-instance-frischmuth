@@ -3,13 +3,21 @@ import logging
 from apis_core.generic.forms import GenericModelForm
 from django import forms
 
-from .models import Character, Expression, Work
+from .models import Character, Expression, LanguageMixin, Work
 
 
 logger = logging.getLogger(__name__)
 
 
-class WorkForm(GenericModelForm):
+class LanguageForm(forms.Form):
+    language = forms.MultipleChoiceField(
+        required=False,
+        choices=LanguageMixin.LanguagesIso6393.choices,
+        label=LanguageMixin._meta.get_field("language").verbose_name,
+    )
+
+
+class WorkForm(GenericModelForm, LanguageForm):
     temporal_order = forms.MultipleChoiceField(
         required=False,
         choices=Work.TemporalOrder.choices,
@@ -60,23 +68,13 @@ class WorkForm(GenericModelForm):
         choices=Work.NarrativeVoice.choices,
         label=Work._meta.get_field("narrative_voice").verbose_name,
     )
-    language = forms.MultipleChoiceField(
-        required=False,
-        choices=Expression.LanguagesIso6393.choices,
-        label=Expression._meta.get_field("language").verbose_name,
-    )
 
 
-class ExpressionForm(GenericModelForm):
+class ExpressionForm(GenericModelForm, LanguageForm):
     new_edition_type = forms.MultipleChoiceField(
         required=False,
         choices=Expression.EditionTypes.choices,
         label=Expression._meta.get_field("new_edition_type").verbose_name,
-    )
-    language = forms.MultipleChoiceField(
-        required=False,
-        choices=Expression.LanguagesIso6393.choices,
-        label=Expression._meta.get_field("language").verbose_name,
     )
 
 
