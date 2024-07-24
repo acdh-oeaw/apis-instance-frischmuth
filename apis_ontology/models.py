@@ -429,7 +429,7 @@ class Work(
 
     # fields relating to narrative analysis / Erzähltextanalyse
     temporal_order = ArrayField(
-        models.CharField(
+        base_field=models.CharField(
             max_length=255,
             choices=TemporalOrder.choices,
         ),
@@ -439,7 +439,7 @@ class Work(
     )
 
     temporal_duration = ArrayField(
-        models.CharField(
+        base_field=models.CharField(
             max_length=255,
             choices=TemporalDuration.choices,
         ),
@@ -449,7 +449,7 @@ class Work(
     )
 
     temporal_frequency = ArrayField(
-        models.CharField(
+        base_field=models.CharField(
             max_length=255,
             choices=TemporalFrequency.choices,
         ),
@@ -459,7 +459,7 @@ class Work(
     )
 
     figure_speech = ArrayField(
-        models.CharField(
+        base_field=models.CharField(
             max_length=255,
             choices=FigureSpeech.choices,
         ),
@@ -469,7 +469,7 @@ class Work(
     )
 
     representation_of_thought = ArrayField(
-        models.CharField(
+        base_field=models.CharField(
             max_length=255,
             choices=RepresentationOfThought.choices,
         ),
@@ -479,7 +479,7 @@ class Work(
     )
 
     focalization = ArrayField(
-        models.CharField(
+        base_field=models.CharField(
             max_length=255,
             choices=Focalization.choices,
         ),
@@ -489,7 +489,7 @@ class Work(
     )
 
     narrative_situation = ArrayField(
-        models.CharField(
+        base_field=models.CharField(
             max_length=255,
             choices=NarrativeSituation.choices,
         ),
@@ -499,7 +499,7 @@ class Work(
     )
 
     narrative_chronology = ArrayField(
-        models.CharField(
+        base_field=models.CharField(
             max_length=255,
             choices=NarrativeChronology.choices,
         ),
@@ -509,7 +509,7 @@ class Work(
     )
 
     narrative_level = ArrayField(
-        models.CharField(
+        base_field=models.CharField(
             max_length=255,
             choices=NarrativeLevel.choices,
         ),
@@ -519,7 +519,7 @@ class Work(
     )
 
     narrative_voice = ArrayField(
-        models.CharField(
+        base_field=models.CharField(
             max_length=255,
             choices=NarrativeVoice.choices,
         ),
