@@ -103,14 +103,21 @@ def fuzzy_search_unaccent_trigram(queryset, fields, value):
     return trigram_search_filter(queryset, fields, tokens)
 
 
-class GenericSearchFilterSet(AbstractEntityFilterSet):
+class BaseEntityFilterSet(AbstractEntityFilterSet):
+    """
+    Parent class for all entity model classes.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if "search" in self.filters:
             self.filters.move_to_end("search", False)
 
 
-class TitlesMixinFilterSet(GenericSearchFilterSet):
+class TitlesSearch(django_filters.FilterSet):
+    """
+    Search within title and subtitle fields.
+    """
+
     search = django_filters.CharFilter(
         field_name=[
             "title",
@@ -122,7 +129,15 @@ class TitlesMixinFilterSet(GenericSearchFilterSet):
     )
 
 
-class AlternativeNameMixinFilterSet(GenericSearchFilterSet):
+class AlternativeNameSearch(django_filters.FilterSet):
+    """
+    Search within name and alternative_name fields.
+
+    With the exception of person-like entities (whose names are more complex),
+    the existence of the latter is assumed to be predicated on the former,
+    i.e. an entity cannot have an "alternative_name" without a "name".
+    """
+
     search = django_filters.CharFilter(
         field_name=[
             "name",
@@ -134,7 +149,12 @@ class AlternativeNameMixinFilterSet(GenericSearchFilterSet):
     )
 
 
-class PersonNameMixinFilterSet(GenericSearchFilterSet):
+class PersonSearch(django_filters.FilterSet):
+    """
+    Search within the various name fields used for persons and person-like
+    entities (like characters).
+    """
+
     search = django_filters.CharFilter(
         field_name=[
             "surname",
@@ -148,17 +168,17 @@ class PersonNameMixinFilterSet(GenericSearchFilterSet):
     )
 
 
-class PersonFilterSet(PersonNameMixinFilterSet):
+class PersonFilterSet(BaseEntityFilterSet, PersonSearch):
     pass
 
 
-class CharacterFilterSet(PersonNameMixinFilterSet):
+class CharacterFilterSet(BaseEntityFilterSet, PersonSearch):
     new_fictionality = django_filters.MultipleChoiceFilter(
         choices=Character.CharacterFictionality.choices,
         lookup_expr="icontains",
     )
 
-    class Meta(PersonNameMixinFilterSet.Meta):
+    class Meta(BaseEntityFilterSet.Meta):
         fields = {
             "new_fictionality": ["icontains"],
         }
@@ -179,7 +199,7 @@ class VersionCharacterFilterSet(CharacterFilterSet):
     pass
 
 
-class WorkFilterSet(TitlesMixinFilterSet):
+class WorkFilterSet(BaseEntityFilterSet, TitlesSearch):
     search = django_filters.CharFilter(
         field_name=[
             "title",
@@ -237,7 +257,7 @@ class WorkFilterSet(TitlesMixinFilterSet):
         lookup_expr="icontains",
     )
 
-    class Meta(TitlesMixinFilterSet.Meta):
+    class Meta(BaseEntityFilterSet.Meta):
         fields = {
             "temporal_order": ["icontains"],
         }
@@ -258,7 +278,7 @@ class VersionWorkFilterSet(WorkFilterSet):
     pass
 
 
-class ExpressionFilterSet(TitlesMixinFilterSet):
+class ExpressionFilterSet(BaseEntityFilterSet, TitlesSearch):
     new_edition_type = django_filters.MultipleChoiceFilter(
         choices=Expression.EditionTypes.choices,
         lookup_expr="icontains",
@@ -269,7 +289,7 @@ class ExpressionFilterSet(TitlesMixinFilterSet):
         lookup_expr="icontains",
     )
 
-    class Meta(TitlesMixinFilterSet.Meta):
+    class Meta(BaseEntityFilterSet.Meta):
         fields = {
             "language": ["icontains"],
         }
@@ -290,23 +310,23 @@ class VersionExpressionFilterSet(ExpressionFilterSet):
     pass
 
 
-class OrganisationFilterSet(AlternativeNameMixinFilterSet):
+class OrganisationFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
     pass
 
 
-class PlaceFilterSet(AlternativeNameMixinFilterSet):
+class PlaceFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
     pass
 
 
-class ResearchPerspectiveFilterSet(AlternativeNameMixinFilterSet):
+class ResearchPerspectiveFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
     pass
 
 
-class TopicFilterSet(AlternativeNameMixinFilterSet):
+class TopicFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
     pass
 
 
-class WorkTypeFilterSet(AlternativeNameMixinFilterSet):
+class WorkTypeFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
     search = django_filters.CharFilter(
         field_name=[
             "name",
