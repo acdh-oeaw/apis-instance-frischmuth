@@ -7,7 +7,7 @@ RELEVANT_FIELDS = [
     ("temporal_order", "analysis_temporal_order"),
     ("temporal_duration", "analysis_temporal_duration"),
     ("temporal_frequency", "analysis_temporal_frequency"),
-    ("figure_speech", "analysis_figure_speech" "figure_speech"),
+    ("figure_speech", "analysis_figure_speech"),
     ("representation_of_thought", "analysis_representation_of_thought"),
     ("focalization", "analysis_focalization"),
     ("narrative_situation", "analysis_narrative_situation"),
