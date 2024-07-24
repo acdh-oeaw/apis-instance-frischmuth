@@ -110,20 +110,6 @@ class GenericSearchFilterSet(AbstractEntityFilterSet):
             self.filters.move_to_end("search", False)
 
 
-class PersonNameMixinFilterSet(GenericSearchFilterSet):
-    search = django_filters.CharFilter(
-        field_name=[
-            "surname",
-            "forename",
-            "fallback_name",
-            "alternative_name",
-        ],
-        help_text=_("Suche in allen Namensfeldern"),
-        label=_("Suche: Namen"),
-        method=fuzzy_search_unaccent_trigram,
-    )
-
-
 class TitlesMixinFilterSet(GenericSearchFilterSet):
     search = django_filters.CharFilter(
         field_name=[
@@ -140,6 +126,20 @@ class AlternativeNameMixinFilterSet(GenericSearchFilterSet):
     search = django_filters.CharFilter(
         field_name=[
             "name",
+            "alternative_name",
+        ],
+        help_text=_("Suche in allen Namensfeldern"),
+        label=_("Suche: Namen"),
+        method=fuzzy_search_unaccent_trigram,
+    )
+
+
+class PersonNameMixinFilterSet(GenericSearchFilterSet):
+    search = django_filters.CharFilter(
+        field_name=[
+            "surname",
+            "forename",
+            "fallback_name",
             "alternative_name",
         ],
         help_text=_("Suche in allen Namensfeldern"),
