@@ -59,20 +59,43 @@ class NotesMixin(models.Model):
         abstract = True
 
 
-class AlternativeNameMixin(models.Model):
+class TitlesMixin(models.Model):
     """
-    Mixin for "alternative_name" field shared between entities.
+    Mixin for fields shared between work-like entities.
     """
 
-    alternative_name = models.CharField(
+    title = models.CharField(
         max_length=255,
         blank=True,
         default="",
-        verbose_name=_("Alternativer Name"),
+        verbose_name=_("Titel"),
+    )
+
+    subtitle = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("Untertitel"),
     )
 
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return self.title
+
+    def full_title(self):
+        full_title = self.title
+        subtitle = self.subtitle
+        letter_or_digit = re.compile(r"[\W\d]", re.U)
+
+        if subtitle:
+            if letter_or_digit.match(subtitle[0]):
+                full_title += f" {subtitle}"
+            else:
+                full_title += f". {subtitle}"
+
+        return full_title
 
 
 class GenericNameMixin(models.Model):
@@ -93,15 +116,16 @@ class GenericNameMixin(models.Model):
         return self.name
 
 
-class DescriptionMixin(models.Model):
+class AlternativeNameMixin(models.Model):
     """
-    Mixin for "description" field shared between entities.
+    Mixin for "alternative_name" field shared between entities.
     """
 
-    description = models.TextField(
+    alternative_name = models.CharField(
+        max_length=255,
         blank=True,
         default="",
-        verbose_name=_("Beschreibung"),
+        verbose_name=_("Alternativer Name"),
     )
 
     class Meta:
@@ -165,43 +189,19 @@ class PersonNameMixin(AlternativeNameMixin, models.Model):
         return full_name
 
 
-class TitlesMixin(models.Model):
+class DescriptionMixin(models.Model):
     """
-    Mixin for fields shared between work-like entities.
+    Mixin for "description" field shared between entities.
     """
 
-    title = models.CharField(
-        max_length=255,
+    description = models.TextField(
         blank=True,
         default="",
-        verbose_name=_("Titel"),
-    )
-
-    subtitle = models.CharField(
-        max_length=255,
-        blank=True,
-        default="",
-        verbose_name=_("Untertitel"),
+        verbose_name=_("Beschreibung"),
     )
 
     class Meta:
         abstract = True
-
-    def __str__(self):
-        return self.title
-
-    def full_title(self):
-        full_title = self.title
-        subtitle = self.subtitle
-        letter_or_digit = re.compile(r"[\W\d]", re.U)
-
-        if subtitle:
-            if letter_or_digit.match(subtitle[0]):
-                full_title += f" {subtitle}"
-            else:
-                full_title += f". {subtitle}"
-
-        return full_title
 
 
 class LanguageMixin(models.Model):
