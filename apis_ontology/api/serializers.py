@@ -9,10 +9,12 @@ from typing import TypedDict
 from rest_framework import serializers
 
 from apis_ontology.models import (
+    Archive,
     Character,
     Expression,
     Person,
     PhysicalObject,
+    Place,
     Topic,
     Work,
     WorkType,
@@ -35,6 +37,20 @@ def get_choices_labels(values: list, text_choices):
     return labels
 
 
+class PlaceDataSerializerMin(serializers.ModelSerializer):
+    uris = serializers.ListField(
+        required=False, allow_empty=True, child=serializers.URLField()
+    )
+
+    class Meta:
+        model = Place
+        exclude = ["self_contenttype", "data_source"]
+
+
+class PlaceDataSerializer(PlaceDataSerializerMin):
+    relation_type = serializers.CharField(required=False, allow_null=True)
+
+
 class WorkTypeDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkType
@@ -47,8 +63,8 @@ class WorkTypeDataSerializer(serializers.ModelSerializer):
 class ExpressionDataSerializer(serializers.ModelSerializer):
     publication_date = serializers.DateField(required=False, allow_null=True)
     publisher = serializers.CharField(required=False, allow_null=True)
-    place_of_publication = serializers.ListField(
-        child=serializers.CharField(allow_null=True), required=False, allow_empty=True
+    place_of_publication = PlaceDataSerializer(
+        required=False, allow_null=True, many=True
     )
     edition_type = serializers.SerializerMethodField()
     language = serializers.ListField(
@@ -81,7 +97,7 @@ class SimpleDetailSerializer(serializers.Serializer):
 
 class ExpressionDataDetailSerializer(ExpressionDataSerializer):
     publisher = SimpleDetailSerializer(required=False, allow_null=True)
-    place_of_publication = SimpleDetailSerializer(
+    place_of_publication = PlaceDataSerializerMin(
         required=False, allow_null=True, many=True
     )
 
@@ -112,27 +128,38 @@ class RelatedWorksDict(TypedDict):
 class CharacterDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
-        fields = "__all__"
+        exclude = ["self_contenttype", "data_source"]
+
+
+class ArchiveDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Archive
+        exclude = ["self_contenttype", "data_source"]
 
 
 class PhysicalObjectDataSerializer(serializers.ModelSerializer):
+    archive = ArchiveDataSerializer(required=False, allow_null=True)
+
     class Meta:
         model = PhysicalObject
-        fields = "__all__"
+        exclude = ["self_contenttype", "data_source"]
 
 
 class TopicDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
-        fields = "__all__"
+        exclude = ["self_contenttype", "data_source"]
 
 
 class PersonDataSerializer(serializers.ModelSerializer):
+    uris = serializers.ListField(
+        required=False, allow_empty=True, child=serializers.URLField()
+    )
     relation_type = serializers.CharField(required=False, allow_null=True)
 
     class Meta:
         model = Person
-        fields = "__all__"
+        exclude = ["self_contenttype", "data_source"]
 
 
 class WorkDetailSerializer(serializers.ModelSerializer):
@@ -153,10 +180,13 @@ class WorkDetailSerializer(serializers.ModelSerializer):
     persons = PersonDataSerializer(
         required=False, allow_empty=True, many=True, source="related_persons"
     )
+    places = PlaceDataSerializer(
+        required=False, allow_empty=True, many=True, source="related_places"
+    )
 
     class Meta:
         model = Work
-        fields = "__all__"
+        exclude = ["self_contenttype", "data_source", "notes", "progress_status"]
 
     def get_related_works(self, obj) -> list[RelatedWorksDict]:
         return list(obj.forward_work_relations) + list(obj.reverse_work_relations)

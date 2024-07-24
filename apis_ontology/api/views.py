@@ -4,14 +4,16 @@ Views for custom API.
 I.e. project-specific endpoints (not APIS built-in API).
 """
 
+from apis_core.apis_metainfo.models import Uri
 from django.contrib.postgres.expressions import ArraySubquery, Subquery
-from django.db.models import OuterRef
+from django.db.models import OuterRef, Q
 from django.db.models.functions import JSONObject
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import pagination, permissions, viewsets
 from rest_framework.mixins import RetrieveModelMixin
 
 from apis_ontology.models import (
+    Archive,
     Character,
     Expression,
     Organisation,
@@ -211,6 +213,10 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
     filter_backends = [DjangoFilterBackend]
 
     def get_queryset(self):
+        related_uris = Uri.objects.filter(
+            Q(root_object_id=OuterRef("pk")),
+            ~Q(uri__startswith="https://frischmuth-dev.acdh-dev.oeaw.ac.at"),
+        ).values_list("uri", flat=True)
         work_types = WorkType.objects.filter(
             triple_set_from_obj__subj_id=OuterRef("pk"),
             triple_set_from_obj__prop__name_forward__in=["has type"],
@@ -226,10 +232,29 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
             triple_set_from_subj__prop__name_reverse__in=["has publisher"],
         ).values(json=JSONObject(id="id", name="name"))
 
-        expression_place = Place.objects.filter(
+        related_places = (
+            Place.objects.all()
+            .annotate(
+                uris=ArraySubquery(related_uris),
+            )
+            .values(
+                json=JSONObject(
+                    id="id",
+                    name="name",
+                    alternative_name="alternative_name",
+                    description="description",
+                    longitude="longitude",
+                    latitude="latitude",
+                    relation_type="triple_set_from_obj__prop__name_forward",
+                    uris="uris",
+                )
+            )
+        )
+
+        expression_place = related_places.filter(
             triple_set_from_obj__subj_id=OuterRef("pk"),
             triple_set_from_obj__prop__name_forward__in=["is published in"],
-        ).values(json=JSONObject(id="id", name="name"))
+        ).distinct()
 
         related_expressions = (
             Expression.objects.filter(
@@ -266,15 +291,35 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
             )
         )
 
-        related_physical_objects = PhysicalObject.objects.filter(
+        related_places_2 = related_places.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+        ).distinct()
+        related_archive = Archive.objects.filter(
             triple_set_from_subj__obj_id=OuterRef("pk"),
-            triple_set_from_subj__prop__name_forward__in=["relates to"],
+            triple_set_from_subj__prop__name_forward__in=["holds"],
         ).values(
             json=JSONObject(
                 id="id",
                 name="name",
                 description="description",
-                vorlass_doc_reference="vorlass_doc_reference",
+                location="location",
+                website="website",
+            )
+        )
+        related_physical_objects = (
+            PhysicalObject.objects.filter(
+                triple_set_from_subj__obj_id=OuterRef("pk"),
+                triple_set_from_subj__prop__name_forward__in=["relates to"],
+            )
+            .annotate(archive=Subquery(related_archive))
+            .values(
+                json=JSONObject(
+                    id="id",
+                    name="name",
+                    description="description",
+                    vorlass_doc_reference="vorlass_doc_reference",
+                    archive="archive",
+                )
             )
         )
 
@@ -291,19 +336,26 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
             )
         )
 
-        related_persons = Person.objects.filter(
-            triple_set_from_subj__obj_id=OuterRef("pk"),
-            triple_set_from_subj__prop__name_forward__in=[
-                "is author of",
-                "is editor of",
-            ],
-        ).values(
-            json=JSONObject(
-                id="id",
-                forename="forename",
-                surname="surname",
-                fallback_name="fallback_name",
-                relation_type="triple_set_from_subj__prop__name_reverse",
+        related_persons = (
+            Person.objects.filter(
+                triple_set_from_subj__obj_id=OuterRef("pk"),
+                triple_set_from_subj__prop__name_forward__in=[
+                    "is author of",
+                    "is editor of",
+                ],
+            )
+            .annotate(
+                uris=ArraySubquery(related_uris),
+            )
+            .values(
+                json=JSONObject(
+                    id="id",
+                    forename="forename",
+                    surname="surname",
+                    fallback_name="fallback_name",
+                    relation_type="triple_set_from_subj__prop__name_reverse",
+                    uris="uris",
+                )
             )
         )
 
@@ -340,6 +392,7 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
                 related_persons=ArraySubquery(related_persons),
                 forward_work_relations=ArraySubquery(forward_work_relations),
                 reverse_work_relations=ArraySubquery(reverse_work_relations),
+                related_places=ArraySubquery(related_places_2),
             )
             .order_by("title", "subtitle")
         )
