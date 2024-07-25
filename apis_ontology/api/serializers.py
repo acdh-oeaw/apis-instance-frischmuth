@@ -132,6 +132,8 @@ class CharacterDataSerializer(serializers.ModelSerializer):
 
 
 class ArchiveDataSerializer(serializers.ModelSerializer):
+    website = serializers.CharField(required=False, max_length=255, label="Webseite")
+
     class Meta:
         model = Archive
         exclude = ["self_contenttype", "data_source"]
