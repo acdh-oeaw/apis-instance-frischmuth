@@ -520,7 +520,7 @@ class Work(
 
     narrative_voice = ArrayField(
         base_field=models.CharField(
-            max_length=255,
+            max_length=400,
             choices=NarrativeVoice.choices,
         ),
         blank=True,
