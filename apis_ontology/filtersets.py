@@ -11,7 +11,7 @@ from django.contrib.postgres.search import TrigramWordSimilarity
 from django.db.models.functions import Greatest
 from django.utils.translation import gettext_lazy as _
 
-from .models import LanguageMixin, Work
+from .models import Character, Expression, LanguageMixin, Work
 
 
 PATTERN = re.compile(r"""((?:[^ "']|"[^"]*"|'[^']*')+)""")
@@ -153,7 +153,10 @@ class PersonFilterSet(PersonNameMixinFilterSet):
 
 
 class CharacterFilterSet(PersonNameMixinFilterSet):
-    pass
+    new_fictionality = django_filters.MultipleChoiceFilter(
+        choices=Character.CharacterFictionality.choices,
+        lookup_expr="icontains",
+    )
 
 
 class WorkFilterSet(TitlesMixinFilterSet):
@@ -236,6 +239,11 @@ class VersionWorkFilterSet(WorkFilterSet):
 
 
 class ExpressionFilterSet(TitlesMixinFilterSet):
+    new_edition_type = django_filters.MultipleChoiceFilter(
+        choices=Expression.EditionTypes.choices,
+        lookup_expr="icontains",
+    )
+
     language = django_filters.MultipleChoiceFilter(
         choices=LanguageMixin.LanguagesIso6393.choices,
         lookup_expr="icontains",

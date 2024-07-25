@@ -668,6 +668,17 @@ class Expression(
         help_text=_("Zur Markierung speziell relevanter Ausgaben"),
     )
 
+    new_edition_type = ArrayField(
+        base_field=models.CharField(
+            max_length=255,
+            choices=EditionTypes.choices,
+        ),
+        blank=True,
+        default=list,
+        verbose_name=_("Ausgabetyp"),
+        help_text=_("Zur Markierung speziell relevanter Ausgaben"),
+    )
+
     data_source = models.ForeignKey(
         DataSource,
         on_delete=models.SET_NULL,
@@ -897,6 +908,17 @@ class Character(
         choices=CharacterFictionality.choices,
         blank=False,
         default="",
+        verbose_name=_("Erfindungsgrad"),
+        help_text=_("Faktizität vs. Fiktionalität"),
+    )
+
+    new_fictionality = ArrayField(
+        base_field=models.CharField(
+            max_length=255,
+            choices=CharacterFictionality.choices,
+        ),
+        blank=False,
+        default=list,
         verbose_name=_("Erfindungsgrad"),
         help_text=_("Faktizität vs. Fiktionalität"),
     )
