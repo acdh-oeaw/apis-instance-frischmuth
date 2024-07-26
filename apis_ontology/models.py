@@ -664,7 +664,8 @@ class Expression(
         choices=EditionTypes.choices,
         blank=True,
         default="",
-        verbose_name=_("Ausgabetyp"),
+        editable=False,
+        verbose_name=_("Ausgabetyp (deprecated)"),
         help_text=_("Zur Markierung speziell relevanter Ausgaben"),
     )
 
@@ -908,7 +909,8 @@ class Character(
         choices=CharacterFictionality.choices,
         blank=False,
         default="",
-        verbose_name=_("Erfindungsgrad"),
+        editable=False,
+        verbose_name=_("Erfindungsgrad (deprecated)"),
         help_text=_("Faktizität vs. Fiktionalität"),
     )
 
