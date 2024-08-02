@@ -158,6 +158,26 @@ class CharacterFilterSet(PersonNameMixinFilterSet):
         lookup_expr="icontains",
     )
 
+    class Meta(PersonNameMixinFilterSet.Meta):
+        fields = {
+            "new_fictionality": ["icontains"],
+        }
+        filter_overrides = {
+            ArrayField: {
+                "filter_class": django_filters.MultipleChoiceFilter,
+                # "extra" attribute not working for fields with choices, see:
+                # https://github.com/carltongibson/django-filter/issues/1475
+                "extra": lambda f: {
+                    "lookup_expr": "icontains",
+                    "widget": forms.SelectMultiple,
+                },
+            },
+        }
+
+
+class VersionCharacterFilterSet(CharacterFilterSet):
+    pass
+
 
 class WorkFilterSet(TitlesMixinFilterSet):
     search = django_filters.CharFilter(
