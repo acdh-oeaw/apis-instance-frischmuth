@@ -85,12 +85,20 @@ class TitlesMixin(models.Model):
         return self.title
 
     def full_title(self):
-        full_title = self.title
+        """
+        Concatenate title and subtitle into a single string.
+        Use full stop as separator where title does not already
+        have end punctuation.
+
+        :return: (full) title
+        :rtype: str
+        """
+        full_title = title = self.title
         subtitle = self.subtitle
-        letter_or_digit = re.compile(r"[\W\d]", re.U)
+        end_punctuation = re.compile(r"[.?!…]", re.U)
 
         if subtitle:
-            if letter_or_digit.match(subtitle[0]):
+            if re.match(end_punctuation, title[-1]):
                 full_title += f" {subtitle}"
             else:
                 full_title += f". {subtitle}"
