@@ -2,7 +2,10 @@
 name = "apis-instance-frischmuth"
 version = "0.2.0"
 description = "Digitales Archiv Barbara Frischmuth"
-authors = ["K Kollmann <dev-kk@oeaw.ac.at>"]
+authors = [
+    "K Kollmann <dev-kk@oeaw.ac.at>",
+    "Barbara Krautgartner <barbara.krautgartner@oeaw.ac.at>"
+]
 license = "MIT"
 repository = "https://github.com/acdh-oeaw/apis-instance-frischmuth"
 packages = [{include = "apis_ontology"}]
