@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "apis-instance-frischmuth"
-version = "0.1.0"
-description = "APIS instance for Frischmuth project"
+version = "0.2.0"
+description = "Digitales Archiv Barbara Frischmuth"
 authors = ["K Kollmann <dev-kk@oeaw.ac.at>"]
 license = "MIT"
 repository = "https://github.com/acdh-oeaw/apis-instance-frischmuth"
