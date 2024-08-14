@@ -107,6 +107,21 @@ class BaseEntityFilterSet(AbstractEntityFilterSet):
     """
     Parent class for all entity model classes.
     """
+
+    class Meta(AbstractEntityFilterSet.Meta):
+        filter_overrides = {
+            **AbstractEntityFilterSet.Meta.filter_overrides,
+            ArrayField: {
+                "filter_class": django_filters.MultipleChoiceFilter,
+                # "extra" attribute not working for fields with choices, see:
+                # https://github.com/carltongibson/django-filter/issues/1475
+                "extra": lambda f: {
+                    "lookup_expr": "icontains",
+                    "widget": forms.SelectMultiple,
+                },
+            },
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if "custom_search" in self.filters:
@@ -182,17 +197,6 @@ class CharacterFilterSet(BaseEntityFilterSet, PersonSearch):
         fields = {
             "new_fictionality": ["icontains"],
         }
-        filter_overrides = {
-            ArrayField: {
-                "filter_class": django_filters.MultipleChoiceFilter,
-                # "extra" attribute not working for fields with choices, see:
-                # https://github.com/carltongibson/django-filter/issues/1475
-                "extra": lambda f: {
-                    "lookup_expr": "icontains",
-                    "widget": forms.SelectMultiple,
-                },
-            },
-        }
 
 
 class VersionCharacterFilterSet(CharacterFilterSet):
@@ -261,17 +265,6 @@ class WorkFilterSet(BaseEntityFilterSet, TitlesSearch):
         fields = {
             "temporal_order": ["icontains"],
         }
-        filter_overrides = {
-            ArrayField: {
-                "filter_class": django_filters.MultipleChoiceFilter,
-                # "extra" attribute not working for fields with choices, see:
-                # https://github.com/carltongibson/django-filter/issues/1475
-                "extra": lambda f: {
-                    "lookup_expr": "icontains",
-                    "widget": forms.SelectMultiple,
-                },
-            },
-        }
 
 
 class VersionWorkFilterSet(WorkFilterSet):
@@ -292,17 +285,6 @@ class ExpressionFilterSet(BaseEntityFilterSet, TitlesSearch):
     class Meta(BaseEntityFilterSet.Meta):
         fields = {
             "language": ["icontains"],
-        }
-        filter_overrides = {
-            ArrayField: {
-                "filter_class": django_filters.MultipleChoiceFilter,
-                # "extra" attribute not working for fields with choices, see:
-                # https://github.com/carltongibson/django-filter/issues/1475
-                "extra": lambda f: {
-                    "lookup_expr": "icontains",
-                    "widget": forms.SelectMultiple,
-                },
-            },
         }
 
 
