@@ -109,8 +109,8 @@ class BaseEntityFilterSet(AbstractEntityFilterSet):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if "search" in self.filters:
-            self.filters.move_to_end("search", False)
+        if "custom_search" in self.filters:
+            self.filters.move_to_end("custom_search", False)
 
 
 class TitlesSearch(django_filters.FilterSet):
@@ -118,7 +118,7 @@ class TitlesSearch(django_filters.FilterSet):
     Search within title and subtitle fields.
     """
 
-    search = django_filters.CharFilter(
+    custom_search = django_filters.CharFilter(
         field_name=[
             "title",
             "subtitle",
@@ -138,7 +138,7 @@ class AlternativeNameSearch(django_filters.FilterSet):
     i.e. an entity cannot have an "alternative_name" without a "name".
     """
 
-    search = django_filters.CharFilter(
+    custom_search = django_filters.CharFilter(
         field_name=[
             "name",
             "alternative_name",
@@ -155,7 +155,7 @@ class PersonSearch(django_filters.FilterSet):
     entities (like characters).
     """
 
-    search = django_filters.CharFilter(
+    custom_search = django_filters.CharFilter(
         field_name=[
             "surname",
             "forename",
@@ -200,7 +200,7 @@ class VersionCharacterFilterSet(CharacterFilterSet):
 
 
 class WorkFilterSet(BaseEntityFilterSet, TitlesSearch):
-    search = django_filters.CharFilter(
+    custom_search = django_filters.CharFilter(
         field_name=[
             "title",
             "subtitle",
@@ -327,7 +327,7 @@ class TopicFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
 
 
 class WorkTypeFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
-    search = django_filters.CharFilter(
+    custom_search = django_filters.CharFilter(
         field_name=[
             "name",
             "name_plural",
