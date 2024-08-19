@@ -128,6 +128,17 @@ class BaseEntityFilterSet(AbstractEntityFilterSet):
             self.filters.move_to_end("custom_search", False)
 
 
+class LanguageMixinFilter(django_filters.FilterSet):
+    """
+    Filter (multiple) language choices defined in models.
+    """
+
+    language = django_filters.MultipleChoiceFilter(
+        choices=LanguageMixin.LanguagesIso6393.choices,
+        lookup_expr="icontains",
+    )
+
+
 class TitlesSearch(django_filters.FilterSet):
     """
     Search within title and subtitle fields.
@@ -203,7 +214,7 @@ class VersionCharacterFilterSet(CharacterFilterSet):
     pass
 
 
-class WorkFilterSet(BaseEntityFilterSet, TitlesSearch):
+class WorkFilterSet(BaseEntityFilterSet, LanguageMixinFilter, TitlesSearch):
     custom_search = django_filters.CharFilter(
         field_name=[
             "title",
@@ -213,11 +224,6 @@ class WorkFilterSet(BaseEntityFilterSet, TitlesSearch):
         help_text=_("Suche in allen Titelfeldern und Siglum"),
         label=_("Suche: Titel, Siglum"),
         method=fuzzy_search_unaccent_trigram,
-    )
-
-    language = django_filters.MultipleChoiceFilter(
-        choices=LanguageMixin.LanguagesIso6393.choices,
-        lookup_expr="icontains",
     )
 
     temporal_order = django_filters.MultipleChoiceFilter(
@@ -271,14 +277,9 @@ class VersionWorkFilterSet(WorkFilterSet):
     pass
 
 
-class ExpressionFilterSet(BaseEntityFilterSet, TitlesSearch):
+class ExpressionFilterSet(BaseEntityFilterSet, LanguageMixinFilter, TitlesSearch):
     new_edition_type = django_filters.MultipleChoiceFilter(
         choices=Expression.EditionTypes.choices,
-        lookup_expr="icontains",
-    )
-
-    language = django_filters.MultipleChoiceFilter(
-        choices=LanguageMixin.LanguagesIso6393.choices,
         lookup_expr="icontains",
     )
 
