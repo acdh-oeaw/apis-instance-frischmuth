@@ -10,6 +10,7 @@ from django.contrib.postgres.lookups import Unaccent
 from django.contrib.postgres.search import TrigramWordSimilarity
 from django.db.models.functions import Greatest
 from django.utils.translation import gettext_lazy as _
+from django_filters.widgets import CSVWidget, RangeWidget
 
 from .models import Character, Expression, LanguageMixin, Work
 
@@ -281,6 +282,27 @@ class ExpressionFilterSet(BaseEntityFilterSet, LanguageMixinFilter, TitlesSearch
     new_edition_type = django_filters.MultipleChoiceFilter(
         choices=Expression.EditionTypes.choices,
         lookup_expr="icontains",
+    )
+
+    page_count = django_filters.RangeFilter(
+        widget=CSVWidget(
+            attrs={
+                "placeholder": "50,150",
+            },
+        ),
+        help_text="Suche innerhalb eines Seitenbereichs. Eingabe in Form von "
+        "zwei durch Komma getrennte Zahlen bzw. einer einzelnen Zahl "
+        "als Untergrenze.",
+    )
+    publication_date_iso_formatted = django_filters.DateFromToRangeFilter(
+        widget=RangeWidget(
+            attrs={
+                "placeholder": "DD.MM.YYYY",
+            },
+        ),
+        help_text="Suche innerhalb eines Zeitraums. Eingabe im Format "
+        "DD.MM.YYYY bzw. YYYY-MM-DD. Wird nur ein Feld ausgefüllt, "
+        "wird dieses Datum als Beginn bzw. Ende des Zeitraums angenommen.",
     )
 
     class Meta(BaseEntityFilterSet.Meta):
