@@ -176,11 +176,15 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             )
         )
 
-        facet_languages = Expression.objects.filter(
-            triple_set_from_obj__subj_id=OuterRef("pk"),
-            triple_set_from_obj__prop__name_reverse__in=["realises"],
-            language__len__gt=0,
-        ).values("language")
+        facet_languages = (
+            Expression.objects.filter(
+                triple_set_from_obj__subj_id=OuterRef("pk"),
+                triple_set_from_obj__prop__name_reverse__in=["realises"],
+                language__len__gt=0,
+            )
+            .distinct()
+            .values("language")
+        )
 
         facet_topic = Topic.objects.filter(
             triple_set_from_obj__subj_id=OuterRef("pk"),
