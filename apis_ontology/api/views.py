@@ -106,6 +106,18 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                         },
                         "example": [{"key": "eng", "count": 100}],
                     },
+                    "topic": {
+                        "type": "array",
+                        "nullable": True,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "key": {"type": "string"},
+                                "count": {"type": "integer"},
+                            },
+                        },
+                        "example": [{"key": "Traum", "count": 3}],
+                    },
                 },
                 "type": "object",
                 "nullable": True,
