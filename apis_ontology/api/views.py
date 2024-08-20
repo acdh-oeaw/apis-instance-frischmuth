@@ -76,6 +76,30 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
 
         return res
 
+    def get_schema_operation_parameters(self, view):
+        params = [
+            {
+                "name": self.limit_query_param,
+                "in": "query",
+                "description": "Number of results to return per page.",
+                "required": False,
+                "schema": {
+                    "type": "integer",
+                    "default": self.default_limit,
+                    "maximum": self.max_limit,
+                    "minimum": 1,
+                },
+            },
+            {
+                "name": self.offset_query_param,
+                "in": "query",
+                "description": "The initial index from which to return the results.",
+                "required": False,
+                "schema": {"type": "integer", "default": 0, "minimum": 0},
+            },
+        ]
+        return params
+
     def get_paginated_response_schema(self, schema):
         res_schema = super(WorkPreviewPagination, self).get_paginated_response_schema(
             schema
@@ -84,13 +108,16 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
         new_props = {
             self.limit_query_param: {
                 "type": "integer",
-                "nullable": True,
                 "example": 100,
+                "maximum": self.max_limit,
+                "default": self.default_limit,
+                "minimum": 1,
             },
             self.offset_query_param: {
                 "type": "integer",
-                "nullable": True,
                 "example": 300,
+                "minimum": 0,
+                "default": 0,
             },
             "facets": {
                 "properties": {
