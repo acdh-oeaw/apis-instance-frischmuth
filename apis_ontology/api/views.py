@@ -127,8 +127,14 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                         "items": {
                             "type": "object",
                             "properties": {
-                                "key": {"type": "string"},
-                                "count": {"type": "integer"},
+                                "key": {
+                                    "type": "string",
+                                    "required": True,
+                                },
+                                "count": {
+                                    "type": "integer",
+                                    "required": True,
+                                },
                             },
                         },
                         "example": [{"key": "eng", "count": 100}],
@@ -139,8 +145,14 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                         "items": {
                             "type": "object",
                             "properties": {
-                                "key": {"type": "string"},
-                                "count": {"type": "integer"},
+                                "key": {
+                                    "type": "string",
+                                    "required": True,
+                                },
+                                "count": {
+                                    "type": "integer",
+                                    "required": True,
+                                },
                             },
                         },
                         "example": [{"key": "Traum", "count": 3}],
