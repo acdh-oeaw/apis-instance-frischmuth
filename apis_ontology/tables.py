@@ -91,11 +91,11 @@ class ExpressionTable(FullTitleMixin, BaseEntityTable, tables.Table):
     class Meta(BaseEntityTable.Meta):
         model = Expression
         fields = [
-            "new_edition_type",
+            "edition_type",
             "publication_date_iso_formatted",
             "publication_date_manual_input",
         ]
-        order_by = ("full_title", "publication_date_iso_formatted", "new_edition_type")
+        order_by = ("full_title", "publication_date_iso_formatted", "edition_type")
 
     publication_date_iso_formatted = tables.Column(verbose_name=_("Datum (ISO)"))
     publication_date_manual_input = tables.Column(verbose_name=_("Datum (manuell)"))
@@ -126,7 +126,7 @@ class OrganisationTable(BaseEntityTable):
 class CharacterTable(FullNameMixin, BaseEntityTable):
     class Meta(BaseEntityTable.Meta):
         model = Character
-        fields = ["relevancy", "new_fictionality"]
+        fields = ["relevancy", "fictionality"]
 
 
 class MetaCharacterTable(BaseEntityTable):

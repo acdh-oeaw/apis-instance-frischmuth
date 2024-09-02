@@ -666,7 +666,7 @@ class Expression(
         help_text=_('Eingabe muss im Format "X-Y" erfolgen, z.B. 5-12'),
     )
 
-    new_edition_type = ArrayField(
+    edition_type = ArrayField(
         base_field=models.CharField(
             max_length=255,
             choices=EditionTypes.choices,
@@ -901,7 +901,7 @@ class Character(
         help_text=_("Bedeutsamkeit für den Text, Erzählfokus"),
     )
 
-    new_fictionality = ArrayField(
+    fictionality = ArrayField(
         base_field=models.CharField(
             max_length=255,
             choices=CharacterFictionality.choices,
