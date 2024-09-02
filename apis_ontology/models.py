@@ -12,7 +12,6 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.validators import validate_slug
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from multiselectfield import MultiSelectField
 
 
 logger = logging.getLogger(__name__)
@@ -667,16 +666,6 @@ class Expression(
         help_text=_('Eingabe muss im Format "X-Y" erfolgen, z.B. 5-12'),
     )
 
-    edition_type = MultiSelectField(
-        max_length=255,
-        choices=EditionTypes.choices,
-        blank=True,
-        default="",
-        editable=False,
-        verbose_name=_("Ausgabetyp (deprecated)"),
-        help_text=_("Zur Markierung speziell relevanter Ausgaben"),
-    )
-
     new_edition_type = ArrayField(
         base_field=models.CharField(
             max_length=255,
@@ -910,16 +899,6 @@ class Character(
         default="",
         verbose_name=_("Relevanz"),
         help_text=_("Bedeutsamkeit für den Text, Erzählfokus"),
-    )
-
-    fictionality = MultiSelectField(
-        max_length=255,
-        choices=CharacterFictionality.choices,
-        blank=False,
-        default="",
-        editable=False,
-        verbose_name=_("Erfindungsgrad (deprecated)"),
-        help_text=_("Faktizität vs. Fiktionalität"),
     )
 
     new_fictionality = ArrayField(
