@@ -66,7 +66,9 @@ class ExpressionDataSerializer(serializers.ModelSerializer):
     place_of_publication = PlaceDataSerializer(
         required=False, allow_null=True, many=True
     )
-    edition_type = serializers.SerializerMethodField()
+    edition_type = serializers.ListField(
+        child=serializers.CharField(allow_null=True), required=False, allow_empty=True
+    )
     language = serializers.ListField(
         child=serializers.CharField(allow_null=True), required=False, allow_empty=True
     )
@@ -83,11 +85,6 @@ class ExpressionDataSerializer(serializers.ModelSerializer):
             "publisher",
             "place_of_publication",
         ]
-
-    def get_edition_type(self, obj) -> list["str"]:
-        edition_type_str = obj.get("edition_type", None)
-        edition_types = list(filter(None, edition_type_str.split(",")))
-        return get_choices_labels(edition_types, Expression.EditionTypes)
 
 
 class SimpleDetailSerializer(serializers.Serializer):
@@ -126,9 +123,21 @@ class RelatedWorksDict(TypedDict):
 
 
 class CharacterDataSerializer(serializers.ModelSerializer):
+    fictionality = serializers.ListField(
+        child=serializers.CharField(allow_null=True), required=False, allow_empty=True
+    )
+
     class Meta:
         model = Character
-        exclude = ["self_contenttype", "data_source"]
+        fields = [
+            "forename",
+            "surname",
+            "fallback_name",
+            "alternative_name",
+            "description",
+            "relevancy",
+            "fictionality",
+        ]
 
 
 class ArchiveDataSerializer(serializers.ModelSerializer):
