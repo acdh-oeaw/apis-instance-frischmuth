@@ -306,86 +306,86 @@ class Work(
 
     # choices for narrative analysis fields
     class TemporalOrder(models.TextChoices):
-        CHRONOLOGICAL = "chronological", _("chronologisch")
-        ANACHRONICAL = "anachronic", _("anachronisch")
-        ACHRONIC = "achronic", _("achronisch")
+        CHRONOLOGICAL = "chronologisch", _("chronologisch")
+        ANACHRONICAL = "anachronisch", _("anachronisch")
+        ACHRONIC = "achronisch", _("achronisch")
 
     class TemporalDuration(models.TextChoices):
-        SCENE = "scene", _("Szene")
-        STRETCH = "stretch", _("Dehnung")
-        SUMMARY = "summary", _("Raffung")
-        ELLIPSIS = "ellipsis", _("Ellipse")
-        PAUSE = "pause", _("Pause")
+        SCENE = "Szene", _("Szene")
+        STRETCH = "Dehnung", _("Dehnung")
+        SUMMARY = "Raffung", _("Raffung")
+        ELLIPSIS = "Ellipse", _("Ellipse")
+        PAUSE = "Pause", _("Pause")
 
     class TemporalFrequency(models.TextChoices):
         SINGULATIVE = "singulative", _("singulativ")
-        REPEATING = "repetitive", _("repetitiv")
-        ITERATIVE = "iterative", _("iterativ")
+        REPEATING = "repetitiv", _("repetitiv")
+        ITERATIVE = "iterativ", _("iterativ")
 
     class FigureSpeech(models.TextChoices):
-        DIRECT_QUOTE = "direct_quotation", _("direkt zitierend")
+        DIRECT_QUOTE = "direkt zitierend", _("direkt zitierend")
         DIRECT_FIGURE_SPEECH = (
-            "direct_figure_speech",
+            "autonome, direkte Figurenrede",
             _("autonome, direkte Figurenrede"),
         )
-        DIRECT_SPEECH = "direct_speech", _("direkte Rede")
-        INDIRECT_SPEECH = "indirect_speech", _("indirekte Rede")
-        NARRATED_MONOLOGUE = "narrated_monologue", _("erlebte Rede")
+        DIRECT_SPEECH = "direkte Rede", _("direkte Rede")
+        INDIRECT_SPEECH = "indirekte Rede", _("indirekte Rede")
+        NARRATED_MONOLOGUE = "erlebte Rede", _("erlebte Rede")
 
     class RepresentationOfThought(models.TextChoices):
-        QUOTED_MONOLOGUE = "quoted_monologue", _("Zitat")
-        PSYCHO_NARRATION = "psycho_narration", _("erzählter Monolog")
-        AUTONOMOUS_MONOLOGUE = "autonomous_monologue", _("autonomer Monolog")
+        QUOTED_MONOLOGUE = "Zitat", _("Zitat")
+        PSYCHO_NARRATION = "erzählter Monolog", _("erzählter Monolog")
+        AUTONOMOUS_MONOLOGUE = "autonomer Monolog", _("autonomer Monolog")
         STREAM_OF_CONSCIOUSNESS = (
-            "stream_of_consciousness",
+            "Bewusstseinsstrom",
             _("Bewusstseinsstrom"),
         )
 
     class Focalization(models.TextChoices):
-        ZERO_FOCALIZATION = "zero", _("Nullfokalisierung")
+        ZERO_FOCALIZATION = "Nullfokalisierung", _("Nullfokalisierung")
         INTERNAL_FOCALIZATION_VARIABLE = (
-            "internal_variable",
+            "interne Fokalisierung – variabel",
             _("interne Fokalisierung – variabel"),
         )
         INTERNAL_FOCALIZATION_FIXED = (
-            "internal_fixed",
+            "interne Fokalisierung – fixiert",
             _("interne Fokalisierung – fixiert"),
         )
-        EXTERNAL_FOCALIZATION = "external", _("externe Fokalisierung")
+        EXTERNAL_FOCALIZATION = "externe Fokalisierung", _("externe Fokalisierung")
 
     # Typology by Franz Stanzel
     class NarrativeSituation(models.TextChoices):
-        AUTHORIAL_NARRATIVE_SITUATION = "authorial", _("auktorial")
+        AUTHORIAL_NARRATIVE_SITUATION = "auktorial", _("auktorial")
         NEUTRAL_NARRATIVE_SITUATION = "neutral", _("neutral")
-        FIGURAL_NARRATIVE_SITUATION = "figural", _("personal")
-        FIRST_PERSON_NARRATIVE_SITUATION = "first-person", _("Ich-Erzähler*in")
+        FIGURAL_NARRATIVE_SITUATION = "personal", _("personal")
+        FIRST_PERSON_NARRATIVE_SITUATION = "Ich-Erzähler*in", _("Ich-Erzähler*in")
 
     class NarrativeChronology(models.TextChoices):
-        PRIOR_NARRATION = "prior", _("früheres Erzählen")
-        SIMULTANEOUS_NARRATION = "simultaneous", _("gleichzeitiges Erzählen")
-        SUBSEQUENT_NARRATION = "subsequent", _("späteres Erzählen")
+        PRIOR_NARRATION = "früheres Erzählen", _("früheres Erzählen")
+        SIMULTANEOUS_NARRATION = "gleichzeitiges Erzählen", _("gleichzeitiges Erzählen")
+        SUBSEQUENT_NARRATION = "späteres Erzählen", _("späteres Erzählen")
 
     class NarrativeLevel(models.TextChoices):
-        EXTRADIEGETIC = "extra", _("extradiegetisch")
-        INTRADIEGETIC = "intra", _("intradiegetisch")
-        METADIEGETIC = "meta", _("metadiegetisch")
+        EXTRADIEGETIC = "extradiegetisch", _("extradiegetisch")
+        INTRADIEGETIC = "intradiegetisch", _("intradiegetisch")
+        METADIEGETIC = "metadiegetisch", _("metadiegetisch")
 
     class NarrativeVoice(models.TextChoices):
-        HETERODIEGETIC = "heterodiegetic", _("heterodiegetisches Erzählen")
+        HETERODIEGETIC = "heterodiegetisches Erzählen", _("heterodiegetisches Erzählen")
         HOMODIEGETIC_UNINVOLVED_EYEWITNESS = (
-            "homodiegetic_uninvolved",
+            "homodiegetisches Erzählen – unbeteiligter Beobachter:in",
             _("homodiegetisches Erzählen – unbeteiligter Beobachter:in"),
         )  # a.k.a. alterodiegetic
         HOMODIEGETIC_WITNESS_PARTICIPANT = (
-            "homodiegetic_participant",
+            "homodiegetisches Erzählen – beteiligter Beobachter:in",
             _("homodiegetisches Erzählen – beteiligter Beobachter:in"),
         )  # a.k.a. alterodiegetic
         HOMODIEGETIC_MINOR_CHARACTER = (
-            "homodiegetic_character",
+            "homodiegetisches Erzählen – Nebenfigur",
             _("homodiegetisches Erzählen – Nebenfigur"),
         )  # a.k.a. alterodiegetic
         HOMODIEGETIC_PROTAGONIST = (
-            "homodiegetic_protagonist",
+            "homodiegetisches Erzählen – Hauptfigur",
             _("homodiegetisches Erzählen – Hauptfigur"),
         )  # a.k.a. autodiegetic
 
@@ -601,8 +601,8 @@ class Expression(
     """
 
     class EditionTypes(models.TextChoices):
-        FIRST_EDITION = "first_edition", _("Erstausgabe")
-        REFERENCE_EDITION = "reference_edition", _("Referenzausgabe")
+        FIRST_EDITION = "Erstausgabe", _("Erstausgabe")
+        REFERENCE_EDITION = "Referenzausgabe", _("Referenzausgabe")
 
     publication_date_iso_formatted = models.DateField(
         blank=True,
@@ -883,14 +883,14 @@ class Character(
     )
 
     class CharacterRelevancy(models.TextChoices):
-        MAIN = "protagonist", _("Hauptfigur")
-        SUPPORTING = "supporting_character", _("Nebenfigur")
-        REFERENCED = "referenced_character", _("erwähnte Figur")
+        MAIN = "Hauptfigur", _("Hauptfigur")
+        SUPPORTING = "Nebenfigur", _("Nebenfigur")
+        REFERENCED = "erwähnte Figur", _("erwähnte Figur")
 
     class CharacterFictionality(models.TextChoices):
-        FICTIONAL = "fictional_character", _("fiktive Figur")
-        HISTORICAL = "historical_character", _("historische Figur")
-        MYTHICAL = "mythical_character", _("mythologische Figur")
+        FICTIONAL = "fiktive Figur", _("fiktive Figur")
+        HISTORICAL = "historische Figur", _("historische Figur")
+        MYTHICAL = "mythologische Figur", _("mythologische Figur")
 
     relevancy = models.CharField(
         max_length=255,
