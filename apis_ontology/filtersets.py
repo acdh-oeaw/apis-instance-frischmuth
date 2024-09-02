@@ -200,14 +200,14 @@ class PersonFilterSet(BaseEntityFilterSet, PersonSearch):
 
 
 class CharacterFilterSet(BaseEntityFilterSet, PersonSearch):
-    new_fictionality = django_filters.MultipleChoiceFilter(
+    fictionality = django_filters.MultipleChoiceFilter(
         choices=Character.CharacterFictionality.choices,
         lookup_expr="icontains",
     )
 
     class Meta(BaseEntityFilterSet.Meta):
         fields = {
-            "new_fictionality": ["icontains"],
+            "fictionality": ["icontains"],
         }
 
 
@@ -279,7 +279,7 @@ class VersionWorkFilterSet(WorkFilterSet):
 
 
 class ExpressionFilterSet(BaseEntityFilterSet, LanguageMixinFilter, TitlesSearch):
-    new_edition_type = django_filters.MultipleChoiceFilter(
+    edition_type = django_filters.MultipleChoiceFilter(
         choices=Expression.EditionTypes.choices,
         lookup_expr="icontains",
     )

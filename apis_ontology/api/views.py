@@ -219,7 +219,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                 title="title",
                 subtitle="subtitle",
                 edition="edition",
-                edition_type="new_edition_type",
+                edition_type="edition_type",
                 language="language",
                 publication_date="publication_date_iso_formatted",
                 publisher="publisher",
@@ -324,7 +324,7 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
                 title="title",
                 subtitle="subtitle",
                 edition="edition",
-                edition_type="new_edition_type",
+                edition_type="edition_type",
                 language="language",
                 publication_date="publication_date_iso_formatted",
                 publisher="publisher",
@@ -342,7 +342,7 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
                 surname="surname",
                 fallback_name="fallback_name",
                 relevancy="relevancy",
-                fictionality="new_fictionality",
+                fictionality="fictionality",
             )
         )
 

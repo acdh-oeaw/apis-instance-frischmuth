@@ -71,16 +71,16 @@ class WorkForm(GenericModelForm, LanguageForm):
 
 
 class ExpressionForm(GenericModelForm, LanguageForm):
-    new_edition_type = forms.MultipleChoiceField(
+    edition_type = forms.MultipleChoiceField(
         required=False,
         choices=Expression.EditionTypes.choices,
-        label=Expression._meta.get_field("new_edition_type").verbose_name,
+        label=Expression._meta.get_field("edition_type").verbose_name,
     )
 
 
 class CharacterForm(GenericModelForm):
-    new_fictionality = forms.MultipleChoiceField(
+    fictionality = forms.MultipleChoiceField(
         required=False,
         choices=Character.CharacterFictionality.choices,
-        label=Character._meta.get_field("new_fictionality").verbose_name,
+        label=Character._meta.get_field("fictionality").verbose_name,
     )
