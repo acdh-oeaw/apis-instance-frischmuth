@@ -400,14 +400,6 @@ def get_valid_collection_items(collection_items):
     return importable, not_importable
 
 
-def get_manifestation_type(collection_name):
-    available_manifestation_types = Expression.ManifestationTypes
-    manifestation_type = [
-        x for x in available_manifestation_types if x.label in collection_name
-    ]
-    return manifestation_type
-
-
 def get_edition_types_from_tags(tags):
     """
     Check if a Zotero collection item's tags contain valid
