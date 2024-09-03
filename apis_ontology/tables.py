@@ -93,18 +93,16 @@ class ExpressionTable(FullTitleMixin, BaseEntityTable, tables.Table):
         fields = [
             "edition_type",
             "publication_date_iso_formatted",
-            "publication_date_manual_input",
         ]
         order_by = ("full_title", "publication_date_iso_formatted", "edition_type")
 
     publication_date_iso_formatted = tables.Column(verbose_name=_("Datum (ISO)"))
-    publication_date_manual_input = tables.Column(verbose_name=_("Datum (manuell)"))
 
 
 class WorkTypeTable(BaseEntityTable):
     class Meta(BaseEntityTable.Meta):
         model = WorkType
-        fields = ["name", "description"]
+        fields = ["name"]
 
     name = GenericEditLinkColumn()
 
@@ -112,8 +110,8 @@ class WorkTypeTable(BaseEntityTable):
 class PersonTable(FullNameMixin, BaseEntityTable):
     class Meta(BaseEntityTable.Meta):
         model = Person
-        fields = ["full_name", "alternative_name", "description"]
-        order_by = ("full_name", "alternative_name", "description")
+        fields = ["full_name", "description"]
+        order_by = ("full_name", "description")
 
 
 class OrganisationTable(BaseEntityTable):
@@ -147,8 +145,8 @@ class PlaceTable(BaseEntityTable):
 class ResearchPerspectiveTable(BaseEntityTable):
     class Meta(BaseEntityTable.Meta):
         model = ResearchPerspective
-        fields = ["name", "alternative_name", "description"]
-        order_by = ("name", "alternative_name")
+        fields = ["name"]
+        order_by = "name"
 
     name = GenericEditLinkColumn()
 
@@ -156,7 +154,7 @@ class ResearchPerspectiveTable(BaseEntityTable):
 class TopicTable(BaseEntityTable):
     class Meta(BaseEntityTable.Meta):
         model = Topic
-        fields = ["name", "description"]
+        fields = ["name"]
         order_by = ("name", "alternative_name")
 
     name = GenericEditLinkColumn()
@@ -165,8 +163,8 @@ class TopicTable(BaseEntityTable):
 class InterpretatemTable(BaseEntityTable):
     class Meta(BaseEntityTable.Meta):
         model = Interpretatem
-        fields = ["name", "description"]
-        order_by = ("name", "alternative_name")
+        fields = ["name"]
+        order_by = "name"
 
     name = GenericEditLinkColumn()
 
@@ -174,8 +172,8 @@ class InterpretatemTable(BaseEntityTable):
 class ArchiveTable(BaseEntityTable):
     class Meta(BaseEntityTable.Meta):
         model = Archive
-        fields = ["name", "description"]
-        order_by = ("name", "description")
+        fields = ["name"]
+        order_by = "name"
 
     name = GenericEditLinkColumn()
 
