@@ -29,16 +29,19 @@ WORK_PLACE_RELATIONTYPES = {
 }
 
 RELEVANCIES = {
-    "H": "protagonist",
-    "N": "supporting_character",
-    "E": "referenced_character",
+    "H": "Hauptfigur",
+    "N": "Nebenfigur",
+    "E": "erwähnte Figur",
 }
 
 FICTIONALITY_DEGREES = {
-    "F": "fictional_character",
-    "M": "mythical_character",
-    "R": "historical_character",
-    "M/R": ["mythical_character", "historical_character"],
+    "F": "fiktive Figur",
+    "M": "mythologische Figur",
+    "R": "historische Figur",
+    "M/R": [
+        "historische Figur",
+        "mythologische Figur",
+    ],
 }
 
 
