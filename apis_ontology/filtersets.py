@@ -315,6 +315,19 @@ class VersionExpressionFilterSet(ExpressionFilterSet):
     pass
 
 
+class WorkTypeFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
+    custom_search = django_filters.CharFilter(
+        field_name=[
+            "name",
+            "name_plural",
+            "alternative_name",
+        ],
+        help_text=_("Suche in allen Namensfeldern"),
+        label=_("Suche: Namen"),
+        method=fuzzy_search_unaccent_trigram,
+    )
+
+
 class OrganisationFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
     pass
 
@@ -329,16 +342,3 @@ class ResearchPerspectiveFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
 
 class TopicFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
     pass
-
-
-class WorkTypeFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
-    custom_search = django_filters.CharFilter(
-        field_name=[
-            "name",
-            "name_plural",
-            "alternative_name",
-        ],
-        help_text=_("Suche in allen Namensfeldern"),
-        label=_("Suche: Namen"),
-        method=fuzzy_search_unaccent_trigram,
-    )
