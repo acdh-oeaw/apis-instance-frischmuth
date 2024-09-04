@@ -333,11 +333,11 @@ class Work(
         NARRATED_MONOLOGUE = "erlebte Rede", _("erlebte Rede")
 
     class RepresentationOfThought(models.TextChoices):
+        PSYCHO_NARRATION = "Bewusstseinsbericht", _("Bewusstseinsbericht")
         INDIRECT_SPEECH = "indirekte Rede", _("indirekte Rede")
         NARRATED_MONOLOGUE = "erlebte Rede", _("erlebte Rede")
-        QUOTED_MONOLOGUE = "Zitat", _("Zitat")
-        PSYCHO_NARRATION = "erzählter Monolog", _("erzählter Monolog")
-        AUTONOMOUS_MONOLOGUE = "autonomer Monolog", _("autonomer Monolog")
+        QUOTED_MONOLOGUE = "Gedankenzitat", _("Gedankenzitat")
+        AUTONOMOUS_MONOLOGUE = "innerer Monolog", _("innerer Monolog")
         STREAM_OF_CONSCIOUSNESS = (
             "Bewusstseinsstrom",
             _("Bewusstseinsstrom"),
