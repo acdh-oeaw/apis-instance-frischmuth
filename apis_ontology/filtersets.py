@@ -215,6 +215,10 @@ class VersionCharacterFilterSet(CharacterFilterSet):
     pass
 
 
+class MetaCharacterFilterSet(BaseEntityFilterSet):
+    pass
+
+
 class WorkFilterSet(BaseEntityFilterSet, LanguageMixinFilter, TitlesSearch):
     custom_search = django_filters.CharFilter(
         field_name=[
@@ -341,4 +345,16 @@ class ResearchPerspectiveFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
 
 
 class TopicFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
+    pass
+
+
+class InterpretatemFilterSet(BaseEntityFilterSet):
+    pass
+
+
+class ArchiveFilterSet(BaseEntityFilterSet):
+    pass
+
+
+class PhysicalObjectFilterSet(BaseEntityFilterSet):
     pass
