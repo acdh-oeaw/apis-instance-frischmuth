@@ -199,6 +199,10 @@ class PersonFilterSet(BaseEntityFilterSet, PersonSearch):
     pass
 
 
+class VersionPersonFilterSet(PersonFilterSet):
+    pass
+
+
 class CharacterFilterSet(BaseEntityFilterSet, PersonSearch):
     fictionality = django_filters.MultipleChoiceFilter(
         choices=Character.CharacterFictionality.choices,
@@ -216,6 +220,10 @@ class VersionCharacterFilterSet(CharacterFilterSet):
 
 
 class MetaCharacterFilterSet(BaseEntityFilterSet):
+    pass
+
+
+class VersionMetaCharacterFilterSet(MetaCharacterFilterSet):
     pass
 
 
@@ -332,7 +340,15 @@ class WorkTypeFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
     )
 
 
+class VersionWorkTypeFilterSet(WorkTypeFilterSet):
+    pass
+
+
 class OrganisationFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
+    pass
+
+
+class VersionOrganisationFilterSet(OrganisationFilterSet):
     pass
 
 
@@ -340,7 +356,15 @@ class PlaceFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
     pass
 
 
+class VersionPlaceFilterSet(PlaceFilterSet):
+    pass
+
+
 class ResearchPerspectiveFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
+    pass
+
+
+class VersionResearchPerspectiveFilterSet(ResearchPerspectiveFilterSet):
     pass
 
 
@@ -348,7 +372,15 @@ class TopicFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
     pass
 
 
+class VersionTopicFilterSet(TopicFilterSet):
+    pass
+
+
 class InterpretatemFilterSet(BaseEntityFilterSet):
+    pass
+
+
+class VersionInterpretatemFilterSet(InterpretatemFilterSet):
     pass
 
 
@@ -356,5 +388,13 @@ class ArchiveFilterSet(BaseEntityFilterSet):
     pass
 
 
+class VersionArchiveFilterSet(ArchiveFilterSet):
+    pass
+
+
 class PhysicalObjectFilterSet(BaseEntityFilterSet):
+    pass
+
+
+class VersionPhysicalObjectFilterSet(PhysicalObjectFilterSet):
     pass
