@@ -211,7 +211,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                 triple_set_from_obj__subj_id=OuterRef("pk"),
                 triple_set_from_obj__prop__name_reverse__in=["realises"],
             ).annotate(
-                publisher=Subquery(expression_publisher),
+                publisher=Subquery(expression_publisher[:1]),
                 place=ArraySubquery(expression_place),
             )
         ).values(
