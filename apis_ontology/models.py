@@ -333,6 +333,8 @@ class Work(
         NARRATED_MONOLOGUE = "erlebte Rede", _("erlebte Rede")
 
     class RepresentationOfThought(models.TextChoices):
+        INDIRECT_SPEECH = "indirekte Rede", _("indirekte Rede")
+        NARRATED_MONOLOGUE = "erlebte Rede", _("erlebte Rede")
         QUOTED_MONOLOGUE = "Zitat", _("Zitat")
         PSYCHO_NARRATION = "erzählter Monolog", _("erzählter Monolog")
         AUTONOMOUS_MONOLOGUE = "autonomer Monolog", _("autonomer Monolog")
