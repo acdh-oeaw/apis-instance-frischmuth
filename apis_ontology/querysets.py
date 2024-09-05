@@ -43,7 +43,7 @@ class PersonExternalAutocomplete(ExternalAutocomplete):
             template="apis_ontology/generic_external_autocomplete_result.html",
             params={
                 "filter": "type:Person",
-                "format": "json:preferredName,professionOrOccupation",
+                "format": "json:preferredName,*_dateOfBirth,†_dateOfDeath,professionOrOccupation",
             },
         ),
     ]
