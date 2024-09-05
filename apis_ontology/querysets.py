@@ -49,7 +49,7 @@ class PersonExternalAutocomplete(ExternalAutocomplete):
     ]
 
 
-class InstitutionExternalAutocomplete(ExternalAutocomplete):
+class OrganisationExternalAutocomplete(ExternalAutocomplete):
     adapters = [
         TypeSenseAutocompleteAdapter(
             collections="prosnet-wikidata-organization-index",
