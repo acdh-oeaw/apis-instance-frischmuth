@@ -21,20 +21,16 @@ from apis_ontology.models import (
 )
 
 
-def get_choices_labels(values: list, text_choices):
-    """
-    Return labels for enumeration type TextChoices.
+class RelatedWorksDict(TypedDict):
+    id: int
+    title: str
+    subtitle: str | None
+    relation_type: str
 
-    :param values: an array of (valid) TextChoices values
-    :param text_choices: the TextChoices class against which to match the values
-    :return: a list of labels
-    """
-    labels = []
 
-    for v in values:
-        labels.append(text_choices(v).label)
-
-    return labels
+class NameAndIdSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
 
 
 class PlaceDataSerializerMin(serializers.ModelSerializer):
@@ -90,13 +86,8 @@ class ExpressionDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class SimpleDetailSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField()
-
-
 class ExpressionDataDetailSerializer(ExpressionDataSerializer):
-    publisher = SimpleDetailSerializer(required=False, allow_null=True)
+    publisher = NameAndIdSerializer(required=False, allow_null=True)
     place_of_publication = PlaceDataSerializerMin(
         required=False, allow_null=True, many=True
     )
@@ -116,13 +107,6 @@ class WorkPreviewSerializer(serializers.ModelSerializer):
             "expression_data",
             "work_type",
         ]
-
-
-class RelatedWorksDict(TypedDict):
-    id: int
-    title: str
-    subtitle: str | None
-    relation_type: str
 
 
 class CharacterDataSerializer(serializers.ModelSerializer):
@@ -195,7 +179,7 @@ class WorkDetailSerializer(serializers.ModelSerializer):
     )
     related_works = serializers.SerializerMethodField()
     characters = CharacterDataSerializer(
-        source="character_data",
+        source="related_characters",
         required=False,
         allow_empty=True,
         many=True,

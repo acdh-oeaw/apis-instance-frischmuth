@@ -9,8 +9,7 @@ from django.contrib.postgres.expressions import ArraySubquery, Subquery
 from django.db.models import OuterRef, Q
 from django.db.models.functions import JSONObject
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import pagination, permissions, viewsets
-from rest_framework.mixins import RetrieveModelMixin
+from rest_framework import mixins, pagination, permissions, viewsets
 
 from apis_ontology.models import (
     Archive,
@@ -215,7 +214,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             triple_set_from_subj__prop__name_reverse__in=["has publisher"],
         ).values("name")
 
-        expression_place = Place.objects.filter(
+        expression_places = Place.objects.filter(
             triple_set_from_obj__subj_id=OuterRef("pk"),
             triple_set_from_obj__prop__name_forward__in=["is published in"],
         ).values_list("name")
@@ -226,7 +225,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                 triple_set_from_obj__prop__name_reverse__in=["realises"],
             ).annotate(
                 publisher=Subquery(expression_publisher[:1]),
-                place=ArraySubquery(expression_place),
+                places=ArraySubquery(expression_places),
             )
         ).values(
             json=JSONObject(
@@ -237,7 +236,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                 language="language",
                 publication_date="publication_date_iso_formatted",
                 publisher="publisher",
-                place_of_publication="place",
+                place_of_publication="places",
             )
         )
 
@@ -251,7 +250,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             .values("language")
         )
 
-        facet_topic = Topic.objects.filter(
+        facet_topics = Topic.objects.filter(
             triple_set_from_obj__subj_id=OuterRef("pk"),
             triple_set_from_obj__prop__name_forward__in=["is about topic"],
         ).values_list("name")
@@ -262,7 +261,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                 expression_data=ArraySubquery(related_expressions),
                 work_type=ArraySubquery(work_types),
                 facet_language=ArraySubquery(facet_languages),
-                facet_topic=ArraySubquery(facet_topic),
+                facet_topic=ArraySubquery(facet_topics),
             )
             .order_by("title", "subtitle")
         )
@@ -270,7 +269,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
         return works
 
 
-class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
+class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """API endpoint which returns full Work objects.
 
     The full result set is meant to populate the detail view of the
@@ -326,7 +325,7 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
             )
         )
 
-        expression_place = related_places.filter(
+        expression_places = related_places.filter(
             triple_set_from_obj__subj_id=OuterRef("pk"),
             triple_set_from_obj__prop__name_forward__in=["is published in"],
         ).distinct()
@@ -337,7 +336,7 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
                 triple_set_from_obj__prop__name_reverse__in=["realises"],
             ).annotate(
                 publisher=Subquery(expression_publisher),
-                place=ArraySubquery(expression_place),
+                places=ArraySubquery(expression_places),
             )
         ).values(
             json=JSONObject(
@@ -348,7 +347,7 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
                 language="language",
                 publication_date="publication_date_iso_formatted",
                 publisher="publisher",
-                place_of_publication="place",
+                place_of_publication="places",
             )
         )
 
@@ -366,9 +365,10 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
             )
         )
 
-        related_places_2 = related_places.filter(
+        work_places = related_places.filter(
             triple_set_from_obj__subj_id=OuterRef("pk"),
         ).distinct()
+
         related_archive = Archive.objects.filter(
             triple_set_from_subj__obj_id=OuterRef("pk"),
             triple_set_from_subj__prop__name_forward__in=["holds"],
@@ -462,13 +462,13 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
             .annotate(
                 expression_data=ArraySubquery(related_expressions),
                 work_type=ArraySubquery(work_types),
-                character_data=ArraySubquery(related_characters),
+                related_characters=ArraySubquery(related_characters),
                 related_physical_objects=ArraySubquery(related_physical_objects),
                 related_topics=ArraySubquery(topics),
                 related_persons=ArraySubquery(related_persons),
+                related_places=ArraySubquery(work_places),
                 forward_work_relations=ArraySubquery(forward_work_relations),
                 reverse_work_relations=ArraySubquery(reverse_work_relations),
-                related_places=ArraySubquery(related_places_2),
             )
             .order_by("title", "subtitle")
         )
