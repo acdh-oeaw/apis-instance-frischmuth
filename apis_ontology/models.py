@@ -114,6 +114,7 @@ class GenericNameMixin(models.Model):
         max_length=255,
         blank=True,
         default="",
+        verbose_name="Name",
     )
 
     class Meta:
@@ -132,7 +133,8 @@ class AlternativeNameMixin(models.Model):
         max_length=255,
         blank=True,
         default="",
-        verbose_name=_("Alternativer Name"),
+        verbose_name=_("alternativer Name"),
+        help_text=_("Pseudonym, Alias"),
     )
 
     class Meta:
@@ -162,7 +164,7 @@ class PersonNameMixin(AlternativeNameMixin, models.Model):
         max_length=255,
         blank=True,
         default="",
-        verbose_name=_("Uneindeutiger Name"),
+        verbose_name=_("uneindeutiger Name"),
         help_text=_(
             "Namens-Ersatzfeld, falls weder Vor- noch Nachname eindeutig "
             "als solche festgelegt bzw. eingegeben werden können"
@@ -617,9 +619,7 @@ class Expression(
         blank=True,
         default="",
         verbose_name=_("Erscheinungsdatum (manuelle Eingabe)"),
-        help_text=_(
-            "Erlaubte Formatvariationen u.a. 1.1.1920, 12/2010, 1999-12-23,..."
-        ),
+        help_text=_("Akzeptierte Formate u.a.: 1.1.1920, 12/2010, 1999-12-23"),
     )
 
     isbn = models.CharField(
@@ -635,8 +635,8 @@ class Expression(
         max_length=255,
         blank=True,
         default="",
-        verbose_name=_("Ausgabe (Print-/Druckausgabe)"),
-        help_text=_("Bsp.: 1. Aufl., deutsche Erstausg."),
+        verbose_name=_("Ausgabe"),
+        help_text=_("Print-/Druckausgabe (Freitext)"),
     )
 
     volume = models.CharField(
@@ -651,21 +651,19 @@ class Expression(
         blank=True,
         default="",
         verbose_name=_("Zeitungsnummer"),
-        help_text=_("Nummer/Kennung einer Ausgabe eines periodischen Mediums"),
+        help_text=_("Nummer bzw. Kennung einer Ausgabe eines periodischen Mediums"),
     )
 
     page_count = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
         verbose_name=_("Seitenanzahl"),
-        help_text=_("Seitenanzahl einer relevanten Manifestation"),
     )
 
     relevant_pages = models.CharField(
         blank=True,
         default="",
-        verbose_name=_("Forschungsrelevante Seiten"),
-        help_text=_('Eingabe muss im Format "X-Y" erfolgen, z.B. 5-12'),
+        verbose_name=_("forschungsrelevante Seiten"),
     )
 
     edition_type = ArrayField(
@@ -900,7 +898,7 @@ class Character(
         blank=False,
         default="",
         verbose_name=_("Relevanz"),
-        help_text=_("Bedeutsamkeit für den Text, Erzählfokus"),
+        help_text=_("Bedeutsamkeit für den Text; Erzählfokus"),
     )
 
     fictionality = ArrayField(
@@ -961,13 +959,15 @@ class Place(
     latitude = models.FloatField(
         blank=True,
         null=True,
-        verbose_name=_("latitude"),
+        verbose_name=_("Latitüde"),
+        help_text=_("Breitengrad"),
     )
 
     longitude = models.FloatField(
         blank=True,
         null=True,
-        verbose_name=_("longitude"),
+        verbose_name=_("Longitüde"),
+        help_text=_("Längengrad"),
     )
 
     data_source = models.ForeignKey(
