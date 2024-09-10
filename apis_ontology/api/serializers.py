@@ -44,7 +44,10 @@ class PlaceDataSerializerMin(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        exclude = ["self_contenttype", "data_source"]
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]
 
 
 class PlaceDataSerializer(PlaceDataSerializerMin):
@@ -145,7 +148,10 @@ class ArchiveDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Archive
-        exclude = ["self_contenttype", "data_source"]
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]
 
 
 class PhysicalObjectDataSerializer(serializers.ModelSerializer):
@@ -153,13 +159,19 @@ class PhysicalObjectDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PhysicalObject
-        exclude = ["self_contenttype", "data_source"]
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]
 
 
 class TopicDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
-        exclude = ["self_contenttype", "data_source"]
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]
 
 
 class PersonDataSerializer(serializers.ModelSerializer):
@@ -170,7 +182,10 @@ class PersonDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Person
-        exclude = ["self_contenttype", "data_source"]
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]
 
 
 class WorkDetailSerializer(serializers.ModelSerializer):
@@ -180,24 +195,44 @@ class WorkDetailSerializer(serializers.ModelSerializer):
     )
     related_works = serializers.SerializerMethodField()
     characters = CharacterDataSerializer(
-        required=False, allow_empty=True, many=True, source="character_data"
+        source="character_data",
+        required=False,
+        allow_empty=True,
+        many=True,
     )
     physical_objects = PhysicalObjectDataSerializer(
-        required=False, allow_empty=True, many=True, source="related_physical_objects"
+        source="related_physical_objects",
+        required=False,
+        allow_empty=True,
+        many=True,
     )
     topics = TopicDataSerializer(
-        required=False, allow_empty=True, many=True, source="related_topics"
+        source="related_topics",
+        required=False,
+        allow_empty=True,
+        many=True,
     )
     persons = PersonDataSerializer(
-        required=False, allow_empty=True, many=True, source="related_persons"
+        source="related_persons",
+        required=False,
+        allow_empty=True,
+        many=True,
     )
     places = PlaceDataSerializer(
-        required=False, allow_empty=True, many=True, source="related_places"
+        source="related_places",
+        required=False,
+        allow_empty=True,
+        many=True,
     )
 
     class Meta:
         model = Work
-        exclude = ["self_contenttype", "data_source", "notes", "progress_status"]
+        exclude = [
+            "self_contenttype",
+            "data_source",
+            "notes",
+            "progress_status",
+        ]
 
     def get_related_works(self, obj) -> list[RelatedWorksDict]:
         return list(obj.forward_work_relations) + list(obj.reverse_work_relations)

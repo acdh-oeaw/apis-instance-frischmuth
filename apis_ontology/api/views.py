@@ -95,7 +95,11 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                 "in": "query",
                 "description": "The initial index from which to return the results.",
                 "required": False,
-                "schema": {"type": "integer", "default": 0, "minimum": 0},
+                "schema": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                },
             },
         ]
         return params
@@ -137,7 +141,12 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                                 },
                             },
                         },
-                        "example": [{"key": "eng", "count": 100}],
+                        "example": [
+                            {
+                                "key": "eng",
+                                "count": 100,
+                            }
+                        ],
                     },
                     "topic": {
                         "type": "array",
@@ -155,7 +164,12 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                                 },
                             },
                         },
-                        "example": [{"key": "Traum", "count": 3}],
+                        "example": [
+                            {
+                                "key": "Traum",
+                                "count": 3,
+                            }
+                        ],
                     },
                 },
                 "type": "object",
@@ -272,6 +286,7 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
             Q(root_object_id=OuterRef("pk")),
             ~Q(uri__startswith="https://frischmuth-dev.acdh-dev.oeaw.ac.at"),
         ).values_list("uri", flat=True)
+
         work_types = WorkType.objects.filter(
             triple_set_from_obj__subj_id=OuterRef("pk"),
             triple_set_from_obj__prop__name_forward__in=["has type"],
@@ -285,7 +300,12 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
         expression_publisher = Organisation.objects.filter(
             triple_set_from_subj__obj_id=OuterRef("pk"),
             triple_set_from_subj__prop__name_reverse__in=["has publisher"],
-        ).values(json=JSONObject(id="id", name="name"))
+        ).values(
+            json=JSONObject(
+                id="id",
+                name="name",
+            )
+        )
 
         related_places = (
             Place.objects.all()
@@ -361,6 +381,7 @@ class WorkDetailViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
                 website="website",
             )
         )
+
         related_physical_objects = (
             PhysicalObject.objects.filter(
                 triple_set_from_subj__obj_id=OuterRef("pk"),
