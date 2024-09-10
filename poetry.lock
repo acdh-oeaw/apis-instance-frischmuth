@@ -16,13 +16,13 @@ six = "*"
 
 [[package]]
 name = "apis-acdhch-default-settings"
-version = "1.0.0"
+version = "1.1.0"
 description = "Default settings for APIS instances at the ACDH-CH"
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "apis_acdhch_default_settings-1.0.0-py3-none-any.whl", hash = "sha256:d6495187f746bb86d6532ad90b1e217e9a116f11b2a93a36460b712f3b759591"},
-    {file = "apis_acdhch_default_settings-1.0.0.tar.gz", hash = "sha256:28275de60bc896912b7c2d40fd355e60fea397b0fe1b6c57ba95cc0fe546d388"},
+    {file = "apis_acdhch_default_settings-1.1.0-py3-none-any.whl", hash = "sha256:460c8f5383ca83fa8e2ba7f817cb184a2600c338073d413df1960ddc165eebde"},
+    {file = "apis_acdhch_default_settings-1.1.0.tar.gz", hash = "sha256:5451378c14e8024d0863362a0fb054ada78a71df199239c0133881ff55641664"},
 ]
 
 [package.dependencies]
@@ -35,7 +35,7 @@ whitenoise = ">=5.2.0,<6.0.0"
 
 [[package]]
 name = "apis-core"
-version = "0.24.0"
+version = "0.25.0"
 description = "Base package for the APIS framework"
 optional = false
 python-versions = "^3.11"
@@ -66,8 +66,8 @@ tablib = "^3.5.0"
 [package.source]
 type = "git"
 url = "https://github.com/acdh-oeaw/apis-core-rdf"
-reference = "v0.24.0"
-resolved_reference = "3d313d84aa424c5b7f8c227336b844915854331e"
+reference = "v0.25.0"
+resolved_reference = "158c4ff7502c766f897c880cc23546e5aad1f54f"
 
 [[package]]
 name = "apis-override-select2js"
@@ -1836,4 +1836,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "146a06e6cfe68f302a59c465d6e478890871f86912a8921d937834c961954039"
+content-hash = "579ca6ef6f4b910c90d0ac2752ce0886cfd6451a21d3ae342b0dc16c317db59b"
