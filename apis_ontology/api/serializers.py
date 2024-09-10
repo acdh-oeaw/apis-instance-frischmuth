@@ -62,8 +62,8 @@ class WorkTypeDataSerializer(serializers.ModelSerializer):
 class ExpressionDataSerializer(serializers.ModelSerializer):
     publication_date = serializers.DateField(required=False, allow_null=True)
     publisher = serializers.CharField(required=False, allow_null=True)
-    place_of_publication = PlaceDataSerializer(
-        required=False, allow_null=True, many=True
+    place_of_publication = serializers.ListField(
+        child=serializers.CharField(allow_null=True), required=False, allow_empty=True
     )
     edition_type = serializers.ListField(
         child=serializers.CharField(allow_null=True), required=False, allow_empty=True
