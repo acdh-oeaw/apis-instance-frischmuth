@@ -142,7 +142,7 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                         },
                         "example": [
                             {
-                                "key": "eng",
+                                "key": "Deutsch",
                                 "count": 100,
                             }
                         ],
