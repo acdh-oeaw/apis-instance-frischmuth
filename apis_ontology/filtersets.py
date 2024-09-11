@@ -110,6 +110,9 @@ class BaseEntityFilterSet(AbstractEntityFilterSet):
     """
 
     class Meta(AbstractEntityFilterSet.Meta):
+        exclude = [
+            f for f in AbstractEntityFilterSet.Meta.exclude if f != "notes"
+        ]  # TODO remove once "notes" isn't a default field of relations anymore
         filter_overrides = {
             **AbstractEntityFilterSet.Meta.filter_overrides,
             ArrayField: {
