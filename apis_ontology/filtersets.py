@@ -212,11 +212,6 @@ class CharacterFilterSet(BaseEntityFilterSet, PersonSearch):
         lookup_expr="icontains",
     )
 
-    class Meta(BaseEntityFilterSet.Meta):
-        fields = {
-            "fictionality": ["icontains"],
-        }
-
 
 class VersionCharacterFilterSet(CharacterFilterSet):
     pass
@@ -283,11 +278,6 @@ class WorkFilterSet(BaseEntityFilterSet, LanguageMixinFilter, TitlesSearch):
         lookup_expr="icontains",
     )
 
-    class Meta(BaseEntityFilterSet.Meta):
-        fields = {
-            "temporal_order": ["icontains"],
-        }
-
 
 class VersionWorkFilterSet(WorkFilterSet):
     pass
@@ -319,11 +309,6 @@ class ExpressionFilterSet(BaseEntityFilterSet, LanguageMixinFilter, TitlesSearch
         "DD.MM.YYYY bzw. YYYY-MM-DD. Wird nur ein Feld ausgefüllt, "
         "wird dieses Datum als Beginn bzw. Ende des Zeitraums angenommen.",
     )
-
-    class Meta(BaseEntityFilterSet.Meta):
-        fields = {
-            "language": ["icontains"],
-        }
 
 
 class VersionExpressionFilterSet(ExpressionFilterSet):
