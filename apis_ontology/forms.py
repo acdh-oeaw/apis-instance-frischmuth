@@ -75,6 +75,7 @@ class ExpressionForm(GenericModelForm, LanguageForm):
         required=False,
         choices=Expression.EditionTypes.choices,
         label=Expression._meta.get_field("edition_type").verbose_name,
+        help_text=Expression._meta.get_field("edition_type").help_text,
     )
 
 
@@ -83,4 +84,5 @@ class CharacterForm(GenericModelForm):
         required=False,
         choices=Character.CharacterFictionality.choices,
         label=Character._meta.get_field("fictionality").verbose_name,
+        help_text=Character._meta.get_field("fictionality").help_text,
     )
