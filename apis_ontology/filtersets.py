@@ -153,8 +153,8 @@ class TitlesSearch(django_filters.FilterSet):
             "title",
             "subtitle",
         ],
-        help_text=_("Suche in allen Titelfeldern"),
-        label=_("Suche: Titel"),
+        label=_("Titelsuche"),
+        help_text=_("Suche in: Titel, Untertitel"),
         method=fuzzy_search_unaccent_trigram,
     )
 
@@ -173,8 +173,8 @@ class AlternativeNameSearch(django_filters.FilterSet):
             "name",
             "alternative_name",
         ],
-        help_text=_("Suche in allen Namensfeldern"),
-        label=_("Suche: Namen"),
+        label=_("Namensuche"),
+        help_text=_("Suche in: Name, alternativer Name"),
         method=fuzzy_search_unaccent_trigram,
     )
 
@@ -192,8 +192,10 @@ class PersonSearch(django_filters.FilterSet):
             "fallback_name",
             "alternative_name",
         ],
-        help_text=_("Suche in allen Namensfeldern"),
-        label=_("Suche: Namen"),
+        label=_("Namensuche"),
+        help_text=_(
+            "Suche in: Vorname, Nachname, uneindeutiger Name, alternativer Name"
+        ),
         method=fuzzy_search_unaccent_trigram,
     )
 
@@ -232,8 +234,8 @@ class WorkFilterSet(BaseEntityFilterSet, LanguageMixinFilter, TitlesSearch):
             "subtitle",
             "siglum",
         ],
-        help_text=_("Suche in allen Titelfeldern und Siglum"),
-        label=_("Suche: Titel, Siglum"),
+        label=_("Titelsuche"),
+        help_text=_("Suche in: Titel, Untertitel, Siglum"),
         method=fuzzy_search_unaccent_trigram,
     )
 
@@ -322,8 +324,8 @@ class WorkTypeFilterSet(BaseEntityFilterSet, AlternativeNameSearch):
             "name_plural",
             "alternative_name",
         ],
-        help_text=_("Suche in allen Namensfeldern"),
-        label=_("Suche: Namen"),
+        label=_("Namensuche"),
+        help_text=_("Suche in: Name, Pluralform, alternativer Name"),
         method=fuzzy_search_unaccent_trigram,
     )
 
