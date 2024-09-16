@@ -128,8 +128,23 @@ class BaseEntityFilterSet(AbstractEntityFilterSet):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if "custom_search" in self.filters:
-            self.filters.move_to_end("custom_search", False)
+
+        if getattr(self.Meta, "model", False):
+            if "search" in self.filters:
+                self.filters["search"].label = "Allgemeine Suche"
+
+                if (
+                    help_text := self.filters["search"].extra.get("help_text")
+                ) and help_text.split(":"):
+                    self.filters["search"].extra["help_text"] = (
+                        f'Suche in den Textfeldern: {help_text.split(":")[1]}'
+                    )
+
+            if "changed_since" in self.filters:
+                self.filters["changed_since"].label = "Geändert seit"
+
+            if "custom_search" in self.filters:
+                self.filters.move_to_end("custom_search", False)
 
 
 class LanguageMixinFilter(django_filters.FilterSet):
