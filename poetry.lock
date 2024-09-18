@@ -35,7 +35,7 @@ whitenoise = ">=5.2.0,<6.0.0"
 
 [[package]]
 name = "apis-core"
-version = "0.25.0"
+version = "0.26.0"
 description = "Base package for the APIS framework"
 optional = false
 python-versions = "^3.11"
@@ -50,7 +50,7 @@ django-admin-csvexport = "^2.2"
 django-autocomplete-light = ">=3.9.4,<3.12.0"
 django-crispy-forms = "^2"
 django-crum = "^0.7.9"
-django-filter = ">=23.5,<25.0"
+django-filter = ">=24.1"
 django-model-utils = "^4.1.1"
 django-simple-history = ">=3.6"
 django-tables2 = "^2.3.3"
@@ -66,8 +66,8 @@ tablib = "^3.5.0"
 [package.source]
 type = "git"
 url = "https://github.com/acdh-oeaw/apis-core-rdf"
-reference = "v0.25.0"
-resolved_reference = "158c4ff7502c766f897c880cc23546e5aad1f54f"
+reference = "v0.26.0"
+resolved_reference = "9c4b6e56ff65b71d27e7bf658e0096193fca43a8"
 
 [[package]]
 name = "apis-override-select2js"
@@ -1836,4 +1836,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "579ca6ef6f4b910c90d0ac2752ce0886cfd6451a21d3ae342b0dc16c317db59b"
+content-hash = "0e541962bd7029609e39559d438b0954cd85e35600d46ff312cf36850c7edc6d"
