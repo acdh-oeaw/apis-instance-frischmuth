@@ -320,7 +320,7 @@ class Work(
         PAUSE = "Pause", _("Pause")
 
     class TemporalFrequency(models.TextChoices):
-        SINGULATIVE = "singulative", _("singulativ")
+        SINGULATIVE = "singulativ", _("singulativ")
         REPEATING = "repetitiv", _("repetitiv")
         ITERATIVE = "iterativ", _("iterativ")
 
