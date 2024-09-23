@@ -214,10 +214,14 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             triple_set_from_subj__prop__name_reverse__in=["has publisher"],
         ).values("name")
 
-        expression_places = Place.objects.filter(
-            triple_set_from_obj__subj_id=OuterRef("pk"),
-            triple_set_from_obj__prop__name_forward__in=["is published in"],
-        ).values_list("name")
+        expression_places = (
+            Place.objects.filter(
+                triple_set_from_obj__subj_id=OuterRef("pk"),
+                triple_set_from_obj__prop__name_forward__in=["is published in"],
+            )
+            .distinct()
+            .values_list("name")
+        )
 
         related_expressions = (
             Expression.objects.filter(
