@@ -220,10 +220,34 @@ class LanguageMixin(models.Model):
         relevant to the project.
         """
 
+        SQI = "Albanisch", _("Albanisch")
+        ARA = "Arabisch", _("Arabisch")
+        CMN = "Chinesisch", _("Chinesisch")
         DEU = "Deutsch", _("Deutsch")
+        DAN = "Dänisch", _("Dänisch")
         ENG = "Englisch", _("Englisch")
+        EST = "Estnisch", _("Estnisch")
+        PES = "Farsi", _("Farsi")
+        FIN = "Finnisch", _("Finnisch")
         FRA = "Französisch", _("Französisch")
+        KAT = "Georgisch", _("Georgisch")
+        HEB = "Hebräisch", _("Hebräisch")
         ITA = "Italienisch", _("Italienisch")
+        JPN = "Japanisch", _("Japanisch")
+        HRV = "Kroatisch", _("Kroatisch")
+        LAV = "Lettisch", _("Lettisch")
+        LIT = "Litauisch", _("Litauisch")
+        NOR = "Norwegisch", _("Norwegisch")
+        POL = "Polnisch", _("Polnisch")
+        POR = "Portugisisch", _("Portugisisch")
+        RON = "Rumänisch", _("Rumänisch")
+        RUS = "Russisch", _("Russisch")
+        SWE = "Schwedisch", _("Schwedisch")
+        SPA = "Spanisch", _("Spanisch")
+        CES = "Tschechisch", _("Tschechisch")
+        TUR = "Türkisch", _("Türkisch")
+        UKR = "Ukrainisch", _("Ukrainisch")
+        HUN = "Ungarisch", _("Ungarisch")
 
     language = ArrayField(
         base_field=models.CharField(max_length=255),
