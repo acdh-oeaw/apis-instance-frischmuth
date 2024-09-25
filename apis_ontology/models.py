@@ -220,10 +220,10 @@ class LanguageMixin(models.Model):
         relevant to the project.
         """
 
-        DE = "Deutsch", _("Deutsch")
-        EN = "Englisch", _("Englisch")
-        FR = "Französisch", _("Französisch")
-        IT = "Italienisch", _("Italienisch")
+        DEU = "Deutsch", _("Deutsch")
+        ENG = "Englisch", _("Englisch")
+        FRA = "Französisch", _("Französisch")
+        ITA = "Italienisch", _("Italienisch")
 
     language = ArrayField(
         base_field=models.CharField(max_length=255),
