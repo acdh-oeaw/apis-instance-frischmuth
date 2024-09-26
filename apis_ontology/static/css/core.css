@@ -1,0 +1,9 @@
+/* APIS Core main CSS */
+
+/* ACDH-CH logo in site footer */
+#logo {
+    height: 1.5em;
+}
+a #logo:hover {
+    opacity: 0.5;
+}
