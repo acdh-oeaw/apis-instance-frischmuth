@@ -7,3 +7,19 @@
 a #logo:hover {
     opacity: 0.5;
 }
+
+/* Frischmuth CSS add-ons */
+
+/* improve multiselect widget */
+/* remove redundant whitespace left of checkboxes,
+line up labels with right edge of checkboxes */
+.multiselect-native-select .multiselect-container > li > a > label {
+  padding: 3px 20px 3px 20px!important;
+  display: flex;
+}
+.multiselect-native-select .multiselect-container > li > a > label > input[type=checkbox] {
+  margin-top: .3em;
+  margin-right: .3em;
+  align-self: self-start;
+}
+
