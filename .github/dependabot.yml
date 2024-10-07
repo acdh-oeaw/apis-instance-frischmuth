@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: 2024 K Kollmann
+# SPDX-License-Identifier: MIT
+
+version: 2
+updates:
+    # dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    # workflows/actions are assumed to be in (have as root) .github/workflows
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    reviewers:
+      - "koeaw"
+    # Frischmuth project dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "build"
+      include: "scope"
+    reviewers:
+      - "koeaw"
+    groups:
+      apis-dependencies:
+        patterns:
+          - "apis-*"
+      project-dev-dependencies:
+        # includes all [tool.poetry.group.*.dependencies]
+        dependency-type: development
+      project-dependencies:
+        applies-to: version-updates
+      vulnerabilities:
+        applies-to: security-updates
