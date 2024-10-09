@@ -20,6 +20,10 @@ updates:
     commit-message:
       prefix: "build"
       include: "scope"
+    allow:
+      # limit updates to direct dependencies, so dependencies of direct
+      # dependencies (like APIS Core) aren't included
+      - dependency-type: "direct"
     groups:
       apis-dependencies:
         patterns:
