@@ -12,8 +12,6 @@ updates:
     commit-message:
       prefix: "ci"
       include: "scope"
-    reviewers:
-      - "koeaw"
     # Frischmuth project dependencies
   - package-ecosystem: "pip"
     directory: "/"
@@ -22,8 +20,6 @@ updates:
     commit-message:
       prefix: "build"
       include: "scope"
-    reviewers:
-      - "koeaw"
     groups:
       apis-dependencies:
         patterns:
