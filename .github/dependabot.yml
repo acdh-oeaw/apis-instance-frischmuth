@@ -32,6 +32,8 @@ updates:
         # includes all [tool.poetry.group.*.dependencies]
         dependency-type: development
       project-dependencies:
-        applies-to: version-updates
+        dependency-type: production
       vulnerabilities:
         applies-to: security-updates
+        patterns:
+          - "*"
