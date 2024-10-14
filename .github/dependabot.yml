@@ -24,16 +24,18 @@ updates:
       # limit updates to direct dependencies, so dependencies of direct
       # dependencies (like APIS Core) aren't included
       - dependency-type: "direct"
-    groups:
-      apis-dependencies:
-        patterns:
-          - "apis-*"
-      project-dev-dependencies:
-        # includes all [tool.poetry.group.*.dependencies]
-        dependency-type: development
-      project-dependencies:
-        dependency-type: production
-      vulnerabilities:
-        applies-to: security-updates
-        patterns:
-          - "*"
+# TODO re-enable groups once Dependabot learns to not create overly long lines
+# see https://github.com/dependabot/dependabot-core/issues/2445
+#    groups:
+#      apis-dependencies:
+#        patterns:
+#          - "apis-*"
+#      project-dev-dependencies:
+#        # includes all [tool.poetry.group.*.dependencies]
+#        dependency-type: development
+#      project-dependencies:
+#        dependency-type: production
+#      vulnerabilities:
+#        applies-to: security-updates
+#        patterns:
+#          - "*"
