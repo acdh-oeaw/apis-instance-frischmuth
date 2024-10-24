@@ -128,6 +128,7 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                     total += child_total
                     counts[type_id]["children"].append(
                         {
+                            "id": counts[child_id]["id"],
                             "key": counts[child_id]["name"],
                             "count": counts[child_id]["count"],
                             "children": counts[child_id]["children"],
@@ -143,6 +144,7 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
             aggregate_counts(root)
             result.append(
                 {
+                    "id": counts[root]["id"],
                     "key": counts[root]["name"],
                     "count": counts[root]["count"],
                     "children": counts[root]["children"],
@@ -290,6 +292,10 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                         "items": {
                             "type": "object",
                             "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "required": True,
+                                },
                                 "key": {
                                     "type": "string",
                                     "required": True,
@@ -308,10 +314,16 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                         },
                         "example": [
                             {
+                                "id": 4,
                                 "key": "Prosa",
                                 "count": 150,
                                 "children": [
-                                    {"key": "Roman", "count": 50, "children": []}
+                                    {
+                                        "id": 5,
+                                        "key": "Roman",
+                                        "count": 50,
+                                        "children": [],
+                                    }
                                 ],
                             }
                         ],
