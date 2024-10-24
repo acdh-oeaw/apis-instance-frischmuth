@@ -39,3 +39,13 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
         lookup_expr="icontains",
         choices=Topic.objects.all().values_list("name", "name"),
     )
+    start_year = django_filters.NumberFilter(
+        field_name="min_year",
+        label=_("Start year for publication date of expressions (inclusive)"),
+        lookup_expr="gte",
+    )
+    end_year = django_filters.NumberFilter(
+        field_name="max_year",
+        label=_("End year for publication date of expressions (inclusive)"),
+        lookup_expr="lte",
+    )

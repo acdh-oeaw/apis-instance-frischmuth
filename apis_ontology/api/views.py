@@ -6,7 +6,7 @@ I.e. project-specific endpoints (not APIS built-in API).
 
 from apis_core.apis_metainfo.models import Uri
 from django.contrib.postgres.expressions import ArraySubquery, Subquery
-from django.db.models import OuterRef, Q
+from django.db.models import Min, Max, OuterRef, Q
 from django.db.models.functions import JSONObject
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, pagination, permissions, viewsets
@@ -254,6 +254,12 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             .values("language")
         )
 
+        filter_years = Expression.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+            triple_set_from_obj__prop__name_reverse__in=["realises"],
+            publication_date_iso_formatted__isnull=False,
+        )
+
         facet_topics = Topic.objects.filter(
             triple_set_from_obj__subj_id=OuterRef("pk"),
             triple_set_from_obj__prop__name_forward__in=["is about topic"],
@@ -266,6 +272,16 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                 work_type=ArraySubquery(work_types),
                 facet_language=ArraySubquery(facet_languages),
                 facet_topic=ArraySubquery(facet_topics),
+                min_year=Subquery(
+                    filter_years.annotate(
+                        year=Min("publication_date_iso_formatted__year")
+                    ).values("year")[:1]
+                ),
+                max_year=Subquery(
+                    filter_years.annotate(
+                        year=Max("publication_date_iso_formatted__year")
+                    ).values("year")[:1]
+                ),
             )
             .order_by("title", "subtitle")
         )
