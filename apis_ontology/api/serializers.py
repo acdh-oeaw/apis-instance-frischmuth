@@ -4,8 +4,11 @@ Serializers for custom API.
 I.e. project-specific endpoints (not APIS built-in API).
 """
 
+from functools import cache
 from typing import TypedDict
 
+from django.contrib.postgres.expressions import Subquery
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from apis_ontology.models import (
@@ -19,6 +22,25 @@ from apis_ontology.models import (
     Work,
     WorkType,
 )
+
+
+@cache
+def get_work_type_data(id):
+    work_type_parent = WorkType.objects.filter(
+        triple_set_from_obj__subj_id=id, triple_set_from_obj__prop__id=7
+    ).values("id")
+    res = (
+        WorkType.objects.filter(pk=id)
+        .annotate(parent=Subquery(work_type_parent[:1]))
+        .first()
+    )
+    return {
+        "id": id,
+        "name": getattr(res, "name"),
+        "parent": getattr(res, "parent"),
+        "count": 0,
+        "children": [],
+    }
 
 
 class RelatedWorksDict(TypedDict):
@@ -96,6 +118,7 @@ class ExpressionDataDetailSerializer(ExpressionDataSerializer):
 class WorkPreviewSerializer(serializers.ModelSerializer):
     expression_data = ExpressionDataSerializer(required=False, many=True)
     work_type = WorkTypeDataSerializer(required=False, allow_empty=True, many=True)
+    work_type_root = serializers.SerializerMethodField()
 
     class Meta:
         model = Work
@@ -106,7 +129,20 @@ class WorkPreviewSerializer(serializers.ModelSerializer):
             "subtitle",
             "expression_data",
             "work_type",
+            "work_type_root",
         ]
+
+    @extend_schema_field(
+        {
+            "type": "object",
+            "properties": {"id": {"type": "integer"}, "name": {"type": "string"}},
+        }
+    )
+    def get_work_type_root(self, object):
+        work_type = object.work_type[0]
+        while work_type["parent"]:
+            work_type = get_work_type_data(work_type["parent"])
+        return {"id": work_type["id"], "name": work_type["name"]}
 
 
 class CharacterDataSerializer(serializers.ModelSerializer):

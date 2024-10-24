@@ -4,8 +4,6 @@ Views for custom API.
 I.e. project-specific endpoints (not APIS built-in API).
 """
 
-from functools import cache
-
 from apis_core.apis_metainfo.models import Uri
 from django.contrib.postgres.expressions import ArraySubquery, Subquery
 from django.db.models import Max, Min, OuterRef, Q
@@ -31,6 +29,7 @@ from .serializers import (
     PlaceDetailDataSerializer,
     WorkDetailSerializer,
     WorkPreviewSerializer,
+    get_work_type_data,
 )
 
 
@@ -52,24 +51,6 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
             }
         )
         return pagination.Response(dict(sorted(response.data.items())))
-
-    @cache
-    def _get_work_type_data(self, id):
-        work_type_parent = WorkType.objects.filter(
-            triple_set_from_obj__subj_id=id, triple_set_from_obj__prop__id=7
-        ).values("id")
-        res = (
-            WorkType.objects.filter(pk=id)
-            .annotate(parent=Subquery(work_type_parent[:1]))
-            .first()
-        )
-        return {
-            "id": id,
-            "name": getattr(res, "name"),
-            "parent": getattr(res, "parent"),
-            "count": 0,
-            "children": [],
-        }
 
     def _build_work_type_hierarchy(self, items):
         # Create initial count dictionary
@@ -101,7 +82,7 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                     if current_parent_id not in hierarchy:
                         hierarchy[current_parent_id] = set()
                     if current_parent_id not in counts:
-                        parent_data = self._get_work_type_data(current_parent_id)
+                        parent_data = get_work_type_data(current_parent_id)
                         counts[current_parent_id] = parent_data
                         # Add this type to its parent's hierarchy
                         if parent_data.get("parent"):
@@ -117,7 +98,7 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
         # Fetch any missing data for types without parents
         for type_id, data in counts.items():
             if not data:
-                counts[type_id] = self._get_work_type_data(type_id)
+                counts[type_id] = get_work_type_data(type_id)
 
         # Second pass: Add child counts to parents and build tree
         def aggregate_counts(type_id):
