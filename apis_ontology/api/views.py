@@ -101,20 +101,24 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                 counts[type_id] = get_work_type_data(type_id)
 
         # Second pass: Add child counts to parents and build tree
+        processed_nodes = set()
+
         def aggregate_counts(type_id):
             total = counts[type_id]["count"]
             if type_id in hierarchy:
                 for child_id in hierarchy[type_id]:
                     child_total = aggregate_counts(child_id)
                     total += child_total
-                    counts[type_id]["children"].append(
-                        {
-                            "id": counts[child_id]["id"],
-                            "key": counts[child_id]["name"],
-                            "count": counts[child_id]["count"],
-                            "children": counts[child_id]["children"],
-                        }
-                    )
+                    if counts[child_id]["id"] not in processed_nodes:
+                        counts[type_id]["children"].append(
+                            {
+                                "id": counts[child_id]["id"],
+                                "key": counts[child_id]["name"],
+                                "count": counts[child_id]["count"],
+                                "children": counts[child_id]["children"],
+                            }
+                        )
+                        processed_nodes.update([counts[child_id]["id"]])
             counts[type_id]["count"] = total
             return total
 
