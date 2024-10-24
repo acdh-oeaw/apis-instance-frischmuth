@@ -220,3 +220,20 @@ class WorkDetailSerializer(serializers.ModelSerializer):
 
     def get_related_works(self, obj) -> list[RelatedWorksDict]:
         return list(obj.forward_work_relations) + list(obj.reverse_work_relations)
+
+
+class WorkPlaceMinSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField(max_length=255)
+    subtitle = serializers.CharField(max_length=255, allow_null=True)
+
+
+class PlaceDetailDataSerializer(serializers.ModelSerializer):
+    related_works = WorkPlaceMinSerializer(many=True, allow_empty=True)
+
+    class Meta:
+        model = Place
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]
