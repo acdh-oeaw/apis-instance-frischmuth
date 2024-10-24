@@ -10,7 +10,7 @@ import django_filters
 from django.utils.translation import gettext_lazy as _
 
 from apis_ontology.filtersets import fuzzy_search_unaccent_trigram
-from apis_ontology.models import Expression, Topic
+from apis_ontology.models import Expression, Topic, WorkType
 
 
 logger = logging.getLogger(__name__)
@@ -38,6 +38,12 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
         label=_("Topic of the expression."),
         lookup_expr="icontains",
         choices=Topic.objects.all().values_list("name", "name"),
+    )
+    facet_work_type = django_filters.MultipleChoiceFilter(
+        field_name="work_type",
+        label=_("Type of the work."),
+        lookup_expr="icontains",
+        choices=WorkType.objects.all().values_list("id", "name"),
     )
     start_year = django_filters.NumberFilter(
         field_name="min_year",

@@ -4,6 +4,8 @@ Views for custom API.
 I.e. project-specific endpoints (not APIS built-in API).
 """
 
+from functools import cache
+
 from apis_core.apis_metainfo.models import Uri
 from django.contrib.postgres.expressions import ArraySubquery, Subquery
 from django.db.models import Max, Min, OuterRef, Q
@@ -51,10 +53,116 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
         )
         return pagination.Response(dict(sorted(response.data.items())))
 
+    @cache
+    def _get_work_type_data(self, id):
+        work_type_parent = WorkType.objects.filter(
+            triple_set_from_obj__subj_id=id, triple_set_from_obj__prop__id=7
+        ).values("id")
+        res = (
+            WorkType.objects.filter(pk=id)
+            .annotate(parent=Subquery(work_type_parent[:1]))
+            .first()
+        )
+        return {
+            "id": id,
+            "name": getattr(res, "name"),
+            "parent": getattr(res, "parent"),
+            "count": 0,
+            "children": [],
+        }
+
+    def _build_work_type_hierarchy(self, items):
+        # Create initial count dictionary
+        counts = {}
+        hierarchy = {}
+
+        # First pass: Count direct occurrences and build hierarchy
+        for item in items:
+            if not item:
+                continue
+            type_id = item.get("id")
+            parent_id = item.get("parent")
+
+            if type_id not in counts:
+                counts[type_id] = {
+                    "id": type_id,
+                    "name": item.get("name"),
+                    "count": 1,
+                    "parent": parent_id,
+                    "children": [],
+                }
+            else:
+                counts[type_id]["count"] += 1
+
+            if parent_id:
+                # Recursively fetch all parent data until root
+                current_parent_id = parent_id
+                while current_parent_id:
+                    if current_parent_id not in hierarchy:
+                        hierarchy[current_parent_id] = set()
+                    if current_parent_id not in counts:
+                        parent_data = self._get_work_type_data(current_parent_id)
+                        counts[current_parent_id] = parent_data
+                        # Add this type to its parent's hierarchy
+                        if parent_data.get("parent"):
+                            if parent_data["parent"] not in hierarchy:
+                                hierarchy[parent_data["parent"]] = set()
+                            hierarchy[parent_data["parent"]].add(current_parent_id)
+                        current_parent_id = parent_data.get("parent")
+                    else:
+                        current_parent_id = counts[current_parent_id].get("parent")
+                # Add original type to its immediate parent's hierarchy
+                hierarchy[parent_id].add(type_id)
+
+        # Fetch any missing data for types without parents
+        for type_id, data in counts.items():
+            if not data:
+                counts[type_id] = self._get_work_type_data(type_id)
+
+        # Second pass: Add child counts to parents and build tree
+        def aggregate_counts(type_id):
+            total = counts[type_id]["count"]
+            if type_id in hierarchy:
+                for child_id in hierarchy[type_id]:
+                    child_total = aggregate_counts(child_id)
+                    total += child_total
+                    counts[type_id]["children"].append(
+                        {
+                            "key": counts[child_id]["name"],
+                            "count": counts[child_id]["count"],
+                            "children": counts[child_id]["children"],
+                        }
+                    )
+            counts[type_id]["count"] = total
+            return total
+
+        # Start aggregation from root nodes (those without parents)
+        root_nodes = [type_id for type_id, data in counts.items() if not data["parent"]]
+        result = []
+        for root in root_nodes:
+            aggregate_counts(root)
+            result.append(
+                {
+                    "key": counts[root]["name"],
+                    "count": counts[root]["count"],
+                    "children": counts[root]["children"],
+                }
+            )
+
+        return result
+
     def get_facet_data(self, field, queryset):
-        # Implement facet data calculation
+        # Special handling for work_type field
+        if field == "work_type":
+            items = []
+            for item in queryset.all():
+                attr_value = getattr(item, field)
+                if attr_value:
+                    items.extend(attr_value)
+            return self._build_work_type_hierarchy(items)
+
+        # Regular facet calculation for other fields
         res = {}
-        # Count occurrences
         for item in queryset.all():
             attr_value = getattr(item, field)
             # given that we use array fields there can be list of lists in annotations
@@ -76,6 +184,8 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
         for field in queryset.query.annotations.keys():
             if field.startswith("facet_"):
                 res[field.replace("facet_", "")] = self.get_facet_data(field, queryset)
+            elif field == "work_type":
+                res["work_type"] = self.get_facet_data(field, queryset)
 
         return res
 
@@ -174,6 +284,38 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                             }
                         ],
                     },
+                    "work_type": {
+                        "type": "array",
+                        "nullable": True,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "string",
+                                    "required": True,
+                                },
+                                "count": {
+                                    "type": "integer",
+                                    "required": True,
+                                },
+                                "children": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#",
+                                    },
+                                },
+                            },
+                        },
+                        "example": [
+                            {
+                                "key": "Prosa",
+                                "count": 150,
+                                "children": [
+                                    {"key": "Roman", "count": 50, "children": []}
+                                ],
+                            }
+                        ],
+                    },
                 },
                 "type": "object",
                 "nullable": True,
@@ -203,13 +345,19 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = WorkPreviewSearchFilter
 
     def get_queryset(self):
-        work_types = WorkType.objects.filter(
-            triple_set_from_obj__subj_id=OuterRef("pk"),
-            triple_set_from_obj__prop__name_forward__in=["has type"],
-        ).values(
-            json=JSONObject(
-                name="name",
-                name_plural="name_plural",
+        work_type_parent = WorkType.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"), triple_set_from_obj__prop__id=7
+        ).values("id")
+        work_types = (
+            WorkType.objects.filter(
+                triple_set_from_obj__subj_id=OuterRef("pk"),
+                triple_set_from_obj__prop__name_forward__in=["has type"],
+            )
+            .annotate(parent=Subquery(work_type_parent[:1]))
+            .values(
+                json=JSONObject(
+                    id="id", name="name", name_plural="name_plural", parent="parent"
+                )
             )
         )
 
@@ -315,6 +463,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             triple_set_from_obj__prop__name_forward__in=["has type"],
         ).values(
             json=JSONObject(
+                id="id",
                 name="name",
                 name_plural="name_plural",
             )
