@@ -136,9 +136,12 @@ class WorkPreviewSerializer(serializers.ModelSerializer):
         {
             "type": "object",
             "properties": {"id": {"type": "integer"}, "name": {"type": "string"}},
+            "nullable": True,
         }
     )
     def get_work_type_root(self, object):
+        if len(object.work_type) == 0:
+            return None
         work_type = object.work_type[0]
         while work_type["parent"]:
             work_type = get_work_type_data(work_type["parent"])
