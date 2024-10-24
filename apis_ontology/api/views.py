@@ -6,7 +6,7 @@ I.e. project-specific endpoints (not APIS built-in API).
 
 from apis_core.apis_metainfo.models import Uri
 from django.contrib.postgres.expressions import ArraySubquery, Subquery
-from django.db.models import Min, Max, OuterRef, Q
+from django.db.models import Max, Min, OuterRef, Q
 from django.db.models.functions import JSONObject
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, pagination, permissions, viewsets
@@ -25,7 +25,11 @@ from apis_ontology.models import (
 )
 
 from .filters import WorkPreviewSearchFilter
-from .serializers import WorkDetailSerializer, WorkPreviewSerializer
+from .serializers import (
+    PlaceDetailDataSerializer,
+    WorkDetailSerializer,
+    WorkPreviewSerializer,
+)
 
 
 class WorkPreviewPagination(pagination.LimitOffsetPagination):
@@ -493,3 +497,26 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             .order_by("title", "subtitle")
         )
         return works
+
+
+class PlaceViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """
+    API endpoint which returns Place objects by id only
+    """
+
+    serializer_class = PlaceDetailDataSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        work_relations = Work.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+            triple_set_from_subj__prop__id=2,
+        ).values(
+            json=JSONObject(
+                id="id",
+                title="title",
+                subtitle="subtitle",
+            )
+        )
+        res = Place.objects.all().annotate(related_works=ArraySubquery(work_relations))
+        return res
