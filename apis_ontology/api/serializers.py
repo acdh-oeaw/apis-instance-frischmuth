@@ -24,7 +24,6 @@ from apis_ontology.models import (
 )
 
 
-@cache
 def get_work_type_data(id):
     work_type_parent = WorkType.objects.filter(
         triple_set_from_obj__subj_id=id, triple_set_from_obj__prop__id=7
