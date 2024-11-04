@@ -4,7 +4,6 @@ Serializers for custom API.
 I.e. project-specific endpoints (not APIS built-in API).
 """
 
-from functools import cache
 from typing import TypedDict
 
 from django.contrib.postgres.expressions import Subquery
