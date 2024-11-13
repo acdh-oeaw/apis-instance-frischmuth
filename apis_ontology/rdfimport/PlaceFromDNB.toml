@@ -1,0 +1,35 @@
+
+######################################################
+# Create an apis_ontology Person object from an RDF endpoint.
+# Source: DNB, https://d-nb.info
+######################################################
+superclass = "apis_ontology.models.Place"
+regex = "https://d-nb.info.*"
+[[attributes]]
+# name
+sparql = """
+PREFIX gndo: <https://d-nb.info/standards/elementset/gnd#>
+SELECT ?name
+WHERE {
+  ?subject gndo:preferredNameForTheCorporateBody ?name; 
+}
+"""
+[[attributes]]
+# name
+sparql = """
+PREFIX gndo: <https://d-nb.info/standards/elementset/gnd#>
+SELECT ?name
+WHERE {
+  ?subject gndo:preferredNameForThePlaceOrGeographicName ?name; 
+}
+"""
+[[attributes]]
+# wkt
+sparql = """
+PREFIX gndo: <https://d-nb.info/standards/elementset/gnd#>
+SELECT ?wkt
+WHERE {
+  ?subject geo:hasGeometry ?geo .
+  ?geo geo:asWKT ?wkt .
+}
+"""
