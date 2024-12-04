@@ -285,7 +285,7 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                                 "children": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#",
+                                        "$ref": "#/components/schemas/PaginatedWorkPreviewList/properties/facets/properties/work_type",
                                     },
                                 },
                             },
