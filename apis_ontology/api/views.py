@@ -233,11 +233,9 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                             "properties": {
                                 "key": {
                                     "type": "string",
-                                    "required": True,
                                 },
                                 "count": {
                                     "type": "integer",
-                                    "required": True,
                                 },
                             },
                         },
@@ -256,11 +254,9 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                             "properties": {
                                 "key": {
                                     "type": "string",
-                                    "required": True,
                                 },
                                 "count": {
                                     "type": "integer",
-                                    "required": True,
                                 },
                             },
                         },
@@ -279,15 +275,12 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                             "properties": {
                                 "id": {
                                     "type": "integer",
-                                    "required": True,
                                 },
                                 "key": {
                                     "type": "string",
-                                    "required": True,
                                 },
                                 "count": {
                                     "type": "integer",
-                                    "required": True,
                                 },
                                 "children": {
                                     "type": "array",
