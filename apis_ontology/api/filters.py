@@ -16,6 +16,14 @@ from apis_ontology.models import Expression, Topic, WorkType
 logger = logging.getLogger(__name__)
 
 
+class MultipleChoiceOverlap(django_filters.MultipleChoiceFilter):
+    def filter(self, qs, value):
+        if len(value) == 0:
+            return qs
+        filter = {f"{self.field_name}__overlap": value}
+        return qs.filter(**filter)
+
+
 class WorkPreviewSearchFilter(django_filters.FilterSet):
     text_filter = django_filters.CharFilter(
         field_name=[
@@ -27,23 +35,23 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
         ),
         method=fuzzy_search_unaccent_trigram,
     )
-    facet_language = django_filters.MultipleChoiceFilter(
+    facet_language = MultipleChoiceOverlap(
         field_name="facet_language",
         label=_("Language of the expression."),
-        lookup_expr="icontains",
+        lookup_expr="overlap",
         choices=Expression.LanguagesIso6393.choices,
     )
-    facet_topic = django_filters.MultipleChoiceFilter(
+    facet_topic = MultipleChoiceOverlap(
         field_name="facet_topic",
         label=_("Topic of the expression."),
-        lookup_expr="icontains",
+        lookup_expr="overlap",
         choices=Topic.objects.all().values_list("name", "name"),
     )
-    facet_work_type = django_filters.MultipleChoiceFilter(
-        field_name="work_type",
+    facet_work_type = MultipleChoiceOverlap(
+        field_name="work_type_names",
         label=_("Type of the work."),
-        lookup_expr="icontains",
-        choices=WorkType.objects.all().values_list("id", "name"),
+        lookup_expr="overlap",
+        choices=WorkType.objects.all().values_list("name", "name"),
     )
     start_year = django_filters.NumberFilter(
         field_name="min_year",

@@ -350,6 +350,10 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                 )
             )
         )
+        work_type_names = WorkType.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+            triple_set_from_obj__prop__name_forward__in=["has type"],
+        ).values_list("name", flat=True)
 
         expression_publisher = Organisation.objects.filter(
             triple_set_from_subj__obj_id=OuterRef("pk"),
@@ -412,6 +416,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             .annotate(
                 expression_data=ArraySubquery(related_expressions),
                 work_type=ArraySubquery(work_types),
+                work_type_names=ArraySubquery(work_type_names),
                 facet_language=ArraySubquery(facet_languages),
                 facet_topic=ArraySubquery(facet_topics),
                 min_year=Subquery(
