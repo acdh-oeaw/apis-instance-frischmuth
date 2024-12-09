@@ -270,23 +270,7 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                     "work_type": {
                         "type": "array",
                         "nullable": True,
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "integer",
-                                },
-                                "key": {
-                                    "type": "string",
-                                },
-                                "count": {
-                                    "type": "integer",
-                                },
-                                "children": {
-                                    "$ref": "#/components/schemas/PaginatedWorkPreviewList/properties/facets/properties/work_type"
-                                },
-                            },
-                        },
+                        "items": {"$ref": "#/components/schemas/WorkTypeFacet"},
                         "example": [
                             {
                                 "id": 4,

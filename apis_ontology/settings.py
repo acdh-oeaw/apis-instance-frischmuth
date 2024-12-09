@@ -148,6 +148,10 @@ SPECTACULAR_SETTINGS["COMPONENT_NO_READ_ONLY_REQUIRED"] = True
 SPECTACULAR_SETTINGS["DEFAULT_GENERATOR_CLASS"] = (
     "apis_core.generic.generators.CustomSchemaGenerator"
 )
+SPECTACULAR_SETTINGS["POSTPROCESSING_HOOKS"] = [
+    "drf_spectacular.hooks.postprocess_schema_enums",
+    "apis_ontology.schema.postprocess_facets",
+]
 
 
 # Database
