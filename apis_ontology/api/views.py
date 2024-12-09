@@ -283,10 +283,7 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                                     "type": "integer",
                                 },
                                 "children": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/PaginatedWorkPreviewList/properties/facets/properties/work_type",
-                                    },
+                                    "$ref": "#/components/schemas/PaginatedWorkPreviewList/properties/facets/properties/work_type"
                                 },
                             },
                         },
