@@ -1091,6 +1091,27 @@ class Interpretatem(
         verbose_name_plural = _("interpretateme")
 
 
+class Glossar(
+    VersionMixin, GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+):
+    """
+    A conceptual object representing a specific Glossar entry.
+    """
+
+    data_source = models.ForeignKey(
+        DataSource,
+        on_delete=models.SET_NULL,
+        related_name="glossars",
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name=_("Datenquelle"),
+    )
+
+    class Meta:
+        verbose_name_plural = _("glossar")
+
+
 def create_properties(
     name_forward: str, name_reverse: str, subjects: list, objects: list
 ):
