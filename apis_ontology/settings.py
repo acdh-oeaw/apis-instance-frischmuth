@@ -114,12 +114,11 @@ LOGGING = {
             "propagate": False,
         },
         "apis_ontology.scripts": {
-            "handlers": DJANGO_LOG_HANDLERS,  # defaults to apis_ontology.console
+            "handlers": ["imports.file"],  # defaults to apis_ontology.console
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": False,
         },
         "apis_ontology.management.commands": {
-            "handlers": DJANGO_LOG_HANDLERS,
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": False,
         },
