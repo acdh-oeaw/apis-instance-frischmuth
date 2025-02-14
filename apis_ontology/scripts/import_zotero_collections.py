@@ -408,7 +408,7 @@ def get_edition_types_from_tags(tags):
     :param tags: a list of strings
     :return: a list of strings
     """
-    valid_tags = [t.value for t in Expression.EditionTypes.choices if t.label in tags]
+    valid_tags = [key for key,_ in Expression.EditionTypes.choices if key in tags]
 
     return valid_tags
 
