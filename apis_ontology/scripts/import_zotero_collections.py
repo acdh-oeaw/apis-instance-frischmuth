@@ -345,11 +345,11 @@ def get_collection_data(zot, coll_key, include_subs=True):
              (meta) information about the collection
     """
     collection = zot.collection(coll_key)
-    items = zot.collection_items_top(coll_key)
+    items = zot.everything(zot.collection_items_top(coll_key))
     sub_collections = []
 
     if include_subs:
-        items = zot.collection_items(coll_key, itemType="-attachment")
+        items = zot.everything(zot.collection_items(coll_key, itemType="-attachment"))
         subs = zot.collections_sub(coll_key)
         for s in subs:
             sub_data = get_collection_data(zot, s["key"], include_subs=False)
