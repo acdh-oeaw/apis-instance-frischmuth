@@ -272,10 +272,16 @@ def create_place(place_name: str, source: DataSource):
                        or a publisher's address; gets added to "notes" field
     :return: Place object
     """
-    place, created = Place.objects.get_or_create(
-        name=place_name,
-        defaults={"data_source": source},
-    )
+    created = False
+    try:
+        place, created = Place.objects.get_or_create(
+            name=place_name,
+            data_source_id=source.id,
+            defaults={"data_source": source},
+        )
+
+    except Place.MultipleObjectsReturned:
+        place = None
 
     return place, created
 
