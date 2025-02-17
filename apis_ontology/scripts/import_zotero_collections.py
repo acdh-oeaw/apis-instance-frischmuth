@@ -317,9 +317,13 @@ def import_items(collection_items, import_name):
 
     # tmp solution for reimport from same zotero collection
     existing_datasource = DataSource.objects.get(name=import_name)
-    
-    source, created = (existing_datasource, False) if existing_datasource else create_source(import_name, "", "", "", "Zotero")
-    
+
+    source, created = (
+        (existing_datasource, False)
+        if existing_datasource
+        else create_source(import_name, "", "", "", "Zotero")
+    )
+
     importable, non_importable = get_valid_collection_items(collection_items)
 
     if importable:
@@ -893,9 +897,10 @@ def create_entities(item, source):
                         success.append(
                             f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                         )
-                else: logger.info(
-                    f"Multiple results for {p}. Relation needs to be created manually."
-                )
+                else:
+                    logger.info(
+                        f"Multiple results for {p}. Relation needs to be created manually."
+                    )
     # get or create topics and relations between work and topics
     for topic in topics:
         topic, created = create_topic(topic_name=topic, source=source)
