@@ -7,9 +7,10 @@ I.e. project-specific endpoints (not APIS built-in API).
 import logging
 
 import django_filters
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.db.models import Func
 from django.utils.translation import gettext_lazy as _
 
-from apis_ontology.filtersets import fuzzy_search_unaccent_trigram
 from apis_ontology.models import Expression, Topic, WorkType
 
 
@@ -24,6 +25,11 @@ class MultipleChoiceOverlap(django_filters.MultipleChoiceFilter):
         return qs.filter(**filter)
 
 
+class WebSearchQuery(Func):
+    function = "websearch_to_tsquery"
+    template = "%(function)s('%(config)s', %(expressions)s)"
+
+
 class WorkPreviewSearchFilter(django_filters.FilterSet):
     text_filter = django_filters.CharFilter(
         field_name=[
@@ -33,7 +39,7 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
         label=_(
             "String to find in work titles and subtitles using fuzzy search (unaccent-ed trigram word similarity)."
         ),
-        method=fuzzy_search_unaccent_trigram,
+        method="filter_search",
     )
     facet_language = MultipleChoiceOverlap(
         field_name="facet_language",
@@ -63,3 +69,21 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
         label=_("End year for publication date of expressions (inclusive)"),
         lookup_expr="lte",
     )
+
+    def filter_search(self, queryset, name, value):
+        search_vector = SearchVector(
+            "title", weight="A", config="german"
+        ) + SearchVector(
+            "subtitle", weight="B", config="german"
+        )  # Combine fields for search
+        search_query = SearchQuery(
+            value, config="german", search_type="websearch"
+        )  # Search term
+        results = (
+            queryset.annotate(
+                search=search_vector, rank=SearchRank(search_vector, search_query)
+            )
+            .filter(search=search_query)
+            .order_by("-rank")
+        )
+        return results
