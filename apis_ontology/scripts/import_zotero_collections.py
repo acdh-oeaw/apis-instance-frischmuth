@@ -9,7 +9,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q
 from pyzotero import zotero, zotero_errors
 
-from apis_ontology.models import Expression, Work
+from apis_ontology.models import DataSource, Expression, Work
 
 from .additional_infos import WORK_TYPES, ZOTERO_CREATORS_MAPPING
 from .import_helpers import (
@@ -315,7 +315,11 @@ def import_items(collection_items, import_name):
     success = []
     failure = []
 
-    source, created = create_source(import_name, "", "", "", "Zotero")
+    # tmp solution for reimport from same zotero collection
+    existing_datasource = DataSource.objects.get(name=import_name)
+    
+    source, created = (existing_datasource, False) if existing_datasource else create_source(import_name, "", "", "", "Zotero")
+    
     importable, non_importable = get_valid_collection_items(collection_items)
 
     if importable:
@@ -879,15 +883,19 @@ def create_entities(item, source):
                 if created:
                     success.append(f"Created place: {place}")
 
-                triple, created = create_triple(
-                    entity_subj=expression,
-                    entity_obj=place,
-                    prop=Property.objects.get(name_forward="is published in"),
-                )
-                if created:
-                    success.append(
-                        f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+                if place:
+                    triple, created = create_triple(
+                        entity_subj=expression,
+                        entity_obj=place,
+                        prop=Property.objects.get(name_forward="is published in"),
                     )
+                    if created:
+                        success.append(
+                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
+                        )
+                else: logger.info(
+                    f"Multiple results for {p}. Relation needs to be created manually."
+                )
     # get or create topics and relations between work and topics
     for topic in topics:
         topic, created = create_topic(topic_name=topic, source=source)
