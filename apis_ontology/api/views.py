@@ -19,6 +19,7 @@ from apis_ontology.models import (
     Person,
     PhysicalObject,
     Place,
+    ResearchPerspective,
     Topic,
     Work,
     WorkType,
@@ -27,6 +28,7 @@ from apis_ontology.models import (
 from .filters import WorkPreviewSearchFilter
 from .serializers import (
     PlaceDetailDataSerializer,
+    ResearchPerspectiveDetailDataSerializer,
     WorkDetailSerializer,
     WorkPreviewSerializer,
     get_work_type_data,
@@ -644,4 +646,28 @@ class PlaceViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             )
         )
         res = Place.objects.all().annotate(related_works=ArraySubquery(work_relations))
+        return res
+
+
+class ResearchPerspectiveViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """
+    API endpoint which returns ResearchPerspective objects by id only
+    """
+
+    serializer_class = ResearchPerspectiveDetailDataSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        work_relations = Work.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+        ).values(
+            json=JSONObject(
+                id="id",
+                title="title",
+                subtitle="subtitle",
+            )
+        )
+        res = ResearchPerspective.objects.all().annotate(
+            related_works=ArraySubquery(work_relations)
+        )
         return res

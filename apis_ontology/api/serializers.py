@@ -17,6 +17,7 @@ from apis_ontology.models import (
     Person,
     PhysicalObject,
     Place,
+    ResearchPerspective,
     Topic,
     Work,
     WorkType,
@@ -259,17 +260,28 @@ class WorkDetailSerializer(serializers.ModelSerializer):
         return list(obj.forward_work_relations) + list(obj.reverse_work_relations)
 
 
-class WorkPlaceMinSerializer(serializers.Serializer):
+class RelWorkMinSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     title = serializers.CharField(max_length=255)
     subtitle = serializers.CharField(max_length=255, allow_null=True)
 
 
 class PlaceDetailDataSerializer(serializers.ModelSerializer):
-    related_works = WorkPlaceMinSerializer(many=True, allow_empty=True)
+    related_works = RelWorkMinSerializer(many=True, allow_empty=True)
 
     class Meta:
         model = Place
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]
+
+
+class ResearchPerspectiveDetailDataSerializer(serializers.ModelSerializer):
+    related_works = RelWorkMinSerializer(many=True, allow_empty=True)
+
+    class Meta:
+        model = ResearchPerspective
         exclude = [
             "self_contenttype",
             "data_source",
