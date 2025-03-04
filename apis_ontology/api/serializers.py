@@ -147,14 +147,21 @@ class WorkPreviewSerializer(serializers.ModelSerializer):
         return {"id": work_type["id"], "name": work_type["name"]}
 
 
+class MetacharacterSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField(max_length=255)
+
+
 class CharacterDataSerializer(serializers.ModelSerializer):
     fictionality = serializers.ListField(
         child=serializers.CharField(allow_null=True), required=False, allow_empty=True
     )
+    metacharacter = MetacharacterSerializer(allow_null=True)
 
     class Meta:
         model = Character
         fields = [
+            "id",
             "forename",
             "surname",
             "fallback_name",
@@ -162,6 +169,7 @@ class CharacterDataSerializer(serializers.ModelSerializer):
             "description",
             "relevancy",
             "fictionality",
+            "metacharacter",
         ]
 
 

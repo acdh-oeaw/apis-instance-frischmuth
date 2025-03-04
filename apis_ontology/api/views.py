@@ -15,6 +15,7 @@ from apis_ontology.models import (
     Archive,
     Character,
     Expression,
+    MetaCharacter,
     Organisation,
     Person,
     PhysicalObject,
@@ -501,18 +502,31 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 place_of_publication="places",
             )
         )
-
-        related_characters = Character.objects.filter(
-            triple_set_from_obj__subj_id=OuterRef("pk"),
-            triple_set_from_obj__prop__name_forward__in=["features"],
+        metacharacter = MetaCharacter.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
         ).values(
             json=JSONObject(
                 id="id",
-                forename="forename",
-                surname="surname",
-                fallback_name="fallback_name",
-                relevancy="relevancy",
-                fictionality="fictionality",
+                name="name",
+            )
+        )
+
+        related_characters = (
+            Character.objects.filter(
+                triple_set_from_obj__subj_id=OuterRef("pk"),
+                triple_set_from_obj__prop__name_forward__in=["features"],
+            )
+            .annotate(metacharacter=Subquery(metacharacter[:1]))
+            .values(
+                json=JSONObject(
+                    id="id",
+                    forename="forename",
+                    surname="surname",
+                    fallback_name="fallback_name",
+                    relevancy="relevancy",
+                    fictionality="fictionality",
+                    metacharacter="metacharacter",
+                )
             )
         )
 
