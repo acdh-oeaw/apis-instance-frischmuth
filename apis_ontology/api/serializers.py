@@ -294,3 +294,14 @@ class ResearchPerspectiveDetailDataSerializer(serializers.ModelSerializer):
             "self_contenttype",
             "data_source",
         ]
+
+
+class TopicDetailDataSerializer(serializers.ModelSerializer):
+    related_works = RelWorkMinSerializer(many=True, allow_empty=True)
+
+    class Meta:
+        model = Topic
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]

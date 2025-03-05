@@ -22,6 +22,7 @@ from rest_framework import routers
 from apis_ontology.api.views import (
     PlaceViewSet,
     ResearchPerspectiveViewSet,
+    TopicViewSet,
     WorkDetailViewSet,
     WorkPreviewViewSet,
 )
@@ -37,6 +38,7 @@ router.register(
     ResearchPerspectiveViewSet,
     basename="research-perspective-detail",
 )
+router.register(r"topic-detail", TopicViewSet, basename="topic-detail")
 
 urlpatterns += [
     path("accounts/", include("django.contrib.auth.urls")),
