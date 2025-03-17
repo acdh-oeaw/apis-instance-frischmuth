@@ -28,6 +28,7 @@ from apis_ontology.models import (
 
 from .filters import WorkPreviewSearchFilter
 from .serializers import (
+    MetaCharacterDetailSerializer,
     PlaceDetailDataSerializer,
     ResearchPerspectiveDetailDataSerializer,
     TopicDetailDataSerializer,
@@ -707,4 +708,28 @@ class TopicViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             )
         )
         res = Topic.objects.all().annotate(related_works=ArraySubquery(work_relations))
+        return res
+
+
+class MetaCharacterViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """
+    API endpoint which returns Metacharacter objects by id only
+    """
+
+    serializer_class = MetaCharacterDetailSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        work_relations = Work.objects.filter(
+            triple_set_from_subj__obj__triple_set_from_obj__subj_id=OuterRef("pk"),
+        ).values(
+            json=JSONObject(
+                id="id",
+                title="title",
+                subtitle="subtitle",
+            )
+        )
+        res = MetaCharacter.objects.all().annotate(
+            related_works=ArraySubquery(work_relations),
+        )
         return res
