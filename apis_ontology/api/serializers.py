@@ -14,6 +14,7 @@ from apis_ontology.models import (
     Archive,
     Character,
     Expression,
+    MetaCharacter,
     Person,
     PhysicalObject,
     Place,
@@ -305,3 +306,11 @@ class TopicDetailDataSerializer(serializers.ModelSerializer):
             "self_contenttype",
             "data_source",
         ]
+
+
+class MetaCharacterDetailSerializer(serializers.ModelSerializer):
+    related_works = RelWorkMinSerializer(many=True, allow_empty=True)
+
+    class Meta:
+        model = MetaCharacter
+        exclude = ["self_contenttype", "data_source", "progress_status"]
