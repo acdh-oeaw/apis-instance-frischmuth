@@ -276,7 +276,6 @@ def create_place(place_name: str, source: DataSource):
     try:
         place, created = Place.objects.get_or_create(
             name=place_name,
-            data_source_id=source.id,
             defaults={"data_source": source},
         )
 

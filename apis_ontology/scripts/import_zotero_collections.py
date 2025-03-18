@@ -9,7 +9,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q
 from pyzotero import zotero, zotero_errors
 
-from apis_ontology.models import DataSource, Expression, Work
+from apis_ontology.models import Expression, Work
 
 from .additional_infos import WORK_TYPES, ZOTERO_CREATORS_MAPPING
 from .import_helpers import (
@@ -66,8 +66,8 @@ def import_work_collections(zot, coll_id, include_subs=True):
     For regular import of works – both primary (by Frischmuth) and secondary
     (other authors).
 
-    Import assumes three sub collections to be present in any collection
-    which should be imported, which need to be imported in the order:
+    If subcollections are present, they need to be imported in the following
+    order:
     "tertiaer", "primaer", "sekundaer".
 
     :param zot: Zotero connection object
@@ -83,17 +83,17 @@ def import_work_collections(zot, coll_id, include_subs=True):
 
     collection_data = get_collection_data(zot, coll_id, include_subs=include_subs)
 
-    required_subs_raw = os.environ.get("ZOTERO_SUB_COLLECTIONS", False)
-    if not required_subs_raw:
-        required_subs = ["primaer", "sekundaer", "tertiaer"]
+    subs_raw = os.environ.get("ZOTERO_SUB_COLLECTIONS", False)
+    if not subs_raw:
+        subs = ["primaer", "sekundaer", "tertiaer"]
     else:
-        required_subs = [k.replace(" ", "") for k in required_subs_raw.split(",")]
+        subs = [k.replace(" ", "") for k in subs_raw.split(",")]
 
-    if required_subs:
+    if subs:
         sub_collections = collection_data["sub_collection_info"]
 
-        if set(required_subs).issubset([d["name"] for d in sub_collections]):
-            for req in required_subs:
+        if set(subs).issubset([d["name"] for d in sub_collections]):
+            for req in subs:
                 for d in [d for d in sub_collections if d["name"] == req]:
                     sub_ids.append(d["key"])
 
@@ -107,8 +107,11 @@ def import_work_collections(zot, coll_id, include_subs=True):
                 failure.append(failed)
 
         else:
-            failure_msg = f"Cannot import from collection {collection_data} – missing sub collections!"
-            failure.append(failure_msg)
+            imported, failed = import_items_from_collection(
+                    zot, coll_id, include_subs=True, import_name=collection_data["name"]
+                )
+            success.append(imported)
+            failure.append(failed)
 
     return success, failure
 
@@ -315,14 +318,7 @@ def import_items(collection_items, import_name):
     success = []
     failure = []
 
-    # tmp solution for reimport from same zotero collection
-    existing_datasource = DataSource.objects.get(name=import_name)
-
-    source, created = (
-        (existing_datasource, False)
-        if existing_datasource
-        else create_source(import_name, "", "", "", "Zotero")
-    )
+    source, created = create_source(import_name, "", "", "", "Zotero")
 
     importable, non_importable = get_valid_collection_items(collection_items)
 
@@ -878,29 +874,29 @@ def create_entities(item, source):
                 f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
             )
 
-        # get or create Place object for place of publication
-        # ATTN. Zotero "place" field can contain multiple places
-        # separated by semicolons
-        if places_of_publication:
-            for p in places_of_publication:
-                place, created = create_place(p, source)
-                if created:
-                    success.append(f"Created place: {place}")
+    # get or create Place object for place of publication
+    # ATTN. Zotero "place" field can contain multiple places
+    # separated by semicolons
+    if places_of_publication:
+        for p in places_of_publication:
+            place, created = create_place(p, source)
+            if created:
+                success.append(f"Created place: {place}")
 
-                if place:
-                    triple, created = create_triple(
-                        entity_subj=expression,
-                        entity_obj=place,
-                        prop=Property.objects.get(name_forward="is published in"),
+            if place:
+                triple, created = create_triple(
+                    entity_subj=expression,
+                    entity_obj=place,
+                    prop=Property.objects.get(name_forward="is published in"),
+                )
+                if created:
+                    success.append(
+                        f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
                     )
-                    if created:
-                        success.append(
-                            f"Created new triple: {triple.subj} – {triple.prop.name_forward} – {triple.obj}"
-                        )
-                else:
-                    logger.info(
-                        f"Multiple results for {p}. Relation needs to be created manually."
-                    )
+            else:
+                logger.info(
+                    f"Multiple results for {p}. Relation needs to be created manually."
+                )
     # get or create topics and relations between work and topics
     for topic in topics:
         topic, created = create_topic(topic_name=topic, source=source)
