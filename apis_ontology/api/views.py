@@ -484,6 +484,29 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             triple_set_from_obj__prop__name_forward__in=["is published in"],
         ).distinct()
 
+        related_persons = (
+            Person.objects.filter(
+                triple_set_from_subj__obj_id=OuterRef("pk"),
+                triple_set_from_subj__prop__name_forward__in=[
+                    "is author of",
+                    "is editor of",
+                ],
+            )
+            .annotate(
+                uris=ArraySubquery(related_uris),
+            )
+            .values(
+                json=JSONObject(
+                    id="id",
+                    forename="forename",
+                    surname="surname",
+                    fallback_name="fallback_name",
+                    relation_type="triple_set_from_subj__prop__name_reverse",
+                    uris="uris",
+                )
+            )
+        )
+
         related_expressions = (
             Expression.objects.filter(
                 triple_set_from_obj__subj_id=OuterRef("pk"),
@@ -491,6 +514,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             ).annotate(
                 publisher=Subquery(expression_publisher[:1]),
                 places=ArraySubquery(expression_places),
+                persons=ArraySubquery(related_persons),
             )
         ).values(
             json=JSONObject(
@@ -502,6 +526,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 publication_date="publication_date_iso_formatted",
                 publisher="publisher",
                 place_of_publication="places",
+                persons="persons",
             )
         )
         metacharacter = MetaCharacter.objects.filter(
@@ -576,29 +601,6 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 alternative_name="alternative_name",
                 description="description",
                 notes="notes",
-            )
-        )
-
-        related_persons = (
-            Person.objects.filter(
-                triple_set_from_subj__obj_id=OuterRef("pk"),
-                triple_set_from_subj__prop__name_forward__in=[
-                    "is author of",
-                    "is editor of",
-                ],
-            )
-            .annotate(
-                uris=ArraySubquery(related_uris),
-            )
-            .values(
-                json=JSONObject(
-                    id="id",
-                    forename="forename",
-                    surname="surname",
-                    fallback_name="fallback_name",
-                    relation_type="triple_set_from_subj__prop__name_reverse",
-                    uris="uris",
-                )
             )
         )
 

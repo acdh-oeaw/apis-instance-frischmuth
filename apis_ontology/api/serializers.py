@@ -108,11 +108,40 @@ class ExpressionDataSerializer(serializers.ModelSerializer):
         ]
 
 
+class PersonDataSerializer(serializers.ModelSerializer):
+    uris = serializers.ListField(
+        required=False, allow_empty=True, child=serializers.URLField()
+    )
+    relation_type = serializers.CharField(required=False, allow_null=True)
+
+    class Meta:
+        model = Person
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]
+
+
 class ExpressionDataDetailSerializer(ExpressionDataSerializer):
     publisher = NameAndIdSerializer(required=False, allow_null=True)
     place_of_publication = PlaceDataSerializerMin(
         required=False, allow_null=True, many=True
     )
+    persons = PersonDataSerializer(required=False, allow_null=True, many=True)
+
+    class Meta:
+        model = Expression
+        fields = [
+            "title",
+            "subtitle",
+            "edition",
+            "edition_type",
+            "language",
+            "publication_date",
+            "publisher",
+            "place_of_publication",
+            "persons",
+        ]
 
 
 class WorkPreviewSerializer(serializers.ModelSerializer):
@@ -199,20 +228,6 @@ class PhysicalObjectDataSerializer(serializers.ModelSerializer):
 class TopicDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
-        exclude = [
-            "self_contenttype",
-            "data_source",
-        ]
-
-
-class PersonDataSerializer(serializers.ModelSerializer):
-    uris = serializers.ListField(
-        required=False, allow_empty=True, child=serializers.URLField()
-    )
-    relation_type = serializers.CharField(required=False, allow_null=True)
-
-    class Meta:
-        model = Person
         exclude = [
             "self_contenttype",
             "data_source",
