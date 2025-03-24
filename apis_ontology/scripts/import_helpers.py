@@ -227,6 +227,9 @@ def create_person(person_data: dict, source: DataSource):
             if len(name_parts) > 1:
                 last_name = name_parts[-1]
                 first_name = " ".join(name_parts[:-1])
+            else:
+                last_name = full_name
+                first_name = ""
 
     person, created = Person.objects.get_or_create(
         fallback_name=fallback_name,
