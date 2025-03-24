@@ -4,6 +4,7 @@ import logging
 import os
 import re
 
+from apis_core.apis_metainfo.models import Uri
 from apis_core.apis_relations.models import Property
 from django.core.management.base import BaseCommand
 from django.db.models import Q
@@ -25,7 +26,7 @@ from .import_helpers import (
     get_type,
     get_work,
 )
-from .utils import clean_and_split_multivalue_string, get_entity_view_url
+from .utils import clean_and_split_multivalue_string, get_entity_view_url, secure_urls
 
 
 # Use keys or keywords in environment variable ZOTERO_FILTER_COLLECTIONS
@@ -642,6 +643,7 @@ def create_entities(item, source):
     issue = item_data.get("seriesNumber", item_data.get("issue", ""))
     volume = item_data.get("volume", "")
     edition = item_data.get("edition", "")
+    url = item_data.get("url", "")
     creators_with_props = []
     edition_types = []
     work_types = []
@@ -897,6 +899,11 @@ def create_entities(item, source):
                 logger.info(
                     f"Multiple results for {p}. Relation needs to be created manually."
                 )
+    if url:
+        secure_uri = secure_urls(url)
+        uri, created = Uri.objects.get_or_create(uri=secure_uri)
+        uri.root_object = uri
+
     # get or create topics and relations between work and topics
     for topic in topics:
         topic, created = create_topic(topic_name=topic, source=source)
