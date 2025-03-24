@@ -902,7 +902,7 @@ def create_entities(item, source):
     if url:
         secure_uri = secure_urls(url)
         uri, created = Uri.objects.get_or_create(uri=secure_uri)
-        uri.root_object = uri
+        uri.root_object = expression
 
     # get or create topics and relations between work and topics
     for topic in topics:
