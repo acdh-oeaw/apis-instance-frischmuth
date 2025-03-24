@@ -108,8 +108,8 @@ def import_work_collections(zot, coll_id, include_subs=True):
 
         else:
             imported, failed = import_items_from_collection(
-                    zot, coll_id, include_subs=True, import_name=collection_data["name"]
-                )
+                zot, coll_id, include_subs=True, import_name=collection_data["name"]
+            )
             success.append(imported)
             failure.append(failed)
 
