@@ -418,7 +418,7 @@ class Work(
         )  # a.k.a. autodiegetic
 
     siglum = models.CharField(
-        max_length=6,
+        max_length=255,
         unique=True,
         blank=True,
         null=True,
