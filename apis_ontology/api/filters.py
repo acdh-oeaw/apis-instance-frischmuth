@@ -51,13 +51,13 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
         field_name="facet_topic",
         label=_("Topic of the expression."),
         lookup_expr="overlap",
-        choices=Topic.objects.all().values_list("name", "name"),
+        choices=[(x[0], x[0]) for x in Topic.objects.all().values_list("name")],
     )
     facet_work_type = MultipleChoiceOverlap(
         field_name="work_type_names",
         label=_("Type of the work."),
         lookup_expr="overlap",
-        choices=WorkType.objects.all().values_list("name", "name"),
+        choices=[(x[0], x[0]) for x in WorkType.objects.all().values_list("name")],
     )
     start_year = django_filters.NumberFilter(
         field_name="min_year",
