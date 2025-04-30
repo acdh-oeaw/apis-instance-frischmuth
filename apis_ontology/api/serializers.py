@@ -14,6 +14,7 @@ from apis_ontology.models import (
     Archive,
     Character,
     Expression,
+    Glossar,
     MetaCharacter,
     Person,
     PhysicalObject,
@@ -329,3 +330,14 @@ class MetaCharacterDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = MetaCharacter
         exclude = ["self_contenttype", "data_source", "progress_status"]
+
+
+class GlossarDetailDataSerializer(serializers.ModelSerializer):
+    related_works = RelWorkMinSerializer(many=True, allow_empty=True)
+
+    class Meta:
+        model = Glossar
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]
