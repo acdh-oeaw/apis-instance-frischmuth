@@ -20,6 +20,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from apis_ontology.api.views import (
+    GlossarViewSet,
     MetaCharacterViewSet,
     PlaceViewSet,
     ResearchPerspectiveViewSet,
@@ -43,6 +44,7 @@ router.register(r"topic-detail", TopicViewSet, basename="topic-detail")
 router.register(
     r"metacharacter-detail", MetaCharacterViewSet, basename="metacharacter-detail"
 )
+router.register(r"glossar-detail", GlossarViewSet, basename="glossar-detail")
 
 urlpatterns += [
     path("accounts/", include("django.contrib.auth.urls")),
