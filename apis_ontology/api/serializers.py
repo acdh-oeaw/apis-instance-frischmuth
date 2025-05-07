@@ -4,8 +4,11 @@ Serializers for custom API.
 I.e. project-specific endpoints (not APIS built-in API).
 """
 
+import re
 from typing import TypedDict
 
+import markdown
+from apis_core.history.models import RootObject
 from django.contrib.postgres.expressions import Subquery
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
@@ -241,6 +244,7 @@ class WorkDetailSerializer(serializers.ModelSerializer):
         required=False, allow_empty=True, many=True
     )
     related_works = serializers.SerializerMethodField()
+    context = serializers.SerializerMethodField()
     characters = CharacterDataSerializer(
         source="related_characters",
         required=False,
@@ -283,6 +287,19 @@ class WorkDetailSerializer(serializers.ModelSerializer):
 
     def get_related_works(self, obj) -> list[RelatedWorksDict]:
         return list(obj.forward_work_relations) + list(obj.reverse_work_relations)
+
+    def get_context(self, obj) -> str:
+        md = obj.context
+        md = re.sub(
+            r"(?<=\()[0-9]+(?=\))",
+            lambda txt: RootObject.objects_inheritance.get_subclass(
+                pk=txt.group()
+            ).get_frontend_url()
+            or txt.group(),
+            md,
+        )
+        html = markdown.markdown(md)
+        return html
 
 
 class RelWorkMinSerializer(serializers.Serializer):
