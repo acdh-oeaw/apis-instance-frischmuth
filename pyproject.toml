@@ -23,6 +23,7 @@ psycopg = "^3.1.12"
 pyzotero = "^1.5.18"
 sharepy = "^2.0.0"
 django-multiselectfield = "^0.1.13"
+markdown = "^3.8"
 
 [tool.poetry.group.dev]
 optional = true

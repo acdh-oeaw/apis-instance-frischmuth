@@ -17,6 +17,14 @@ from django.utils.translation import gettext_lazy as _
 logger = logging.getLogger(__name__)
 
 
+class FrischmEntityMixin(models.Model):
+    def get_frontend_url(self):
+        return None
+
+    class Meta:
+        abstract = True
+
+
 class StatusMixin(models.Model):
     class ProgressStates(models.TextChoices):
         CREATED = "created", _("neu angelegt")
@@ -260,7 +268,7 @@ class LanguageMixin(models.Model):
         abstract = True
 
 
-class DataSource(VersionMixin, models.Model):
+class DataSource(VersionMixin, FrischmEntityMixin, models.Model):
     """
     Holds (meta) information about data sources.
     Used to identify e.g. imports from Zotero or Excel.
@@ -323,7 +331,13 @@ class DataSource(VersionMixin, models.Model):
 
 
 class Work(
-    VersionMixin, TitlesMixin, LanguageMixin, NotesMixin, StatusMixin, AbstractEntity
+    VersionMixin,
+    TitlesMixin,
+    LanguageMixin,
+    NotesMixin,
+    StatusMixin,
+    FrischmEntityMixin,
+    AbstractEntity,
 ):
     """
     The abstract notion of an intellectual creation, irrespective
@@ -416,6 +430,9 @@ class Work(
             "homodiegetisches Erzählen – Hauptfigur",
             _("homodiegetisches Erzählen – Hauptfigur"),
         )  # a.k.a. autodiegetic
+
+    def get_frontend_url(self):
+        return f"https://frischmuth-frontend-dev.acdh-ch-dev.oeaw.ac.at/work/{self.pk}"
 
     siglum = models.CharField(
         max_length=255,
@@ -574,6 +591,7 @@ class WorkType(
     AlternativeNameMixin,
     DescriptionMixin,
     StatusMixin,
+    FrischmEntityMixin,
     AbstractEntity,
 ):
     name_plural = models.CharField(
@@ -621,6 +639,7 @@ class Expression(
     LanguageMixin,
     NotesMixin,
     StatusMixin,
+    FrischmEntityMixin,
     AbstractEntity,
 ):
     """
@@ -755,7 +774,12 @@ class Expression(
 
 
 class Archive(
-    VersionMixin, GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+    VersionMixin,
+    GenericNameMixin,
+    DescriptionMixin,
+    StatusMixin,
+    FrischmEntityMixin,
+    AbstractEntity,
 ):
     """
     An institution or organisation where physical objects are
@@ -791,7 +815,9 @@ class Archive(
         verbose_name_plural = _("archive")
 
 
-class PhysicalObject(VersionMixin, GenericNameMixin, DescriptionMixin, AbstractEntity):
+class PhysicalObject(
+    VersionMixin, GenericNameMixin, DescriptionMixin, FrischmEntityMixin, AbstractEntity
+):
     """
     A physical object pertaining to a Work.
 
@@ -826,7 +852,12 @@ class PhysicalObject(VersionMixin, GenericNameMixin, DescriptionMixin, AbstractE
 
 
 class Person(
-    VersionMixin, PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+    VersionMixin,
+    PersonNameMixin,
+    DescriptionMixin,
+    StatusMixin,
+    FrischmEntityMixin,
+    AbstractEntity,
 ):
     """
     Any natural person.
@@ -856,6 +887,7 @@ class Organisation(
     AlternativeNameMixin,
     DescriptionMixin,
     StatusMixin,
+    FrischmEntityMixin,
     AbstractEntity,
 ):
     """
@@ -887,7 +919,12 @@ class Organisation(
 
 
 class Character(
-    VersionMixin, PersonNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+    VersionMixin,
+    PersonNameMixin,
+    DescriptionMixin,
+    StatusMixin,
+    FrischmEntityMixin,
+    AbstractEntity,
 ):
     """
     A real or fictitious person who appears in or is mentioned in a Work.
@@ -942,7 +979,12 @@ class Character(
 
 
 class MetaCharacter(
-    VersionMixin, GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+    VersionMixin,
+    GenericNameMixin,
+    DescriptionMixin,
+    StatusMixin,
+    FrischmEntityMixin,
+    AbstractEntity,
 ):
     """
     A composite entity to refer to related characters across works.
@@ -973,6 +1015,7 @@ class Place(
     AlternativeNameMixin,
     DescriptionMixin,
     StatusMixin,
+    FrischmEntityMixin,
     AbstractEntity,
 ):
     """
@@ -1004,6 +1047,9 @@ class Place(
         verbose_name=_("Datenquelle"),
     )
 
+    def get_frontend_url(self):
+        return f"https://frischmuth-frontend-dev.acdh-ch-dev.oeaw.ac.at/explore/places?place={self.pk}"
+
     class Meta:
         verbose_name = _("ort")
         verbose_name_plural = _("orte")
@@ -1020,6 +1066,7 @@ class ResearchPerspective(
     DescriptionMixin,
     NotesMixin,
     StatusMixin,
+    FrischmEntityMixin,
     AbstractEntity,
 ):
     """
@@ -1036,6 +1083,9 @@ class ResearchPerspective(
         verbose_name=_("Datenquelle"),
     )
 
+    def get_frontend_url(self):
+        return f"https://frischmuth-frontend-dev.acdh-ch-dev.oeaw.ac.at/explore/research-perspectives?perspective={self.pk}"
+
     class Meta:
         verbose_name = _("forschungshinsicht")
         verbose_name_plural = _("forschungshinsichten")
@@ -1048,6 +1098,7 @@ class Topic(
     DescriptionMixin,
     NotesMixin,
     StatusMixin,
+    FrischmEntityMixin,
     AbstractEntity,
 ):
     """
@@ -1064,13 +1115,21 @@ class Topic(
         verbose_name=_("Datenquelle"),
     )
 
+    def get_frontend_url(self):
+        return f"https://frischmuth-frontend-dev.acdh-ch-dev.oeaw.ac.at/explore/themes?topic={self.pk}"
+
     class Meta:
         verbose_name = _("thema")
         verbose_name_plural = _("themen")
 
 
 class Interpretatem(
-    VersionMixin, GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+    VersionMixin,
+    GenericNameMixin,
+    DescriptionMixin,
+    StatusMixin,
+    FrischmEntityMixin,
+    AbstractEntity,
 ):
     """
     A conceptual object representing a specific (interpretative/scholarly)
@@ -1092,7 +1151,12 @@ class Interpretatem(
 
 
 class Glossar(
-    VersionMixin, GenericNameMixin, DescriptionMixin, StatusMixin, AbstractEntity
+    VersionMixin,
+    GenericNameMixin,
+    DescriptionMixin,
+    StatusMixin,
+    FrischmEntityMixin,
+    AbstractEntity,
 ):
     """
     A conceptual object representing a specific Glossar entry.
