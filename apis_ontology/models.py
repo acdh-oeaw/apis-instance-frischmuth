@@ -1331,6 +1331,14 @@ def construct_properties():
         objects=[Place],
     )
 
+    # (film) produced in
+    create_properties(
+        name_forward="is produced in",
+        name_reverse="is place of production of",
+        subjects=[Expression],
+        objects=[Place],
+    )
+
     # CHARACTER-focussed relations
     # features
     create_properties(
