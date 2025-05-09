@@ -18,6 +18,7 @@ from apis_ontology.models import (
     Character,
     Expression,
     Glossar,
+    Interpretatem,
     MetaCharacter,
     Person,
     PhysicalObject,
@@ -229,6 +230,20 @@ class PhysicalObjectDataSerializer(serializers.ModelSerializer):
         ]
 
 
+class AuthorDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Person
+        fields = ["id", "forename", "surname", "fallback_name"]
+
+
+class SourceDataSerializer(serializers.ModelSerializer):
+    authors = AuthorDataSerializer(many=True, allow_empty=True)
+
+    class Meta:
+        model = Work
+        fields = ["id", "title", "subtitle", "authors"]
+
+
 class TopicDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
@@ -236,6 +251,28 @@ class TopicDataSerializer(serializers.ModelSerializer):
             "self_contenttype",
             "data_source",
         ]
+
+
+class InterpretatemDataSerializer(serializers.ModelSerializer):
+    description = serializers.SerializerMethodField()
+    sources = SourceDataSerializer(many=True)
+
+    class Meta:
+        model = Interpretatem
+        fields = ["id", "description", "sources"]
+
+    def get_description(self, obj) -> str:
+        md = obj["description"]
+        md = re.sub(
+            r"(?<=\()[0-9]+(?=\))",
+            lambda txt: RootObject.objects_inheritance.get_subclass(
+                pk=txt.group()
+            ).get_frontend_url()
+            or txt.group(),
+            md,
+        )
+        html = markdown.markdown(md)
+        return html
 
 
 class WorkDetailSerializer(serializers.ModelSerializer):
@@ -274,6 +311,9 @@ class WorkDetailSerializer(serializers.ModelSerializer):
         required=False,
         allow_empty=True,
         many=True,
+    )
+    interpretatems = InterpretatemDataSerializer(
+        source="related_interpretatems", required=False, allow_empty=True, many=True
     )
 
     class Meta:

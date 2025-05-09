@@ -16,6 +16,7 @@ from apis_ontology.models import (
     Character,
     Expression,
     Glossar,
+    Interpretatem,
     MetaCharacter,
     Organisation,
     Person,
@@ -616,7 +617,31 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 relation_type="triple_set_from_obj__prop__name_forward",
             )
         )
-
+        authors = Person.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+            triple_set_from_subj__prop__name_forward__in=[
+                "is author of",
+            ],
+        ).values(
+            json=JSONObject(
+                id="id",
+                forename="forename",
+                surname="surname",
+                fallback_name="fallback_name",
+            )
+        )
+        source_works = (
+            Work.objects.filter(
+                triple_set_from_obj__subj_id=OuterRef("pk"),
+                triple_set_from_obj__prop__name_forward__in=["has source"],
+            )
+            .annotate(authors=ArraySubquery(authors))
+            .values(
+                json=JSONObject(
+                    id="id", title="title", subtitle="subtitle", authors="authors"
+                )
+            )
+        )
         reverse_work_relations = Work.objects.filter(
             triple_set_from_subj__obj_id=OuterRef("pk"),
         ).values(
@@ -625,6 +650,16 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 title="title",
                 subtitle="subtitle",
                 relation_type="triple_set_from_subj__prop__name_reverse",
+            )
+        )
+        related_interpretatems = (
+            Interpretatem.objects.filter(
+                triple_set_from_subj__obj_id=OuterRef("pk"),
+                triple_set_from_subj__prop__name_forward__in=["interprets"],
+            )
+            .annotate(sources=ArraySubquery(source_works))
+            .values(
+                json=JSONObject(id="id", description="description", sources="sources")
             )
         )
 
@@ -638,6 +673,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 related_topics=ArraySubquery(topics),
                 related_persons=ArraySubquery(related_persons),
                 related_places=ArraySubquery(work_places),
+                related_interpretatems=ArraySubquery(related_interpretatems),
                 forward_work_relations=ArraySubquery(forward_work_relations),
                 reverse_work_relations=ArraySubquery(reverse_work_relations),
             )
