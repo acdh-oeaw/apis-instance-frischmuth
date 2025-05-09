@@ -947,6 +947,7 @@ class Character(
         MAIN = "Hauptfigur", _("Hauptfigur")
         SUPPORTING = "Nebenfigur", _("Nebenfigur")
         REFERENCED = "erwähnte Figur", _("erwähnte Figur")
+        NOT_SET = "k.A.", _("k.A.")
 
     class CharacterFictionality(models.TextChoices):
         FICTIONAL = "fiktive Figur", _("fiktive Figur")
@@ -957,7 +958,7 @@ class Character(
         max_length=255,
         choices=CharacterRelevancy.choices,
         blank=False,
-        default="",
+        default=CharacterRelevancy.NOT_SET,
         verbose_name=_("Relevanz"),
         help_text=_("Bedeutsamkeit für den Text; Erzählfokus"),
     )
