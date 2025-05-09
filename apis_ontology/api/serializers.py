@@ -5,7 +5,6 @@ I.e. project-specific endpoints (not APIS built-in API).
 """
 
 import re
-from typing import TypedDict
 
 import markdown
 from apis_core.history.models import RootObject
@@ -46,13 +45,6 @@ def get_work_type_data(id):
         "count": 0,
         "children": [],
     }
-
-
-class RelatedWorksDict(TypedDict):
-    id: int
-    title: str
-    subtitle: str | None
-    relation_type: str
 
 
 class NameAndIdSerializer(serializers.Serializer):
@@ -237,7 +229,7 @@ class AuthorDataSerializer(serializers.ModelSerializer):
 
 
 class SourceDataSerializer(serializers.ModelSerializer):
-    authors = AuthorDataSerializer(many=True, allow_empty=True)
+    authors = AuthorDataSerializer(many=True, allow_empty=True, required=False)
 
     class Meta:
         model = Work
@@ -255,7 +247,7 @@ class TopicDataSerializer(serializers.ModelSerializer):
 
 class InterpretatemDataSerializer(serializers.ModelSerializer):
     description = serializers.SerializerMethodField()
-    sources = SourceDataSerializer(many=True)
+    sources = SourceDataSerializer(many=True, required=False, allow_empty=True)
 
     class Meta:
         model = Interpretatem
@@ -275,12 +267,23 @@ class InterpretatemDataSerializer(serializers.ModelSerializer):
         return html
 
 
+class RelatedWorksDataSerializer(serializers.ModelSerializer):
+    relation_type = serializers.CharField(required=False)
+    authors = AuthorDataSerializer(many=True, allow_empty=True, required=False)
+
+    class Meta:
+        model = Work
+        fields = ["id", "title", "subtitle", "relation_type", "authors"]
+
+
 class WorkDetailSerializer(serializers.ModelSerializer):
     work_type = WorkTypeDataSerializer(required=False, allow_empty=True, many=True)
     expression_data = ExpressionDataDetailSerializer(
         required=False, allow_empty=True, many=True
     )
-    related_works = serializers.SerializerMethodField()
+    related_works = RelatedWorksDataSerializer(
+        source="combined_work_relations", many=True, allow_empty=True, required=False
+    )
     context = serializers.SerializerMethodField()
     characters = CharacterDataSerializer(
         source="related_characters",
@@ -324,9 +327,6 @@ class WorkDetailSerializer(serializers.ModelSerializer):
             "notes",
             "progress_status",
         ]
-
-    def get_related_works(self, obj) -> list[RelatedWorksDict]:
-        return list(obj.forward_work_relations) + list(obj.reverse_work_relations)
 
     def get_context(self, obj) -> str:
         md = obj.context
