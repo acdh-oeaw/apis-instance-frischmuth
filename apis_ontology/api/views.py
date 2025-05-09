@@ -6,7 +6,7 @@ I.e. project-specific endpoints (not APIS built-in API).
 
 from apis_core.apis_metainfo.models import Uri
 from django.contrib.postgres.expressions import ArraySubquery, Subquery
-from django.db.models import Max, Min, OuterRef, Q
+from django.db.models import F, Func, Max, Min, OuterRef, Q
 from django.db.models.functions import JSONObject
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, pagination, permissions, viewsets
@@ -606,17 +606,6 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 notes="notes",
             )
         )
-
-        forward_work_relations = Work.objects.filter(
-            triple_set_from_obj__subj_id=OuterRef("pk"),
-        ).values(
-            json=JSONObject(
-                id="id",
-                title="title",
-                subtitle="subtitle",
-                relation_type="triple_set_from_obj__prop__name_forward",
-            )
-        )
         authors = Person.objects.filter(
             triple_set_from_subj__obj_id=OuterRef("pk"),
             triple_set_from_subj__prop__name_forward__in=[
@@ -642,14 +631,35 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 )
             )
         )
-        reverse_work_relations = Work.objects.filter(
-            triple_set_from_subj__obj_id=OuterRef("pk"),
-        ).values(
-            json=JSONObject(
-                id="id",
-                title="title",
-                subtitle="subtitle",
-                relation_type="triple_set_from_subj__prop__name_reverse",
+
+        forward_work_relations = (
+            Work.objects.filter(
+                triple_set_from_obj__subj_id=OuterRef("pk"),
+            )
+            .annotate(authors=ArraySubquery(authors))
+            .values(
+                json=JSONObject(
+                    id="id",
+                    title="title",
+                    subtitle="subtitle",
+                    relation_type="triple_set_from_obj__prop__name_forward",
+                    authors="authors",
+                )
+            )
+        )
+        reverse_work_relations = (
+            Work.objects.filter(
+                triple_set_from_subj__obj_id=OuterRef("pk"),
+            )
+            .annotate(authors=ArraySubquery(authors))
+            .values(
+                json=JSONObject(
+                    id="id",
+                    title="title",
+                    subtitle="subtitle",
+                    relation_type="triple_set_from_subj__prop__name_reverse",
+                    authors="authors",
+                )
             )
         )
         related_interpretatems = (
@@ -676,6 +686,13 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 related_interpretatems=ArraySubquery(related_interpretatems),
                 forward_work_relations=ArraySubquery(forward_work_relations),
                 reverse_work_relations=ArraySubquery(reverse_work_relations),
+            )
+            .annotate(
+                combined_work_relations=Func(
+                    F("forward_work_relations"),
+                    F("reverse_work_relations"),
+                    function="array_cat",
+                )
             )
             .order_by("title", "subtitle")
         )
