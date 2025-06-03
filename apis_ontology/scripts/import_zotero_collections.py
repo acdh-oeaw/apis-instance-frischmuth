@@ -23,6 +23,7 @@ from .import_helpers import (
     create_triple,
     create_work,
     get_expressions_by_work,
+    get_language_names,
     get_type,
     get_work,
 )
@@ -630,7 +631,10 @@ def create_entities(item, source):
     num_pages = item_data.get("numPages", None)
     relevant_pages = item_data.get("pages", "")
     item_date = item_data.get("date", None)
-    languages = clean_and_split_multivalue_string(item_data.get("language", ""), ";")
+    language_iso_codes = clean_and_split_multivalue_string(
+        item_data.get("language", ""), ";"
+    )
+    languages_names = get_language_names(language_iso_codes)
     isbn = item_data.get("ISBN", "")
     places_of_publication = clean_and_split_multivalue_string(
         item_data.get("place", ""), ";"
@@ -686,8 +690,8 @@ def create_entities(item, source):
         work.summary = abstract
         work.save()
 
-    if languages:
-        work.language = languages
+    if languages_names:
+        work.language = languages_names
         work.save()
 
     if created:
@@ -716,8 +720,8 @@ def create_entities(item, source):
         if isbn:
             expression.isbn = isbn
             expression.save()
-        if languages:
-            expression.language = languages
+        if languages_names:
+            expression.language = languages_names
             expression.save()
         if item_note:
             expression.notes = item_note
