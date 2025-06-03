@@ -10,6 +10,7 @@ from apis_ontology.models import (
     Archive,
     DataSource,
     Expression,
+    LanguageMixin,
     Organisation,
     Person,
     Place,
@@ -332,3 +333,12 @@ def get_expressions_by_work(work_id: int):
 
 def work_with_siglum_exists(siglum):
     return Work.objects.filter(siglum=siglum).exists()
+
+
+def get_language_names(iso_codes):
+    iso_codes_normalized = [iso_code.upper() for iso_code in iso_codes]
+    return [
+        member.value
+        for name, member in LanguageMixin.LanguagesIso6393.__members__.items()
+        if name in iso_codes_normalized
+    ]
