@@ -30,6 +30,7 @@ from apis_ontology.models import (
 
 from .filters import WorkPreviewSearchFilter
 from .serializers import (
+    CharacterDetailSerializer,
     GlossarDetailDataSerializer,
     MetaCharacterDetailSerializer,
     PlaceDetailDataSerializer,
@@ -829,4 +830,22 @@ class GlossarViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         res = Glossar.objects.all().annotate(
             related_works=ArraySubquery(work_relations)
         )
+        return res
+
+
+class CharacterDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """
+    API endpoint which returns Character objects by id only
+    """
+
+    serializer_class = CharacterDetailSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        uris = Uri.objects.filter(
+            Q(root_object__triple_set_from_obj__subj_id=OuterRef("pk")),
+            Q(root_object__triple_set_from_obj__prop__name_forward="is based on"),
+            ~Q(uri__startswith="https://frischmuth-dev.acdh-dev.oeaw.ac.at"),
+        ).values_list("uri", flat=True)
+        res = Character.objects.all().annotate(uris=ArraySubquery(uris))
         return res
