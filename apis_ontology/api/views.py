@@ -417,7 +417,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
         ).values_list("name")
 
         works = (
-            Work.objects.all()
+            Work.objects.filter(include_for_search=True)
             .annotate(
                 expression_data=ArraySubquery(related_expressions),
                 work_type=ArraySubquery(work_types),
