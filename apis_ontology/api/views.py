@@ -6,8 +6,8 @@ I.e. project-specific endpoints (not APIS built-in API).
 
 from apis_core.apis_metainfo.models import Uri
 from django.contrib.postgres.expressions import ArraySubquery, Subquery
-from django.db.models import F, Func, Max, Min, OuterRef, Q
-from django.db.models.functions import JSONObject
+from django.db.models import F, Func, Max, Min, OuterRef, Q, Value
+from django.db.models.functions import Concat, JSONObject
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, pagination, permissions, viewsets
 
@@ -358,6 +358,21 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             .values_list("name")
         )
 
+        authors = (
+            Person.objects.filter(
+                triple_set_from_subj__obj_id=OuterRef("pk"),
+                triple_set_from_subj__prop__name_forward__in=[
+                    "is author of",
+                ],
+            )
+            .order_by("id")
+            .values(
+                json=JSONObject(
+                    id="id", label=Concat("surname", Value(", "), "forename")
+                )
+            )
+        )
+
         related_expressions = (
             Expression.objects.filter(
                 triple_set_from_obj__subj_id=OuterRef("pk"),
@@ -408,6 +423,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                 work_type_names=ArraySubquery(work_type_names),
                 facet_language=ArraySubquery(facet_languages),
                 facet_topic=ArraySubquery(facet_topics),
+                authors=ArraySubquery(authors),
                 min_year=Subquery(
                     filter_years.annotate(
                         year=Min("publication_date_iso_formatted__year")
