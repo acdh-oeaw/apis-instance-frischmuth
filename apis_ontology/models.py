@@ -579,6 +579,9 @@ class Work(
         default=list,
         verbose_name=_("Stellung des:der Erzähler:in zum Geschehen"),
     )
+    include_for_search = models.BooleanField(
+        default=True, verbose_name=_("In Suche inkludieren")
+    )
 
     class Meta:
         verbose_name = _("werk")
