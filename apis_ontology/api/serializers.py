@@ -405,3 +405,16 @@ class GlossarDetailDataSerializer(serializers.ModelSerializer):
             "self_contenttype",
             "data_source",
         ]
+
+
+class CharacterDetailSerializer(serializers.ModelSerializer):
+    uris = serializers.ListField(
+        required=False, allow_empty=True, child=serializers.URLField()
+    )
+
+    class Meta:
+        model = Character
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]
