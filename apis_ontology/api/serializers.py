@@ -141,10 +141,16 @@ class ExpressionDataDetailSerializer(ExpressionDataSerializer):
         ]
 
 
+class PersonDataMinSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    label = serializers.CharField()
+
+
 class WorkPreviewSerializer(serializers.ModelSerializer):
     expression_data = ExpressionDataSerializer(required=False, many=True)
     work_type = WorkTypeDataSerializer(required=False, allow_empty=True, many=True)
     work_type_root = serializers.SerializerMethodField()
+    authors = PersonDataMinSerializer(required=False, allow_empty=True, many=True)
 
     class Meta:
         model = Work
@@ -153,6 +159,7 @@ class WorkPreviewSerializer(serializers.ModelSerializer):
             "siglum",
             "title",
             "subtitle",
+            "authors",
             "expression_data",
             "work_type",
             "work_type_root",
