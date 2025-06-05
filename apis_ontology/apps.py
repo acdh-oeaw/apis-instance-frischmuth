@@ -12,3 +12,6 @@ class ApisOntologyConfig(AppConfig):
     """
 
     name = "apis_ontology"
+
+    def ready(self):
+        import apis_ontology.signals  # noqa: F401
