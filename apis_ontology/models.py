@@ -582,6 +582,7 @@ class Work(
     include_for_search = models.BooleanField(
         default=True, verbose_name=_("In Suche inkludieren")
     )
+    primary_work = models.BooleanField(default=False, verbose_name=_("Primärwerk"))
 
     class Meta:
         verbose_name = _("werk")
