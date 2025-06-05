@@ -338,7 +338,7 @@ class WorkDetailSerializer(serializers.ModelSerializer):
     def get_context(self, obj) -> str:
         md = obj.context
         md = re.sub(
-            r"(?<=\()[0-9]+(?=\))",
+            r"(?<=\]\()[0-9]+(?=\))",
             lambda txt: RootObject.objects_inheritance.get_subclass(
                 pk=txt.group()
             ).get_frontend_url()
