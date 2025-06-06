@@ -166,7 +166,7 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                 flattened_list = [x for sublist in attr_value for x in sublist]
             else:
                 flattened_list = attr_value
-            # Count occurrences
+            # Count 
             for k in flattened_list:
                 if k in res:
                     res[k] += 1
@@ -182,6 +182,8 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                 res[field.replace("facet_", "")] = self.get_facet_data(field, queryset)
             elif field == "work_type":
                 res["work_type"] = self.get_facet_data(field, queryset)
+        res["primary_works"] = queryset.filter(primary_work=True).count()
+        res["secondary_works"] = queryset.all().count() - res["primary_works"]
 
         return res
 
@@ -295,6 +297,16 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                                 ],
                             }
                         ],
+                    },
+                    "primary_works": {
+                        "type": "integer",
+                        "nullable": False,
+                        "description": "Returns the number of primary works.",
+                    },
+                    "secondary_works": {
+                        "type": "integer",
+                        "nullable": False,
+                        "description": "Returns the number of secondary works.",
                     },
                 },
                 "type": "object",
