@@ -69,6 +69,16 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
         label=_("End year for publication date of expressions (inclusive)"),
         lookup_expr="lte",
     )
+    primary_works = django_filters.BooleanFilter(
+        field_name="primary_works",
+        method="filter_primary_works",
+        label=_("Filter for primary works only"),
+    )
+    secondary_works = django_filters.BooleanFilter(
+        field_name="secondary_works",
+        method="filter_primary_works",
+        label=_("Filter for secondary works only"),
+    )
 
     def filter_search(self, queryset, name, value):
         search_vector = SearchVector(
@@ -87,3 +97,8 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
             .order_by("-rank")
         )
         return results
+
+    def filter_primary_works(self, queryset, name, value):
+        if name == "secondary_works":
+            value = not value
+        return queryset.filter(primary_work=value)
