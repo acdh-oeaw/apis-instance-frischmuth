@@ -9,6 +9,7 @@ import re
 import markdown
 from apis_core.history.models import RootObject
 from django.contrib.postgres.expressions import Subquery
+from django.core.exceptions import ObjectDoesNotExist
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
@@ -31,15 +32,18 @@ from apis_ontology.models import (
 
 class MarkdownField(serializers.CharField):
     def to_representation(self, value):
-        md = re.sub(
-            r"(?<=\()[0-9]+(?=\))",
-            lambda txt: RootObject.objects_inheritance.get_subclass(
-                pk=txt.group()
-            ).get_frontend_url()
-            or txt.group(),
-            value,
-        )
-        html = markdown.markdown(md)
+        try:
+            md = re.sub(
+                r"(?<=\()[0-9]+(?=\))",
+                lambda txt: RootObject.objects_inheritance.get_subclass(
+                    pk=txt.group()
+                ).get_frontend_url()
+                or txt.group(),
+                value,
+            )
+            html = markdown.markdown(md)
+        except (ObjectDoesNotExist, AttributeError):
+            html = value
         return html
 
 
