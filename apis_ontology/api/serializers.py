@@ -29,6 +29,20 @@ from apis_ontology.models import (
 )
 
 
+class MarkdownField(serializers.CharField):
+    def to_representation(self, value):
+        md = re.sub(
+            r"(?<=\()[0-9]+(?=\))",
+            lambda txt: RootObject.objects_inheritance.get_subclass(
+                pk=txt.group()
+            ).get_frontend_url()
+            or txt.group(),
+            value,
+        )
+        html = markdown.markdown(md)
+        return html
+
+
 def get_work_type_data(id):
     work_type_parent = WorkType.objects.filter(
         triple_set_from_obj__subj_id=id, triple_set_from_obj__prop__id=7
@@ -270,7 +284,7 @@ class InterpretatemDataSerializer(serializers.ModelSerializer):
             or txt.group(),
             md,
         )
-        html = markdown.markdown(md)
+        html = markdown.markdown(md, extensions=["extra"])
         return html
 
 
@@ -291,7 +305,7 @@ class WorkDetailSerializer(serializers.ModelSerializer):
     related_works = RelatedWorksDataSerializer(
         source="combined_work_relations", many=True, allow_empty=True, required=False
     )
-    context = serializers.SerializerMethodField()
+    context = MarkdownField(required=False)
     characters = CharacterDataSerializer(
         source="related_characters",
         required=False,
@@ -325,6 +339,9 @@ class WorkDetailSerializer(serializers.ModelSerializer):
     interpretatems = InterpretatemDataSerializer(
         source="related_interpretatems", required=False, allow_empty=True, many=True
     )
+    historical_events = MarkdownField(required=False)
+    summary = MarkdownField(required=False)
+    text_analysis = MarkdownField(required=False)
 
     class Meta:
         model = Work
@@ -334,19 +351,6 @@ class WorkDetailSerializer(serializers.ModelSerializer):
             "notes",
             "progress_status",
         ]
-
-    def get_context(self, obj) -> str:
-        md = obj.context
-        md = re.sub(
-            r"(?<=\]\()[0-9]+(?=\))",
-            lambda txt: RootObject.objects_inheritance.get_subclass(
-                pk=txt.group()
-            ).get_frontend_url()
-            or txt.group(),
-            md,
-        )
-        html = markdown.markdown(md)
-        return html
 
 
 class RelWorkMinSerializer(serializers.Serializer):
