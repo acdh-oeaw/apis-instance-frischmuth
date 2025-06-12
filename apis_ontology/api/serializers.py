@@ -4,12 +4,12 @@ Serializers for custom API.
 I.e. project-specific endpoints (not APIS built-in API).
 """
 
+import logging
 import re
 
 import markdown
 from apis_core.history.models import RootObject
 from django.contrib.postgres.expressions import Subquery
-from django.core.exceptions import ObjectDoesNotExist
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
@@ -30,20 +30,32 @@ from apis_ontology.models import (
 )
 
 
+logger = logging.getLogger(__name__)
+
+
+def get_link_from_id(id: str, field: str) -> str:
+    obj = RootObject.objects_inheritance.filter(pk=id).select_subclasses()
+    if obj.count() == 1:
+        obj = obj.first()
+        if hasattr(obj, "get_frontend_url"):
+            return obj.get_frontend_url()
+        else:
+            logger.warning(
+                f"{field} object {obj} doesnt have frontend function configured"
+            )
+    elif obj.count() > 1:
+        logger.warning(f"{field} found ID {id} that returned multiple objects")
+    return id
+
+
 class MarkdownField(serializers.CharField):
     def to_representation(self, value):
-        try:
-            md = re.sub(
-                r"(?<=\()[0-9]+(?=\))",
-                lambda txt: RootObject.objects_inheritance.get_subclass(
-                    pk=txt.group()
-                ).get_frontend_url()
-                or txt.group(),
-                value,
-            )
-            html = markdown.markdown(md)
-        except (ObjectDoesNotExist, AttributeError):
-            html = value
+        md = re.sub(
+            r"(?<=\]\()[0-9]+(?=\))",
+            lambda txt: get_link_from_id(txt.group(), self.field_name),
+            value,
+        )
+        html = markdown.markdown(md)
         return html
 
 
