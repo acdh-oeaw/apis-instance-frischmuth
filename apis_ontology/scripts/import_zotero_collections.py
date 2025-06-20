@@ -305,12 +305,14 @@ def import_items_from_collection(zot, coll_key, include_subs=True, import_name=N
     """
     collection_data = get_collection_data(zot, coll_key, include_subs=include_subs)
 
-    success, failure = import_items(collection_data["items"], import_name)
+    success, failure = import_items(
+        collection_data["items"], import_name, collection_data["name"]
+    )
 
     return success, failure
 
 
-def import_items(collection_items, import_name):
+def import_items(collection_items, import_name, collection_name):
     """
     :param collection_items: list of Zotero items to import
     :param import_name: name to use for DataSource for entity objects
@@ -326,7 +328,9 @@ def import_items(collection_items, import_name):
 
     if importable:
         for i in importable:
-            creation_success, creation_problems = create_entities(i, source)
+            creation_success, creation_problems = create_entities(
+                i, source, collection_name
+            )
             success.extend(creation_success)
             failure.extend(creation_problems)
 
@@ -610,7 +614,7 @@ def add_collection(entity, collection):
     entity.collection.add(collection)
 
 
-def create_entities(item, source):
+def create_entities(item, source, collection_name):
     """
     Create entities from Zotero items.
     """
@@ -656,6 +660,8 @@ def create_entities(item, source):
     expr_refs = []
     page_count = None
     item_note = item.get("enriched", {}).get("note", None)
+    is_primary_work = collection_name == "primaer"
+    include_for_search = False
 
     if creators:
         creators_with_props = match_creator_types(creators)
@@ -677,6 +683,8 @@ def create_entities(item, source):
             )
             topics = [t.replace("topic_", "") for t in tags if t.startswith("topic_")]
 
+            include_for_search = "include_for_search" in tags
+
     pub_date = item_date
     if num_pages:
         pages = int(re.sub("[^0-9]", "", num_pages))
@@ -685,6 +693,13 @@ def create_entities(item, source):
 
     # get or create Work object
     work, created = create_work(title, subtitle, siglum, source)
+
+    work.include_for_search = include_for_search
+    work.save()
+
+    work.primary_work = is_primary_work
+    work.save()
+
     # if abstract contains text, we overwrite the existing one
     if abstract:
         work.summary = abstract
@@ -930,7 +945,7 @@ def create_entities(item, source):
         parent_expression = None
         if series:
             parent_publication, created = Work.objects.get_or_create(
-                title=series, defaults={"data_source": source}
+                title=series, include_for_search=False, defaults={"data_source": source}
             )
             parent_expression, created = Expression.objects.get_or_create(
                 title=series,
@@ -950,6 +965,11 @@ def create_entities(item, source):
                 edition=edition,
                 defaults={"data_source": source},
             )
+        if parent_publication:
+            parent_publication.include_for_search = False
+            parent_publication.primary_work = False
+            parent_publication.save()
+
         if parent_publication and parent_expression:
             parent_parent_triple, created = create_triple(
                 entity_subj=parent_publication,
