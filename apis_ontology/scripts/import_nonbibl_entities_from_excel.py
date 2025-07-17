@@ -165,7 +165,11 @@ def parse_entities_dataframe(sheet_name, df, file):
             description = row["Beschreibung"]
             character_relevancy = RELEVANCIES.get(row["Rolle"], "")
             character_fictionality = row["Kategorie"]
-            character_fictionality_degree = FICTIONALITY_DEGREES[character_fictionality]
+            character_fictionality_degree = (
+                FICTIONALITY_DEGREES[character_fictionality]
+                if character_fictionality
+                else ""
+            )
             related_work_siglum = row["Sigle"]
             person_dnb_uri = row["URL_DNB"]
             person_uris = (row["URL_Wikipedia"], row["URL_extern"])
@@ -174,7 +178,9 @@ def parse_entities_dataframe(sheet_name, df, file):
                 character = Character.objects.create(
                     fallback_name=character_name,
                     relevancy=character_relevancy,
-                    fictionality=character_fictionality_degree,
+                    fictionality=[character_fictionality_degree]
+                    if isinstance(character_fictionality_degree, str)
+                    else character_fictionality_degree,
                     data_source=data_source,
                 )
 
