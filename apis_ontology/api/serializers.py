@@ -77,6 +77,20 @@ def get_work_type_data(id):
     }
 
 
+class AuthorDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Person
+        fields = ["id", "forename", "surname", "fallback_name"]
+
+
+class RelatedWorksMinDataSerializer(serializers.ModelSerializer):
+    authors = AuthorDataSerializer(many=True, allow_empty=True, required=False)
+
+    class Meta:
+        model = Work
+        fields = ["id", "title", "subtitle", "authors"]
+
+
 class NameAndIdSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
@@ -259,12 +273,6 @@ class PhysicalObjectDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class AuthorDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Person
-        fields = ["id", "forename", "surname", "fallback_name"]
-
-
 class SourceDataSerializer(serializers.ModelSerializer):
     authors = AuthorDataSerializer(many=True, allow_empty=True, required=False)
 
@@ -304,11 +312,10 @@ class InterpretatemDataSerializer(serializers.ModelSerializer):
         return html
 
 
-class RelatedWorksDataSerializer(serializers.ModelSerializer):
+class RelatedWorksDataSerializer(RelatedWorksMinDataSerializer):
     relation_type = serializers.CharField(required=False)
-    authors = AuthorDataSerializer(many=True, allow_empty=True, required=False)
 
-    class Meta:
+    class Meta(RelatedWorksMinDataSerializer.Meta):
         model = Work
         fields = ["id", "title", "subtitle", "relation_type", "authors"]
 
@@ -373,6 +380,7 @@ class RelWorkMinSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     title = serializers.CharField(max_length=255)
     subtitle = serializers.CharField(max_length=255, allow_null=True)
+    authors = AuthorDataSerializer(many=True, allow_empty=True)
 
 
 class PlaceDetailDataSerializer(serializers.ModelSerializer):
