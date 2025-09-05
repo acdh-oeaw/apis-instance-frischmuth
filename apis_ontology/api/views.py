@@ -857,13 +857,31 @@ class MetaCharacterViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        work_relations = Work.objects.filter(
-            triple_set_from_subj__obj__triple_set_from_obj__subj_id=OuterRef("pk"),
+        authors = Person.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+            triple_set_from_subj__prop__name_forward__in=[
+                "is author of",
+            ],
         ).values(
             json=JSONObject(
                 id="id",
-                title="title",
-                subtitle="subtitle",
+                forename="forename",
+                surname="surname",
+                fallback_name="fallback_name",
+            )
+        )
+        work_relations = (
+            Work.objects.filter(
+                triple_set_from_subj__obj__triple_set_from_obj__subj_id=OuterRef("pk"),
+            )
+            .annotate(authors=ArraySubquery(authors))
+            .values(
+                json=JSONObject(
+                    id="id",
+                    title="title",
+                    subtitle="subtitle",
+                    authors="authors",
+                )
             )
         )
         res = MetaCharacter.objects.all().annotate(
