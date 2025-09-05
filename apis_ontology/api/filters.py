@@ -84,10 +84,12 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
         search_vector = SearchVector(
             "title", weight="A", config="german"
         ) + SearchVector(
-            "subtitle", weight="B", config="german"
+            "subtitle", "facet_topic", "authors", weight="B", config="german"
         )  # Combine fields for search
         search_query = SearchQuery(
-            value, config="german", search_type="websearch"
+            value.replace("*", ":*") if value.endswith("*") else value,
+            config="german",
+            search_type="raw" if value.endswith("*") else "websearch",
         )  # Search term
         results = (
             queryset.annotate(
