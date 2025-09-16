@@ -172,7 +172,9 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                     res[k] += 1
                 else:
                     res[k] = 1
-        return [{"key": k, "count": v} for k, v in res.items()]
+        return sorted(
+            [{"key": k, "count": v} for k, v in res.items()], key=lambda x: x["key"]
+        )
 
     def calculate_facets(self, queryset):
         # Implement facet calculation
@@ -623,16 +625,20 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             )
         )
 
-        topics = Topic.objects.filter(
-            triple_set_from_obj__subj_id=OuterRef("pk"),
-            triple_set_from_obj__prop__name_forward__in=["is about topic"],
-        ).values(
-            json=JSONObject(
-                id="id",
-                name="name",
-                alternative_name="alternative_name",
-                description="description",
-                notes="notes",
+        topics = (
+            Topic.objects.filter(
+                triple_set_from_obj__subj_id=OuterRef("pk"),
+                triple_set_from_obj__prop__name_forward__in=["is about topic"],
+            )
+            .order_by("name")
+            .values(
+                json=JSONObject(
+                    id="id",
+                    name="name",
+                    alternative_name="alternative_name",
+                    description="description",
+                    notes="notes",
+                )
             )
         )
         authors = Person.objects.filter(
