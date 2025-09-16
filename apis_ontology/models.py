@@ -72,14 +72,14 @@ class TitlesMixin(models.Model):
     """
 
     title = models.CharField(
-        max_length=255,
+        max_length=500,
         blank=True,
         default="",
         verbose_name=_("Titel"),
     )
 
     subtitle = models.CharField(
-        max_length=255,
+        max_length=500,
         blank=True,
         default="",
         verbose_name=_("Untertitel"),
@@ -687,14 +687,14 @@ class Expression(
     )
 
     volume = models.CharField(
-        max_length=30,
+        max_length=255,
         blank=True,
         default="",
         verbose_name=_("Band"),
     )
 
     issue = models.CharField(
-        max_length=30,
+        max_length=255,
         blank=True,
         default="",
         verbose_name=_("Zeitungsnummer"),
