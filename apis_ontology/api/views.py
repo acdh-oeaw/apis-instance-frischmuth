@@ -753,7 +753,7 @@ class PlaceViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         work_relations = (
             Work.objects.filter(
                 triple_set_from_subj__obj_id=OuterRef("pk"),
-                triple_set_from_subj__prop__id=2,
+                triple_set_from_subj__prop__id__in=[2, 3],
             )
             .annotate(authors=ArraySubquery(authors))
             .values(
