@@ -172,7 +172,9 @@ class WorkPreviewPagination(pagination.LimitOffsetPagination):
                     res[k] += 1
                 else:
                     res[k] = 1
-        return [{"key": k, "count": v} for k, v in res.items()]
+        return sorted(
+            [{"key": k, "count": v} for k, v in res.items()], key=lambda x: x["key"]
+        )
 
     def calculate_facets(self, queryset):
         # Implement facet calculation
