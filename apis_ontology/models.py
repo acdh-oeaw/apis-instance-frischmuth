@@ -72,14 +72,14 @@ class TitlesMixin(models.Model):
     """
 
     title = models.CharField(
-        max_length=500,
+        max_length=600,
         blank=True,
         default="",
         verbose_name=_("Titel"),
     )
 
     subtitle = models.CharField(
-        max_length=500,
+        max_length=600,
         blank=True,
         default="",
         verbose_name=_("Untertitel"),
