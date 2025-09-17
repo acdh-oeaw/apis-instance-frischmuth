@@ -81,6 +81,8 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
     )
 
     def filter_search(self, queryset, name, value):
+        if not value.endswith("*"):
+            value += "*"
         search_vector = SearchVector(
             "title", weight="A", config="german"
         ) + SearchVector(
