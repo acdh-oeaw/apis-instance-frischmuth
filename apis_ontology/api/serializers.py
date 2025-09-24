@@ -291,25 +291,12 @@ class TopicDataSerializer(serializers.ModelSerializer):
 
 
 class InterpretatemDataSerializer(serializers.ModelSerializer):
-    description = serializers.SerializerMethodField()
+    description = MarkdownField(required=False)
     sources = SourceDataSerializer(many=True, required=False, allow_empty=True)
 
     class Meta:
         model = Interpretatem
         fields = ["id", "description", "sources"]
-
-    def get_description(self, obj) -> str:
-        md = obj["description"]
-        md = re.sub(
-            r"(?<=\()[0-9]+(?=\))",
-            lambda txt: RootObject.objects_inheritance.get_subclass(
-                pk=txt.group()
-            ).get_frontend_url()
-            or txt.group(),
-            md,
-        )
-        html = markdown.markdown(md, extensions=["extra"])
-        return html
 
 
 class RelatedWorksDataSerializer(RelatedWorksMinDataSerializer):
