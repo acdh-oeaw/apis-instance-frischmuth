@@ -7,8 +7,14 @@ I.e. project-specific endpoints (not APIS built-in API).
 import logging
 
 import django_filters
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.db.models import Func
+from django.contrib.postgres.search import (
+    SearchQuery,
+    SearchRank,
+    SearchVector,
+    TrigramSimilarity,
+)
+from django.db.models import Func, Q
+from django.db.models.functions import Greatest
 from django.utils.translation import gettext_lazy as _
 
 from apis_ontology.models import Expression, Topic, WorkType
@@ -81,23 +87,29 @@ class WorkPreviewSearchFilter(django_filters.FilterSet):
     )
 
     def filter_search(self, queryset, name, value):
-        if not value.endswith("*"):
-            value += "*"
-        search_vector = SearchVector(
-            "title", weight="A", config="german"
-        ) + SearchVector(
-            "subtitle", "facet_topic", "authors", weight="B", config="german"
+        search_vector = (
+            SearchVector("title", weight="A", config="german")
+            + SearchVector(
+                "subtitle", "facet_topic", "authors", weight="B", config="german"
+            )
+            + SearchVector("title", "subtitle", "facet_topic", "authors", weight="C")
         )  # Combine fields for search
         search_query = SearchQuery(
-            value.replace("*", ":*") if value.endswith("*") else value,
-            config="german",
-            search_type="raw" if value.endswith("*") else "websearch",
+            value,
+            search_type="websearch",
         )  # Search term
         results = (
             queryset.annotate(
-                search=search_vector, rank=SearchRank(search_vector, search_query)
+                search=search_vector,
+                rank=SearchRank(search_vector, search_query),
+                similarity_title=TrigramSimilarity("title", value),
+                similarity_subtitle=TrigramSimilarity("subtitle", value),
+                similarity=Greatest(
+                    "similarity_title",
+                    "similarity_subtitle",
+                ),
             )
-            .filter(search=search_query)
+            .filter(Q(search=search_query) | Q(similarity__gte=0.3))
             .order_by("-rank")
         )
         return results
