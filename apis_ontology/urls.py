@@ -21,6 +21,7 @@ from rest_framework import routers
 
 from apis_ontology.api.views import (
     CharacterDetailViewSet,
+    GlossarPreviewViewSet,
     GlossarViewSet,
     MetaCharacterViewSet,
     PlaceViewSet,
@@ -31,6 +32,7 @@ from apis_ontology.api.views import (
 )
 
 
+app_name = "apis_ontology"
 router = routers.DefaultRouter()
 
 router.register(r"work-preview", WorkPreviewViewSet, basename="work-preview")
@@ -49,6 +51,7 @@ router.register(r"glossar-detail", GlossarViewSet, basename="glossar-detail")
 router.register(
     r"character-detail", CharacterDetailViewSet, basename="character-detail"
 )
+router.register(r"glossar-preview", GlossarPreviewViewSet, basename="glossar-preview")
 
 urlpatterns += [
     path("accounts/", include("django.contrib.auth.urls")),
