@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 
 import pandas as pd
 from apis_core.apis_metainfo.models import Uri
@@ -14,7 +15,7 @@ from apis_ontology.models import (
     Topic,
     Work,
 )
-from apis_ontology.scripts.access_sharepoint import import_and_parse_data
+from apis_ontology.scripts.access_sharepoint import input_dialog
 
 from .import_helpers import create_source, create_triple, work_with_siglum_exists
 from .utils import secure_urls
@@ -46,7 +47,11 @@ FICTIONALITY_DEGREES = {
 
 
 def run():
-    import_and_parse_data(parse_entities_excel)
+    #import_and_parse_data(parse_entities_excel)
+    files = [f for f in os.listdir(".") if re.compile(r'^Import.*\.xlsx$').match(f)]
+    fname = input_dialog(files)
+    parse_entities_excel(fname)
+
 
 
 def parse_entities_excel(file):
@@ -161,7 +166,7 @@ def parse_entities_dataframe(sheet_name, df, file):
             character_name = row["Name"]
             forename = row["Vorname"]
             surname = row["Nachname"]
-            person_alternative_name = row["alternativeName"]
+            person_alternative_name = row["alternative Name"]
             description = row["Beschreibung"]
             character_relevancy = RELEVANCIES.get(row["Rolle"], "")
             character_fictionality = row["Kategorie"]
