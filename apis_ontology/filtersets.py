@@ -137,7 +137,7 @@ class BaseEntityFilterSet(AbstractEntityFilterSet):
                     help_text := self.filters["search"].extra.get("help_text")
                 ) and help_text.split(":"):
                     self.filters["search"].extra["help_text"] = (
-                        f'Suche in den Textfeldern: {help_text.split(":")[1]}'
+                        f"Suche in den Textfeldern: {help_text.split(':')[1]}"
                     )
 
             if "changed_since" in self.filters:
