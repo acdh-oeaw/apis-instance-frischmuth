@@ -143,14 +143,12 @@ def zotero_login():
         zot.key_info()
     except zotero_errors.UserNotAuthorised:
         print(
-            f"Zotero login not possible: "
-            f"{zot.request.text} ({zot.request.status_code})"
+            f"Zotero login not possible: {zot.request.text} ({zot.request.status_code})"
         )
         exit(1)
     except zotero_errors.HTTPError:
         print(
-            f"Zotero login not possible: "
-            f"{zot.request.text} ({zot.request.status_code})"
+            f"Zotero login not possible: {zot.request.text} ({zot.request.status_code})"
         )
         exit(1)
     else:

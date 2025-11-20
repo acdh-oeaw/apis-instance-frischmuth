@@ -146,7 +146,7 @@ class Command(BaseCommand):
                 obj_count = len(ent_obj)
 
                 success_msg = (
-                    f"Deleted {obj_count} {ent} objects from Source " f"{source_name}"
+                    f"Deleted {obj_count} {ent} objects from Source {source_name}"
                 )
                 nothing_todo_msg = (
                     f"No {ent} objects to delete from Source {source_name}."
