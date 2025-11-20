@@ -73,7 +73,6 @@ def input_dialog(files):
 
     """
     fname = None
-    file_url = None
 
     extra_choices = [
         {
@@ -116,10 +115,9 @@ def input_dialog(files):
                 for c in choices:
                     if user_input == c["key"]:
                         fname = c["label"]
-                        file_url = c["file_url"]
                 break
 
-    return fname, file_url
+    return fname
 
 
 def generate_input_choices(sp_files, extra_choices=None):
@@ -132,15 +130,12 @@ def generate_input_choices(sp_files, extra_choices=None):
     """
     choices = list()
 
-    for i, c in enumerate(sorted(sp_files, key=lambda a: a["Name"]), start=1):
-        display_name = c["Name"]
-        file_url = c["ServerRelativeUrl"]
-
+    for i, c in enumerate(sorted(sp_files, key=lambda a: a), start=1):
+        display_name = c        
         choices.append(
             {
                 "key": i,
-                "label": display_name,
-                "file_url": file_url,
+                "label": display_name
             }
         )
 
