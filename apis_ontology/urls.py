@@ -24,6 +24,7 @@ from apis_ontology.api.views import (
     GlossarPreviewViewSet,
     GlossarViewSet,
     MetaCharacterViewSet,
+    PlacePreviewViewSet,
     PlaceViewSet,
     ResearchPerspectiveViewSet,
     TopicViewSet,
@@ -52,6 +53,7 @@ router.register(
     r"character-detail", CharacterDetailViewSet, basename="character-detail"
 )
 router.register(r"glossar-preview", GlossarPreviewViewSet, basename="glossar-preview")
+router.register(r"place-preview", PlacePreviewViewSet, basename="place-preview")
 
 urlpatterns += [
     path("accounts/", include("django.contrib.auth.urls")),
