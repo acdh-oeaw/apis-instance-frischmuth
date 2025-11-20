@@ -32,6 +32,7 @@ from .filters import WorkPreviewSearchFilter
 from .serializers import (
     CharacterDetailSerializer,
     GlossarDetailDataSerializer,
+    GlossarPreviewSerializer,
     MetaCharacterDetailSerializer,
     PlaceDetailDataSerializer,
     ResearchPerspectiveDetailDataSerializer,
@@ -932,3 +933,9 @@ class CharacterDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet)
         ).values_list("uri", flat=True)
         res = Character.objects.all().annotate(uris=ArraySubquery(uris))
         return res
+
+
+class GlossarPreviewViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = GlossarPreviewSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Glossar.objects.all()

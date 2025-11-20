@@ -448,3 +448,13 @@ class CharacterDetailSerializer(MarkdownSerializerMixin):
             "self_contenttype",
             "data_source",
         ]
+
+
+class GlossarPreviewSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name="apis_ontology:glossar-detail-detail"
+    )
+
+    class Meta:
+        model = Glossar
+        fields = ["id", "name", "url"]
