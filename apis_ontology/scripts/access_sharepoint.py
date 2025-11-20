@@ -131,13 +131,8 @@ def generate_input_choices(sp_files, extra_choices=None):
     choices = list()
 
     for i, c in enumerate(sorted(sp_files, key=lambda a: a), start=1):
-        display_name = c        
-        choices.append(
-            {
-                "key": i,
-                "label": display_name
-            }
-        )
+        display_name = c
+        choices.append({"key": i, "label": display_name})
 
     if extra_choices:
         for e in extra_choices:

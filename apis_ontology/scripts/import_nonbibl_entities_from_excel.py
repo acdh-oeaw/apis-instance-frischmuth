@@ -47,11 +47,10 @@ FICTIONALITY_DEGREES = {
 
 
 def run():
-    #import_and_parse_data(parse_entities_excel)
-    files = [f for f in os.listdir(".") if re.compile(r'^Import.*\.xlsx$').match(f)]
+    # import_and_parse_data(parse_entities_excel)
+    files = [f for f in os.listdir(".") if re.compile(r"^Import.*\.xlsx$").match(f)]
     fname = input_dialog(files)
     parse_entities_excel(fname)
-
 
 
 def parse_entities_excel(file):
