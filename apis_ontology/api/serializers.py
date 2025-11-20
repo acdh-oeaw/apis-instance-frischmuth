@@ -10,6 +10,7 @@ import re
 import markdown
 from apis_core.history.models import RootObject
 from django.contrib.postgres.expressions import Subquery
+from django.db.models import TextField
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
@@ -48,15 +49,34 @@ def get_link_from_id(id: str, field: str) -> str:
     return id
 
 
-class MarkdownField(serializers.CharField):
-    def to_representation(self, value):
-        md = re.sub(
-            r"(?<=\]\()[0-9]+(?=\))",
-            lambda txt: get_link_from_id(txt.group(), self.field_name),
-            value,
-        )
+def convert_to_md(value, field_name):
+    md = re.sub(
+        r"(?<=\]\()[0-9]+(?=\))",
+        lambda txt: get_link_from_id(txt.group(), field_name),
+        value,
+    )
+    try:
         html = markdown.markdown(md)
-        return html
+    except Exception as e:
+        logger.error(f"Markdown conversion failed for {field_name}: {e}")
+        html = value
+    return html
+
+
+class MarkdownSerializerMixin(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        text_fields = [
+            field.name
+            for field in self.Meta.model._meta.get_fields()
+            if isinstance(field, TextField)
+        ]
+
+        for field_name in text_fields:
+            if field := data.get(field_name, None):
+                data[field_name] = convert_to_md(field, field_name)
+
+        return data
 
 
 def get_work_type_data(id):
@@ -77,13 +97,13 @@ def get_work_type_data(id):
     }
 
 
-class AuthorDataSerializer(serializers.ModelSerializer):
+class AuthorDataSerializer(MarkdownSerializerMixin):
     class Meta:
         model = Person
         fields = ["id", "forename", "surname", "fallback_name"]
 
 
-class RelatedWorksMinDataSerializer(serializers.ModelSerializer):
+class RelatedWorksMinDataSerializer(MarkdownSerializerMixin):
     authors = AuthorDataSerializer(many=True, allow_empty=True, required=False)
 
     class Meta:
@@ -96,7 +116,7 @@ class NameAndIdSerializer(serializers.Serializer):
     name = serializers.CharField()
 
 
-class PlaceDataSerializerMin(serializers.ModelSerializer):
+class PlaceDataSerializerMin(MarkdownSerializerMixin):
     uris = serializers.ListField(
         required=False, allow_empty=True, child=serializers.URLField()
     )
@@ -113,7 +133,7 @@ class PlaceDataSerializer(PlaceDataSerializerMin):
     relation_type = serializers.CharField(required=False, allow_null=True)
 
 
-class WorkTypeDataSerializer(serializers.ModelSerializer):
+class WorkTypeDataSerializer(MarkdownSerializerMixin):
     class Meta:
         model = WorkType
         fields = [
@@ -122,7 +142,7 @@ class WorkTypeDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class ExpressionDataSerializer(serializers.ModelSerializer):
+class ExpressionDataSerializer(MarkdownSerializerMixin):
     publication_date = serializers.DateField(required=False, allow_null=True)
     publisher = serializers.CharField(required=False, allow_null=True)
     place_of_publication = serializers.ListField(
@@ -149,7 +169,7 @@ class ExpressionDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class PersonDataSerializer(serializers.ModelSerializer):
+class PersonDataSerializer(MarkdownSerializerMixin):
     uris = serializers.ListField(
         required=False, allow_empty=True, child=serializers.URLField()
     )
@@ -230,7 +250,7 @@ class MetacharacterSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
 
 
-class CharacterDataSerializer(serializers.ModelSerializer):
+class CharacterDataSerializer(MarkdownSerializerMixin):
     fictionality = serializers.ListField(
         child=serializers.CharField(allow_null=True), required=False, allow_empty=True
     )
@@ -251,7 +271,7 @@ class CharacterDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class ArchiveDataSerializer(serializers.ModelSerializer):
+class ArchiveDataSerializer(MarkdownSerializerMixin):
     website = serializers.CharField(required=False, max_length=255, label="Webseite")
 
     class Meta:
@@ -262,7 +282,7 @@ class ArchiveDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class PhysicalObjectDataSerializer(serializers.ModelSerializer):
+class PhysicalObjectDataSerializer(MarkdownSerializerMixin):
     archive = ArchiveDataSerializer(required=False, allow_null=True)
 
     class Meta:
@@ -273,7 +293,7 @@ class PhysicalObjectDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class SourceDataSerializer(serializers.ModelSerializer):
+class SourceDataSerializer(MarkdownSerializerMixin):
     authors = AuthorDataSerializer(many=True, allow_empty=True, required=False)
 
     class Meta:
@@ -281,7 +301,7 @@ class SourceDataSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "subtitle", "authors"]
 
 
-class TopicDataSerializer(serializers.ModelSerializer):
+class TopicDataSerializer(MarkdownSerializerMixin):
     class Meta:
         model = Topic
         exclude = [
@@ -290,8 +310,7 @@ class TopicDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class InterpretatemDataSerializer(serializers.ModelSerializer):
-    description = MarkdownField(required=False)
+class InterpretatemDataSerializer(MarkdownSerializerMixin):
     sources = SourceDataSerializer(many=True, required=False, allow_empty=True)
 
     class Meta:
@@ -307,7 +326,7 @@ class RelatedWorksDataSerializer(RelatedWorksMinDataSerializer):
         fields = ["id", "title", "subtitle", "relation_type", "authors"]
 
 
-class WorkDetailSerializer(serializers.ModelSerializer):
+class WorkDetailSerializer(MarkdownSerializerMixin):
     work_type = WorkTypeDataSerializer(required=False, allow_empty=True, many=True)
     expression_data = ExpressionDataDetailSerializer(
         required=False, allow_empty=True, many=True
@@ -315,7 +334,6 @@ class WorkDetailSerializer(serializers.ModelSerializer):
     related_works = RelatedWorksDataSerializer(
         source="combined_work_relations", many=True, allow_empty=True, required=False
     )
-    context = MarkdownField(required=False)
     characters = CharacterDataSerializer(
         source="related_characters",
         required=False,
@@ -349,9 +367,6 @@ class WorkDetailSerializer(serializers.ModelSerializer):
     interpretatems = InterpretatemDataSerializer(
         source="related_interpretatems", required=False, allow_empty=True, many=True
     )
-    historical_events = MarkdownField(required=False)
-    summary = MarkdownField(required=False)
-    text_analysis = MarkdownField(required=False)
 
     class Meta:
         model = Work
@@ -370,7 +385,7 @@ class RelWorkMinSerializer(serializers.Serializer):
     authors = AuthorDataSerializer(many=True, allow_empty=True)
 
 
-class PlaceDetailDataSerializer(serializers.ModelSerializer):
+class PlaceDetailDataSerializer(MarkdownSerializerMixin):
     related_works = RelWorkMinSerializer(many=True, allow_empty=True)
 
     class Meta:
@@ -381,7 +396,7 @@ class PlaceDetailDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class ResearchPerspectiveDetailDataSerializer(serializers.ModelSerializer):
+class ResearchPerspectiveDetailDataSerializer(MarkdownSerializerMixin):
     related_works = RelWorkMinSerializer(many=True, allow_empty=True)
 
     class Meta:
@@ -392,7 +407,7 @@ class ResearchPerspectiveDetailDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class TopicDetailDataSerializer(serializers.ModelSerializer):
+class TopicDetailDataSerializer(MarkdownSerializerMixin):
     related_works = RelWorkMinSerializer(many=True, allow_empty=True)
 
     class Meta:
@@ -403,7 +418,7 @@ class TopicDetailDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class MetaCharacterDetailSerializer(serializers.ModelSerializer):
+class MetaCharacterDetailSerializer(MarkdownSerializerMixin):
     related_works = RelWorkMinSerializer(many=True, allow_empty=True)
 
     class Meta:
@@ -411,7 +426,7 @@ class MetaCharacterDetailSerializer(serializers.ModelSerializer):
         exclude = ["self_contenttype", "data_source", "progress_status"]
 
 
-class GlossarDetailDataSerializer(serializers.ModelSerializer):
+class GlossarDetailDataSerializer(MarkdownSerializerMixin):
     related_works = RelWorkMinSerializer(many=True, allow_empty=True)
 
     class Meta:
@@ -422,7 +437,7 @@ class GlossarDetailDataSerializer(serializers.ModelSerializer):
         ]
 
 
-class CharacterDetailSerializer(serializers.ModelSerializer):
+class CharacterDetailSerializer(MarkdownSerializerMixin):
     uris = serializers.ListField(
         required=False, allow_empty=True, child=serializers.URLField()
     )
