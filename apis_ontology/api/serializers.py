@@ -458,3 +458,13 @@ class GlossarPreviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Glossar
         fields = ["id", "name", "url"]
+
+
+class PlacePreviewSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name="apis_ontology:place-detail-detail"
+    )
+
+    class Meta:
+        model = Place
+        fields = ["id", "name", "url"]

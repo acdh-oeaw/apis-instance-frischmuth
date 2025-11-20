@@ -35,6 +35,7 @@ from .serializers import (
     GlossarPreviewSerializer,
     MetaCharacterDetailSerializer,
     PlaceDetailDataSerializer,
+    PlacePreviewSerializer,
     ResearchPerspectiveDetailDataSerializer,
     TopicDetailDataSerializer,
     WorkDetailSerializer,
@@ -939,3 +940,9 @@ class GlossarPreviewViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GlossarPreviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Glossar.objects.all()
+
+
+class PlacePreviewViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = PlacePreviewSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Place.objects.filter(triple_set_from_obj__prop__id__in=[1, 2, 3])
