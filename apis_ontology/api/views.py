@@ -945,4 +945,6 @@ class GlossarPreviewViewSet(viewsets.ReadOnlyModelViewSet):
 class PlacePreviewViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PlacePreviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Place.objects.filter(triple_set_from_obj__prop__id__in=[1, 2, 3])
+    queryset = Place.objects.filter(
+        triple_set_from_obj__prop__id__in=[1, 2, 3]
+    ).distinct()
