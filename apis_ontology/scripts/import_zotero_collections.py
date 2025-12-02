@@ -436,6 +436,7 @@ def get_work_references_fom_tags(tags):
         "mentions",
         "is part of work",
         "is referenced in",
+        "is mentioned in"
     ]
     valid_tags = []
 

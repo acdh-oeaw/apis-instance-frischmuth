@@ -152,7 +152,7 @@ def create_expression(
     source: DataSource,
     relevant_pages: str,
     page_count: int = None,
-    edition_types: list = None,
+    edition_types: list = [],
 ):
     """
     Create a new Expression entity object if one with the given parameters
