@@ -38,6 +38,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "frischmuth-dev.acdh-dev.oeaw.ac.at",
+    "barbarafrischmuth.com",
 ]
 
 ALLOWED_HOSTS = re.sub(
@@ -54,6 +55,7 @@ MIDDLEWARE = ["corsheaders.middleware.CorsMiddleware"] + MIDDLEWARE
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https:\/\/(\w|[-.])*frischmuth(\w|[-.])*\.oeaw\.ac\.at$",
+    r"^https:\/\/(\w|[-.])*barbarafrischmuth(\w|[-.])*\.com$",
     r"^http:\/\/localhost:\d{2,4}$",
     r"^http:\/\/127\.0\.0\.1:\d{2,4}$",
 ]
