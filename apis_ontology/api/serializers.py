@@ -183,12 +183,21 @@ class PersonDataSerializer(MarkdownSerializerMixin):
         ]
 
 
+class IncludedWorksMinSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField()
+    work_id = serializers.IntegerField()
+
+
 class ExpressionDataDetailSerializer(ExpressionDataSerializer):
     publisher = NameAndIdSerializer(required=False, allow_null=True)
     place_of_publication = PlaceDataSerializerMin(
         required=False, allow_null=True, many=True
     )
     persons = PersonDataSerializer(required=False, allow_null=True, many=True)
+    included_works = IncludedWorksMinSerializer(
+        required=False, allow_null=True, many=True
+    )
 
     class Meta:
         model = Expression
@@ -202,6 +211,7 @@ class ExpressionDataDetailSerializer(ExpressionDataSerializer):
             "publisher",
             "place_of_publication",
             "persons",
+            "included_works",
         ]
 
 
