@@ -198,6 +198,7 @@ class ExpressionDataDetailSerializer(ExpressionDataSerializer):
     included_works = IncludedWorksMinSerializer(
         required=False, allow_null=True, many=True
     )
+    included_in = IncludedWorksMinSerializer(required=False, allow_null=True, many=True)
 
     class Meta:
         model = Expression
@@ -212,6 +213,7 @@ class ExpressionDataDetailSerializer(ExpressionDataSerializer):
             "place_of_publication",
             "persons",
             "included_works",
+            "included_in",
         ]
 
 
