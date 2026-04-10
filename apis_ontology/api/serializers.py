@@ -214,6 +214,7 @@ class ExpressionDataDetailSerializer(ExpressionDataSerializer):
             "persons",
             "included_works",
             "included_in",
+            "relevant_pages",
         ]
 
 
