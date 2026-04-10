@@ -589,6 +589,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 persons="persons",
                 included_works="included_works",
                 included_in="included_in",
+                relevant_pages="relevant_pages",
             )
         )
         metacharacter = MetaCharacter.objects.filter(
