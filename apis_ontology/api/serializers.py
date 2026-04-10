@@ -189,6 +189,14 @@ class IncludedWorksMinSerializer(serializers.Serializer):
     work_id = serializers.IntegerField()
 
 
+class IncludedInWorkMinSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField()
+    kind = serializers.ChoiceField(choices=["Sammelband", "Zeitung", "other"])
+    publication_date = serializers.DateField(required=False, allow_null=True)
+    work_id = serializers.IntegerField()
+
+
 class ExpressionDataDetailSerializer(ExpressionDataSerializer):
     publisher = NameAndIdSerializer(required=False, allow_null=True)
     place_of_publication = PlaceDataSerializerMin(
@@ -198,7 +206,9 @@ class ExpressionDataDetailSerializer(ExpressionDataSerializer):
     included_works = IncludedWorksMinSerializer(
         required=False, allow_null=True, many=True
     )
-    included_in = IncludedWorksMinSerializer(required=False, allow_null=True, many=True)
+    included_in = IncludedInWorkMinSerializer(
+        required=False, allow_null=True, many=True
+    )
 
     class Meta:
         model = Expression
@@ -212,9 +222,9 @@ class ExpressionDataDetailSerializer(ExpressionDataSerializer):
             "publisher",
             "place_of_publication",
             "persons",
+            "relevant_pages",
             "included_works",
             "included_in",
-            "relevant_pages",
         ]
 
 
