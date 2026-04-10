@@ -5,8 +5,10 @@ I.e. project-specific endpoints (not APIS built-in API).
 """
 
 from apis_core.apis_metainfo.models import Uri
+from apis_core.apis_relations.models import TempTriple
 from django.contrib.postgres.expressions import ArraySubquery, Subquery
-from django.db.models import F, Func, Max, Min, OuterRef, Q, Value
+from django.db.models import Case, F, Func, Max, Min, OuterRef, Q, Value, When
+from django.db.models.fields import CharField
 from django.db.models.functions import Concat, JSONObject
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, pagination, permissions, viewsets
@@ -556,13 +558,50 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             .annotate(related_work_id=Subquery(related_work[:1]))
             .values(json=JSONObject(id="id", title="title", work_id="related_work_id"))
         )
-        included_in_expressions = (
-            Expression.objects.filter(
-                triple_set_from_obj__subj_id=OuterRef("pk"),
-                triple_set_from_obj__prop__name_forward="expression is part of expression",
-            )
+        related_expression_tt = (
+            Expression.objects.filter(pk=OuterRef("obj_id"))
             .annotate(related_work_id=Subquery(related_work[:1]))
-            .values(json=JSONObject(id="id", title="title", work_id="related_work_id"))
+            .values(
+                json=JSONObject(
+                    id="id",
+                    title="title",
+                    work_id="related_work_id",
+                    publication_date="publication_date_iso_formatted",
+                )
+            )
+        )
+        included_in_expressions = (
+            TempTriple.objects.filter(
+                subj_id=OuterRef("pk"),
+                prop__name_forward__in=[
+                    "expression is part of expression",
+                    "is realised in",
+                ],
+            )
+            .annotate(
+                expression=Subquery(related_expression_tt[:1]),
+                kind=Case(
+                    When(
+                        prop__name_forward="expression is part of expression",
+                        then=Value("Sammelband"),
+                    ),
+                    When(
+                        prop__name_forward="is realised in",
+                        then=Value("Zeitung"),
+                    ),
+                    default=Value("other"),
+                    output_field=CharField(),
+                ),
+            )
+            .values(
+                json=JSONObject(
+                    id="expression__id",
+                    title="expression__title",
+                    publication_date="expression__publication_date",
+                    kind="kind",
+                    work_id="expression__work_id",
+                )
+            )
         )
 
         related_expressions = (
