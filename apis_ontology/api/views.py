@@ -556,11 +556,13 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 triple_set_from_subj__prop__name_forward="expression is part of expression",
             )
             .annotate(related_work_id=Subquery(related_work[:1]))
+            .filter(related_work_id__isnull=False)
             .values(json=JSONObject(id="id", title="title", work_id="related_work_id"))
         )
         related_expression_tt = (
             Expression.objects.filter(pk=OuterRef("obj_id"))
             .annotate(related_work_id=Subquery(related_work[:1]))
+            .filter(related_work_id__isnull=False)
             .values(
                 json=JSONObject(
                     id="id",
@@ -593,6 +595,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     output_field=CharField(),
                 ),
             )
+            .filter(expression__isnull=False)
             .values(
                 json=JSONObject(
                     id="expression__id",
