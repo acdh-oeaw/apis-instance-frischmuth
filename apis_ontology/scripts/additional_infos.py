@@ -419,6 +419,20 @@ WORK_TYPES = {
         "parent_key": None,
         "previous_english_key": None,
     },
+    "periodical_articles": {
+        "hierarchy_level": 3,
+        "german_label": "Beitrag in Periodikum",
+        "german_label_plural": "Beiträge in Periodikum",
+        "parent_key": "prose",
+        "previous_english_key": None,
+    },
+    "scientific_articles": {
+        "hierarchy_level": 3,
+        "german_label": "wissenschaftlicher Beitrag",
+        "german_label_plural": "wissenschaftliche Beiträge",
+        "parent_key": "prose",
+        "previous_english_key": None,
+    },
 }
 
 WORKTYPE_MAPPINGS = {
