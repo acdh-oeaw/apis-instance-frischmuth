@@ -333,6 +333,15 @@ class TopicDataSerializer(MarkdownSerializerMixin):
         ]
 
 
+class ResearchPerspectiveDataSerializer(MarkdownSerializerMixin):
+    class Meta:
+        model = ResearchPerspective
+        exclude = [
+            "self_contenttype",
+            "data_source",
+        ]
+
+
 class InterpretatemDataSerializer(MarkdownSerializerMixin):
     sources = SourceDataSerializer(many=True, required=False, allow_empty=True)
 
@@ -371,6 +380,12 @@ class WorkDetailSerializer(MarkdownSerializerMixin):
     )
     topics = TopicDataSerializer(
         source="related_topics",
+        required=False,
+        allow_empty=True,
+        many=True,
+    )
+    research_perspecives = ResearchPerspectiveDataSerializer(
+        source="related_research_perspectives",
         required=False,
         allow_empty=True,
         many=True,
