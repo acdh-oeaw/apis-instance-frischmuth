@@ -708,6 +708,20 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 notes="notes",
             )
         )
+        research_perspectives = ResearchPerspective.objects.filter(
+            triple_set_from_obj__subj_id=OuterRef("pk"),
+            triple_set_from_obj__prop__name_forward__in=[
+                "applies research perspective"
+            ],
+        ).values(
+            json=JSONObject(
+                id="id",
+                name="name",
+                alternative_name="alternative_name",
+                description="description",
+                notes="notes",
+            )
+        )
         authors = Person.objects.filter(
             triple_set_from_subj__obj_id=OuterRef("pk"),
             triple_set_from_subj__prop__name_forward__in=[
@@ -783,6 +797,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 related_characters=ArraySubquery(related_characters),
                 related_physical_objects=ArraySubquery(related_physical_objects),
                 related_topics=ArraySubquery(topics),
+                related_research_perspectives=ArraySubquery(research_perspectives),
                 related_persons=ArraySubquery(related_persons),
                 related_places=ArraySubquery(work_places),
                 related_interpretatems=ArraySubquery(related_interpretatems),
