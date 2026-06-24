@@ -384,7 +384,7 @@ class WorkDetailSerializer(MarkdownSerializerMixin):
         allow_empty=True,
         many=True,
     )
-    research_perspecives = ResearchPerspectiveDataSerializer(
+    research_perspectives = ResearchPerspectiveDataSerializer(
         source="related_research_perspectives",
         required=False,
         allow_empty=True,
