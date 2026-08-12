@@ -825,30 +825,31 @@ class PlaceViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        authors = (
-            Person.objects.filter(
-                triple_set_from_subj__obj_id=OuterRef("pk"),
-                triple_set_from_subj__prop__name_forward__in=[
-                    "is author of",
-                ],
-            )
-            .order_by("surname", "forename", "fallback_name")
-            .values(
-                json=JSONObject(
-                    id="id",
-                    forename="forename",
-                    surname="surname",
-                    fallback_name="fallback_name",
-                )
-            )
-        )
+        authors = Person.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+            triple_set_from_subj__prop__name_forward__in=[
+                "is author of",
+            ],
+        ).order_by("surname", "forename", "fallback_name")
         work_relations = (
             Work.objects.filter(
                 triple_set_from_subj__obj_id=OuterRef("pk"),
                 triple_set_from_subj__prop__id__in=[2, 3],
             )
-            .annotate(authors=ArraySubquery(authors))
-            .order_by("title")
+            .annotate(
+                authors=ArraySubquery(
+                    authors.values(
+                        json=JSONObject(
+                            id="id",
+                            forename="forename",
+                            surname="surname",
+                            fallback_name="fallback_name",
+                        )
+                    )
+                ),
+                author=Subquery(authors.values("surname")[:1]),
+            )
+            .order_by("author", "title")
             .values(
                 json=JSONObject(
                     id="id", title="title", subtitle="subtitle", authors="authors"
@@ -868,29 +869,30 @@ class ResearchPerspectiveViewSet(mixins.RetrieveModelMixin, viewsets.GenericView
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        authors = (
-            Person.objects.filter(
-                triple_set_from_subj__obj_id=OuterRef("pk"),
-                triple_set_from_subj__prop__name_forward__in=[
-                    "is author of",
-                ],
-            )
-            .order_by("surname", "forename", "fallback_name")
-            .values(
-                json=JSONObject(
-                    id="id",
-                    forename="forename",
-                    surname="surname",
-                    fallback_name="fallback_name",
-                )
-            )
-        )
+        authors = Person.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+            triple_set_from_subj__prop__name_forward__in=[
+                "is author of",
+            ],
+        ).order_by("surname", "forename", "fallback_name")
         work_relations = (
             Work.objects.filter(
                 triple_set_from_subj__obj_id=OuterRef("pk"),
             )
-            .annotate(authors=ArraySubquery(authors))
-            .order_by("title")
+            .annotate(
+                authors=ArraySubquery(
+                    authors.values(
+                        json=JSONObject(
+                            id="id",
+                            forename="forename",
+                            surname="surname",
+                            fallback_name="fallback_name",
+                        )
+                    )
+                ),
+                author=Subquery(authors.values("surname")[:1]),
+            )
+            .order_by("author", "title")
             .values(
                 json=JSONObject(
                     id="id",
@@ -915,29 +917,29 @@ class TopicViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        authors = (
-            Person.objects.filter(
-                triple_set_from_subj__obj_id=OuterRef("pk"),
-                triple_set_from_subj__prop__name_forward__in=[
-                    "is author of",
-                ],
-            )
-            .order_by("surname", "forename", "fallback_name")
-            .values(
-                json=JSONObject(
-                    id="id",
-                    forename="forename",
-                    surname="surname",
-                    fallback_name="fallback_name",
-                )
-            )
-        )
+        authors = Person.objects.filter(
+            triple_set_from_subj__obj_id=OuterRef("pk"),
+            triple_set_from_subj__prop__name_forward__in=[
+                "is author of",
+            ],
+        ).order_by("surname", "forename", "fallback_name")
         work_relations = (
             Work.objects.filter(
                 triple_set_from_subj__obj_id=OuterRef("pk"),
             )
-            .annotate(authors=ArraySubquery(authors))
-            .order_by("title")
+            .annotate(
+                authors=ArraySubquery(
+                    authors.values(
+                        json=JSONObject(
+                            id="id",
+                            forename="forename",
+                            surname="surname",
+                            fallback_name="fallback_name",
+                        )
+                    )
+                ),
+                author=Subquery(authors.values("surname")[:1]),
+            )
             .values(
                 json=JSONObject(
                     id="id",
@@ -946,6 +948,7 @@ class TopicViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     authors="authors",
                 )
             )
+            .order_by("author", "title")
         )
         res = Topic.objects.all().annotate(related_works=ArraySubquery(work_relations))
         return res
