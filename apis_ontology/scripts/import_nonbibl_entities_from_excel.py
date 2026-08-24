@@ -167,7 +167,7 @@ def parse_entities_dataframe(sheet_name, df, file):
             surname = row["Nachname"]
             person_alternative_name = row["alternative Name"]
             description = row["Beschreibung"]
-            character_relevancy = RELEVANCIES.get(row["Rolle"], "")
+            character_relevancy = RELEVANCIES.get(row["Rolle"], "k.A.")
             character_fictionality = row["Kategorie"]
             character_fictionality_degree = (
                 FICTIONALITY_DEGREES[character_fictionality]
