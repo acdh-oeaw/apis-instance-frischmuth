@@ -943,9 +943,21 @@ def create_entities(item, source, collection_name):
         parent_publication = None
         parent_expression = None
         if series:
-            parent_publication, created = Work.objects.get_or_create(
-                title=series, include_for_search=False, defaults={"data_source": source}
+            parent_publication = (
+                Work.objects.filter(title=series, include_for_search=False)
+                .order_by("id")
+                .first()
             )
+            if parent_publication is None:
+                parent_publication = Work.objects.create(
+                    title=series,
+                    include_for_search=False,
+                    data_source=source,
+                )
+                created = True
+            else:
+                created = False
+
             parent_expression, created = Expression.objects.get_or_create(
                 title=series,
                 issue=issue,
