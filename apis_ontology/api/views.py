@@ -363,10 +363,14 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
             triple_set_from_obj__prop__name_forward__in=["has type"],
         ).values_list("name", flat=True)
 
-        expression_publisher = Organisation.objects.filter(
-            triple_set_from_subj__obj_id=OuterRef("pk"),
-            triple_set_from_subj__prop__name_reverse__in=["has publisher"],
-        ).values("name")
+        expression_publisher = (
+            Organisation.objects.filter(
+                triple_set_from_subj__obj_id=OuterRef("pk"),
+                triple_set_from_subj__prop__name_reverse__in=["has publisher"],
+            )
+            .distinct()
+            .values("name")
+        )
 
         expression_places = (
             Place.objects.filter(
@@ -397,7 +401,7 @@ class WorkPreviewViewSet(viewsets.ReadOnlyModelViewSet):
                 triple_set_from_obj__subj_id=OuterRef("pk"),
                 triple_set_from_obj__prop__name_reverse__in=["realises"],
             ).annotate(
-                publisher=Subquery(expression_publisher[:1]),
+                publisher=Subquery(expression_publisher),
                 places=ArraySubquery(expression_places),
             )
         ).values(
@@ -488,13 +492,17 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             )
         )
 
-        expression_publisher = Organisation.objects.filter(
-            triple_set_from_subj__obj_id=OuterRef("pk"),
-            triple_set_from_subj__prop__name_reverse__in=["has publisher"],
-        ).values(
-            json=JSONObject(
-                id="id",
-                name="name",
+        expression_publisher = (
+            Organisation.objects.filter(
+                triple_set_from_subj__obj_id=OuterRef("pk"),
+                triple_set_from_subj__prop__name_reverse__in=["has publisher"],
+            )
+            .distinct()
+            .values(
+                json=JSONObject(
+                    id="id",
+                    name="name",
+                )
             )
         )
 
@@ -612,7 +620,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 triple_set_from_obj__subj_id=OuterRef("pk"),
                 triple_set_from_obj__prop__name_reverse__in=["realises"],
             ).annotate(
-                publisher=Subquery(expression_publisher[:1]),
+                publisher=Subquery(expression_publisher),
                 places=ArraySubquery(expression_places),
                 persons=ArraySubquery(related_persons),
                 included_works=ArraySubquery(included_expressions),
