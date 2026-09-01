@@ -515,6 +515,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     uris="uris",
                 )
             )
+            .order_by("name")
         )
 
         expression_places = related_places.filter(
@@ -543,6 +544,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     uris="uris",
                 )
             )
+            .order_by("surname", "forename")
         )
 
         related_work = Work.objects.filter(
@@ -608,31 +610,35 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         )
 
         related_expressions = (
-            Expression.objects.filter(
-                triple_set_from_obj__subj_id=OuterRef("pk"),
-                triple_set_from_obj__prop__name_reverse__in=["realises"],
-            ).annotate(
-                publisher=Subquery(expression_publisher[:1]),
-                places=ArraySubquery(expression_places),
-                persons=ArraySubquery(related_persons),
-                included_works=ArraySubquery(included_expressions),
-                included_in=ArraySubquery(included_in_expressions),
+            (
+                Expression.objects.filter(
+                    triple_set_from_obj__subj_id=OuterRef("pk"),
+                    triple_set_from_obj__prop__name_reverse__in=["realises"],
+                ).annotate(
+                    publisher=Subquery(expression_publisher[:1]),
+                    places=ArraySubquery(expression_places),
+                    persons=ArraySubquery(related_persons),
+                    included_works=ArraySubquery(included_expressions),
+                    included_in=ArraySubquery(included_in_expressions),
+                )
             )
-        ).values(
-            json=JSONObject(
-                title="title",
-                subtitle="subtitle",
-                edition="edition",
-                edition_type="edition_type",
-                language="language",
-                publication_date="publication_date_iso_formatted",
-                publisher="publisher",
-                place_of_publication="places",
-                persons="persons",
-                included_works="included_works",
-                included_in="included_in",
-                relevant_pages="relevant_pages",
+            .values(
+                json=JSONObject(
+                    title="title",
+                    subtitle="subtitle",
+                    edition="edition",
+                    edition_type="edition_type",
+                    language="language",
+                    publication_date="publication_date_iso_formatted",
+                    publisher="publisher",
+                    place_of_publication="places",
+                    persons="persons",
+                    included_works="included_works",
+                    included_in="included_in",
+                    relevant_pages="relevant_pages",
+                )
             )
+            .order_by("title", "subtitle")
         )
         metacharacter = MetaCharacter.objects.filter(
             triple_set_from_subj__obj_id=OuterRef("pk"),
@@ -660,11 +666,16 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     metacharacter="metacharacter",
                 )
             )
+            .order_by("surname", "forename", "fallback_name")
         )
 
-        work_places = related_places.filter(
-            triple_set_from_obj__subj_id=OuterRef("pk"),
-        ).distinct()
+        work_places = (
+            related_places.filter(
+                triple_set_from_obj__subj_id=OuterRef("pk"),
+            )
+            .order_by("name")
+            .distinct()
+        )
 
         related_archive = Archive.objects.filter(
             triple_set_from_subj__obj_id=OuterRef("pk"),
@@ -694,33 +705,42 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     archive="archive",
                 )
             )
+            .order_by("name")
         )
 
-        topics = Topic.objects.filter(
-            triple_set_from_obj__subj_id=OuterRef("pk"),
-            triple_set_from_obj__prop__name_forward__in=["is about topic"],
-        ).values(
-            json=JSONObject(
-                id="id",
-                name="name",
-                alternative_name="alternative_name",
-                description="description",
-                notes="notes",
+        topics = (
+            Topic.objects.filter(
+                triple_set_from_obj__subj_id=OuterRef("pk"),
+                triple_set_from_obj__prop__name_forward__in=["is about topic"],
             )
+            .values(
+                json=JSONObject(
+                    id="id",
+                    name="name",
+                    alternative_name="alternative_name",
+                    description="description",
+                    notes="notes",
+                )
+            )
+            .order_by("name")
         )
-        research_perspectives = ResearchPerspective.objects.filter(
-            triple_set_from_obj__subj_id=OuterRef("pk"),
-            triple_set_from_obj__prop__name_forward__in=[
-                "applies research perspective"
-            ],
-        ).values(
-            json=JSONObject(
-                id="id",
-                name="name",
-                alternative_name="alternative_name",
-                description="description",
-                notes="notes",
+        research_perspectives = (
+            ResearchPerspective.objects.filter(
+                triple_set_from_obj__subj_id=OuterRef("pk"),
+                triple_set_from_obj__prop__name_forward__in=[
+                    "applies research perspective"
+                ],
             )
+            .values(
+                json=JSONObject(
+                    id="id",
+                    name="name",
+                    alternative_name="alternative_name",
+                    description="description",
+                    notes="notes",
+                )
+            )
+            .order_by("name")
         )
         authors = Person.objects.filter(
             triple_set_from_subj__obj_id=OuterRef("pk"),
@@ -762,6 +782,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     authors="authors",
                 )
             )
+            .order_by("title", "subtitle")
         )
         reverse_work_relations = (
             Work.objects.filter(
@@ -777,6 +798,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                     authors="authors",
                 )
             )
+            .order_by("title", "subtitle")
         )
         related_interpretatems = (
             Interpretatem.objects.filter(
@@ -787,6 +809,7 @@ class WorkDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             .values(
                 json=JSONObject(id="id", description="description", sources="sources")
             )
+            .order_by("name", "description")
         )
 
         works = (
